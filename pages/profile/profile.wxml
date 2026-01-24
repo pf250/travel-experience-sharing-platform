@@ -1,2 +1,41 @@
-<!--pages/profile/profile.wxml-->
-<text>pages/profile/profile.wxml</text>
+<view class="profile-container">
+  <!-- 用户信息部分 -->
+  <view class="user-info-section">
+    <block wx:if="{{isLogin}}">
+      <image class="default-avatar" src="{{avatarUrl}}"></image>
+      <text class="username">{{nickName}}</text>
+    </block>
+    <block wx:else>
+      <button class="login-button" bindtap="handleLogin">一键登录</button>
+    </block>
+  </view>
+
+  <!-- 功能列表部分 -->
+  <view class="function-list">
+    <view class="function-item" bindtap="navigateToUserInfo">
+      <image class="icon" src="/images/profile/user-info.png"></image>
+      <text class="function-name">个人信息</text>
+      <image class="arrow-right" src="/images/profile/arrow-right.png"></image>
+    </view>
+    <view class="function-item" bindtap="navigateToMyPosts">
+      <image class="icon" src="/images/profile/my-posts.png"></image>
+      <text class="function-name">我的发帖</text>
+      <image class="arrow-right" src="/images/profile/arrow-right.png"></image>
+    </view>
+    <view class="function-item" bindtap="navigateToMyGoods">
+      <image class="icon" src="/images/profile/my-goods.png"></image>
+      <text class="function-name">我的商品</text>
+      <image class="arrow-right" src="/images/profile/arrow-right.png"></image>
+    </view>
+    <!-- <view class="function-item" bindtap="navigateToMyFavorites">
+      <image class="icon" src="/images/profile/my-favorites.png"></image>
+      <text class="function-name">我的收藏</text>
+      <image class="arrow-right" src="/images/profile/arrow-right.png"></image>
+    </view> -->
+    <view class="function-item" bindtap="navigateToPrivilege">
+      <image class="icon" src="/images/profile/my-favorites.png"></image>
+      <text class="function-name">特权中心</text>
+      <image class="arrow-right" src="/images/profile/arrow-right.png"></image>
+    </view>
+  </view>
+</view>
