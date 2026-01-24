@@ -1,0 +1,107 @@
+.container {
+  padding: 0;      /*置顶 */
+ background-color: #f8f8f8
+}
+
+/* 轮播图容器 */
+.banner {
+ width: 720rpx; /* 设置轮播图宽度为屏幕的90%，留出两侧的空间 */
+ height: 350rpx; /* 设置固定高度，可根据需求调整 */
+ margin: 0 auto; /* 居中显示 */
+ overflow: visible; /* 确保内容不会被裁剪 */
+}
+
+/* 每个轮播项 */
+.swiper-item {
+ display: flex;
+ justify-content: center; /* 图片水平居中 */
+ align-items: center; /* 图片垂直居中 */
+ overflow: visible; /* 确保图片不会被裁剪 */
+}
+
+/* 图片样式 */
+.banner-image {
+ width: 100%; /* 图片宽度占满轮播项 */
+ height: 100%; /* 图片高度占满轮播项 */
+ border-radius: 20rpx; /* 添加圆角效果（可选） */
+ transition: transform 0.3s ease; /* 添加平滑过渡效果 */
+}
+
+/* 当前图片的样式 */
+.swiper-item.current .banner-image {
+ transform: scale(1); /* 当前图片正常显示 */
+ z-index: 2; /* 提高层级 */
+}
+
+/* 非当前图片的样式 */
+.swiper-item:not(.current) .banner-image {
+ transform: scale(0.80); /* 缩小非当前图片 */
+}
+
+/* 公告栏样式 */
+
+.notice-container {
+ width: 720rpx;
+ background: #fff;
+ border-radius: 10px;
+ border-bottom: 1rpx solid #eee;
+}
+.logo{
+ margin-right: 20rpx;
+}
+.notice-bar {
+ display: flex;
+ align-items: center;
+ padding: 20rpx 20rpx;
+ height: 50rpx;
+}
+
+.notice-swiper {
+ flex: 1;
+ height: 40rpx;
+}
+
+.notice-text {
+ font-size: 28rpx;
+ color: #666;
+ width: 100%;
+ overflow: hidden;
+ text-overflow: ellipsis;
+ white-space: nowrap;
+ padding-right: 20rpx;
+}
+
+/* 功能入口样式 */
+.function-container {
+ width: 720rpx;
+ margin: 30rpx;
+ display: flex;
+ justify-content: space-around;
+ background-color: #fff;
+ border-radius: 10px;
+ box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+ 
+ /* flex-wrap: wrap;  允许换行*/
+}
+
+.function-item {
+ width:130rpx;
+ border-radius: 50rpx;
+ padding: 20rpx 20rpx;
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+
+}
+
+.function-item image {
+ width: 85rpx;
+ height: 85rpx;
+ margin-bottom: 10rpx;
+ border-radius: 16rpx;
+}
+
+.function-item text {
+ font-size: 28rpx;
+ color: rgb(0, 0, 0);
+}
