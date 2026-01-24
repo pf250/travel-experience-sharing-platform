@@ -1,2 +1,16 @@
-<!--pages/upload/upload.wxml-->
-<text>pages/upload/upload.wxml</text>
+<view class="container">
+
+
+  <!-- 发帖子按钮 -->
+  <view class="upload-card post-card" bindtap="handleUploadPost">
+    <image class="icon" src="/images/profile/my-posts.png"></image>
+    <text class="upload-text">发帖子</text>
+  </view>
+
+  <!-- 发闲置按钮 -->
+  <view class="upload-card idle-card" bindtap="handleUploadIdle">
+    <image class="icon" src="/images/profile/my-goods.png"></image>
+    <text class="upload-text">发闲置</text>
+  </view>
+  
+</view>

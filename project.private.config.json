@@ -11,8 +11,8 @@
     "miniprogram": {
       "list": [
         {
-          "name": "pages/profile/profile",
-          "pathName": "pages/profile/profile",
+          "name": "pages/upload/upload",
+          "pathName": "pages/upload/upload",
           "query": "",
           "scene": null,
           "launchMode": "default"
