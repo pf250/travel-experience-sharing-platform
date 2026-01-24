@@ -11,8 +11,8 @@
     "miniprogram": {
       "list": [
         {
-          "name": "pages/upload/upload",
-          "pathName": "pages/upload/upload",
+          "name": "pages/forum/forum",
+          "pathName": "pages/forum/forum",
           "query": "",
           "scene": null,
           "launchMode": "default"

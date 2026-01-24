@@ -1,2 +1,75 @@
-<!--pages/forum/forum.wxml-->
-<text>pages/forum/forum.wxml</text>
+<view class="container">
+  <!-- 帖子列表 -->
+  <block wx:for="{{posts}}" wx:key="_id">
+    <view class="post-card">
+      <view class="userinfo">
+        <!-- 头像 -->
+        <image class="avatar" src="{{item.avatarUrl}}"></image>
+        <!-- 昵称 -->
+        <text class="username">{{item.nickName}}</text>
+        <!-- 用户信息 -->
+        <view class="post-meta">
+          <text class="post-author">Uid: {{item.userId}}</text>
+          <text class="post-time">{{formatTime(item.createdAt)}}</text>
+        </view>
+      </view>
+      <!-- 标题 -->
+      <view class="post-title">{{item.title}}</view>
+      <!-- 描述 -->
+      <view class="post-description">{{item.description}}</view>
+      <!-- 图片 -->
+      <view class="post-images" wx:if="{{item.images.length > 0}}">
+        <image
+          wx:for="{{item.images}}"
+          wx:key="index"
+          src="{{item}}"
+          mode="aspectFill"
+          class="post-image"
+        ></image>
+      </view>
+
+      <!-- 点赞和评论 -->
+      <view class="post-actions">
+        <!-- 点赞按钮 -->
+        <button
+          class="like-btn"
+          bindtap="handleLike"
+          data-post-id="{{item._id}}"
+        >
+          <text>👍</text> {{item.likeCount || 0}}
+        </button>
+        <!-- 评论按钮 -->
+        <button
+          class="comment-btn"
+          bindtap="showComments"
+          data-post-id="{{item._id}}"
+        >
+          <text>💬</text> {{item.commentCount || 0}}
+        </button>
+      </view>
+      <!-- 评论区域（弹出层） -->
+      <view class="comments-section" wx:if="{{currentPostId === item._id}}">
+        <view class="comment-list">
+          <block wx:for="{{comments}}" wx:key="_id">
+            <view class="comment-item">
+              <text class="comment-author">{{item.userId}}:</text>
+              <text class="comment-content">{{item.content}}</text>
+            </view>
+          </block>
+        </view>
+        <!-- 发表评论输入框 -->
+        <view class="comment-input">
+          <input
+            type="text"
+            placeholder="发表评论..."
+            value="{{newComment}}"
+            bindinput="onCommentInput"
+          />
+          <button bindtap="handleComment" data-post-id="{{item._id}}">
+            发表
+          </button>
+        </view>
+      </view>
+    </view>
+  </block>
+</view>
