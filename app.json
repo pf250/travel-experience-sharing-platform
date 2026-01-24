@@ -16,7 +16,6 @@
         "pages/resource/resource"
       ]
     },
-
     {
       "root": "packageProfile",
       "pages": [
@@ -28,11 +27,8 @@
         "pages/privilege/admin/admin",
         "pages/privilege/merchant/merchant",
         "pages/privilege/vip/vip"
-
       ]
     },
-
-
     {
       "root": "packageUpload",
       "pages": [
