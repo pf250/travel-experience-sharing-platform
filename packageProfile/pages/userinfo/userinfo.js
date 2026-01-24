@@ -97,10 +97,46 @@ Page({
   },
 
   /**
-   * 修改昵称
+   * 昵称输入实时更新
+   */
+  onNicknameInput(e) {
+    console.log('昵称输入:', e.detail.value);
+    this.setData({ nickName: e.detail.value });
+  },
+
+  /**
+   * 关键函数：处理微信昵称选择后的返回
+   * 当用户点击了弹出的微信昵称后，会触发这个事件
+   */
+  onNicknameReview(e) {
+    console.log('微信昵称选择事件:', e);
+    console.log('事件详情:', e.detail);
+    
+    const nickName = e.detail.value;
+    if (nickName && nickName.trim()) {
+      console.log('获取到微信昵称:', nickName);
+      this.setData({ nickName });
+      
+      // 可选：给用户一个提示
+      wx.showToast({
+        title: '已使用微信昵称',
+        icon: 'success',
+        duration: 1500
+      });
+    } else {
+      console.log('用户取消了昵称选择或返回了空值');
+    }
+  },
+
+  /**
+   * 昵称输入失去焦点
    */
   onNicknameBlur(e) {
-    this.setData({ nickName: e.detail.value });
+    console.log('昵称失去焦点:', e.detail);
+    const value = e.detail.value || '';
+    if (value) {
+      this.setData({ nickName: value });
+    }
   },
 
   /**

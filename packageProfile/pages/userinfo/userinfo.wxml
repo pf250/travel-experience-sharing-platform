@@ -15,9 +15,11 @@
       <text class="info-value">{{userId || '暂无数据'}}</text>
     </view>
 
+  <!-- 昵称 -->
     <!-- 昵称 -->
     <view class="info-item">
       <text class="info-label">昵称</text>
+      <!-- 关键修改：使用 type="nickname" 并添加 bindnicknamereview 事件 -->
       <input
         type="nickname"
         class="info-input"
@@ -25,6 +27,8 @@
         maxlength="6"
         value="{{nickName}}"
         bindblur="onNicknameBlur"
+        bindnicknamereview="onNicknameReview"
+        bindinput="onNicknameInput"
       />
     </view>
 
@@ -55,7 +59,7 @@
     <!-- 性别 -->
     <view class="info-item">
       <text class="info-label">性别</text>
-      <picker mode="selector" range="{{['男', '女']}}" bindchange="onsexChange">
+      <picker mode="selector" range="{{['男', '女']}}" bindchange="onSexChange">
         <view class="picker-result">{{sex || '请选择性别'}}</view>
       </picker>
     </view>
