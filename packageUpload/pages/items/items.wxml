@@ -1,2 +1,75 @@
-<!--packageUpload/pages/items/items.wxml-->
-<text>packageUpload/pages/items/items.wxml</text>
+<view class="container">
+  <!-- 第一个 block：描述 + 图片上传 -->
+  <view class="block block-top">
+    <view class=" description-group">
+      <textarea 
+        placeholder="添加宝贝描述..." 
+        value="{{description}}"
+        bindinput="onDescInput"
+        class="desc-textarea"
+        maxlength="500"
+        auto-height
+      />
+    </view>
+    <!-- 图片上传区域 -->
+    <view class="uploader">
+      <block wx:for="{{images}}" wx:key="index">
+        <view class="img-item">
+          <image src="{{item}}" mode="aspectFill" class="preview-image" />
+          <view class="delete-btn" bindtap="deleteImage" data-index="{{index}}">×</view>
+        </view>
+      </block>
+      <!-- 添加图片按钮 -->
+      <view class="upload-btn" wx:if="{{images.length < 4}}" bindtap="chooseImage">
+        <text class="plus">+</text>
+        <text class="tip">添加图片（最多4张）</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 第二个 block：价格 + 宝贝所在地 + 分类 + 发货方式 -->
+  <view class="block block-bottom">
+    <view class="form-group price-group">
+      <text class="label">价格</text>
+      <input 
+        type="digit" 
+        placeholder="0.00" 
+        value="{{price}}"
+        bindinput="onPriceInput"
+        class="{{price ? 'price-input red' : 'price-input'}}"
+      />
+      <text class="unit">元</text>
+    </view>
+    <view class="form-group location-group">
+      <text class="label">宝贝所在地</text>
+      <picker mode="selector" range="{{locationOptions}}" value="{{locationIndex}}" bindchange="onLocationChange">
+        <view class="picker">
+          {{locationIndex !== null ? locationOptions[locationIndex] : '请选择地点'}}
+        </view>
+      </picker>
+      <text class="arrow">›</text>
+    </view>
+    <!-- 新增分类选择器 -->
+    <view class="form-group category-group">
+      <text class="label">分类</text>
+      <picker mode="selector" range="{{categories}}" value="{{categoryIndex}}" bindchange="onCategoryChange">
+        <view class="picker">
+          {{categoryIndex !== null ? categories[categoryIndex] : '请选择分类'}}
+        </view>
+      </picker>
+      <text class="arrow">›</text>
+    </view>
+    <view class="form-group shipping-group">
+      <text class="label">发货方式</text>
+      <picker mode="selector" range="{{shippingOptions}}" value="{{shippingIndex}}" bindchange="onShippingChange">
+        <view class="picker">
+          {{shippingIndex !== null ? shippingOptions[shippingIndex] : '请选择发货方式'}}
+        </view>
+      </picker>
+      <text class="arrow">›</text>
+    </view>
+  </view>
+
+  <!-- 发布按钮 -->
+  <button class="publish-btn" bindtap="handlePublish">发布</button>
+</view>

@@ -1,2 +1,44 @@
-<!--packageUpload/pages/posts/posts.wxml-->
-<text>packageUpload/pages/posts/posts.wxml</text>
+<view class="container">
+  <!-- 第一个 block：标题+描述 -->
+  <view class="block block-top">
+    <!-- 标题输入 -->
+    <view class="title-group">
+      <input 
+        placeholder="请输入标题（1-20字）..." 
+        value="{{title}}"
+        bindinput="onTitleInput"
+        maxlength="20"
+        class="title-input"
+      />
+    </view>
+    <!-- 描述文本域 -->
+    <view class="description-group">
+      <textarea 
+        placeholder="来吧，尽情发挥吧（最多800字）..." 
+        value="{{description}}"
+        bindinput="onDescInput"
+        maxlength="800"
+        class="desc-textarea"
+        auto-height
+      />
+    </view>
+    <!-- 图片上传区域 -->
+    <view class="uploader">
+      <block wx:for="{{images}}" wx:key="index">
+        <view class="img-item">
+          <image src="{{item}}" mode="aspectFill" class="preview-image" />
+          <view class="delete-btn" bindtap="deleteImage" data-index="{{index}}">×</view>
+        </view>
+      </block>
+      <!-- 添加图片按钮 -->
+      <view class="upload-btn" wx:if="{{images.length < 4}}" bindtap="chooseImage">
+        <text class="plus">+</text>
+        <text class="tip">添加图片（最多4张）</text>
+      </view>
+    </view>
+  </view>
+  <!-- 发布按钮 -->
+  <button class="publish-btn" bindtap="handlePublish" disabled="{{!title || !description}}">
+    {{title && description ? '发布' : '请填写完整内容'}}
+  </button>
+</view>
