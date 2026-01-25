@@ -7,17 +7,5 @@
     "urlCheck": false
   },
   "libVersion": "3.12.1",
-  "condition": {
-    "miniprogram": {
-      "list": [
-        {
-          "name": "pages/forum/forum",
-          "pathName": "pages/forum/forum",
-          "query": "",
-          "scene": null,
-          "launchMode": "default"
-        }
-      ]
-    }
-  }
+  "condition": {}
 }
