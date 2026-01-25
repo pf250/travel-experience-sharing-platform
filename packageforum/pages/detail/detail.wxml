@@ -51,8 +51,14 @@
       <view class="comment-list">
         <block wx:for="{{comments}}" wx:key="_id">
           <view class="comment-item">
-            <text class="comment-author">{{item.userId}}:</text>
+            <!-- 头像 -->
+            <image class="comment-avatar" src="{{item.avatarUrl}}"></image>
+            <!-- 昵称 -->
+            <text class="comment-nickname">{{item.nickName}}:</text>
+            <!-- 评论内容 -->
             <text class="comment-content">{{item.content}}</text>
+            <!-- 评论时间 -->
+            <text class="comment-time">{{formatTime(item.createdAt)}}</text>
           </view>
         </block>
       </view>
