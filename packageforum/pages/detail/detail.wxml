@@ -1,0 +1,73 @@
+<view class="container">
+  <!-- 帖子详情 -->
+  <view class="post-detail">
+    <view class="userinfo">
+      <!-- 头像 -->
+      <image class="avatar" src="{{post.avatarUrl}}"></image>
+      <!-- 昵称 -->
+      <text class="username">{{post.nickName}}</text>
+      <!-- 用户信息 -->
+      <view class="post-meta">
+        <text class="post-author">Uid: {{post.userId}}</text>
+        <text class="post-time">{{formatTime(post.createdAt)}}</text>
+      </view>
+    </view>
+    <!-- 标题 -->
+    <view class="post-title">{{post.title}}</view>
+    <!-- 描述 -->
+    <view class="post-description">{{post.description}}</view>
+    <!-- 图片 -->
+    <view class="post-images" wx:if="{{post.images.length > 0}}">
+      <image
+        wx:for="{{post.images}}"
+        wx:key="index"
+        src="{{item}}"
+        mode="aspectFill"
+        class="post-image"
+      ></image>
+    </view>
+
+    <!-- 点赞和评论 -->
+    <view class="post-actions">
+      <!-- 点赞按钮 -->
+      <button
+        class="like-btn"
+        bindtap="handleLike"
+        data-post-id="{{post._id}}"
+      >
+        <text>👍</text> {{post.likeCount || 0}}
+      </button>
+      <!-- 评论按钮 -->
+      <button
+        class="comment-btn"
+        bindtap="toggleCommentSection"
+        data-post-id="{{post._id}}"
+      >
+        <text>💬</text> {{post.commentCount || 0}}
+      </button>
+    </view>
+    <!-- 评论区域 -->
+    <view class="comments-section">
+      <view class="comment-list">
+        <block wx:for="{{comments}}" wx:key="_id">
+          <view class="comment-item">
+            <text class="comment-author">{{item.userId}}:</text>
+            <text class="comment-content">{{item.content}}</text>
+          </view>
+        </block>
+      </view>
+      <!-- 发表评论输入框 -->
+      <view class="comment-input" wx:if="{{showCommentInput}}">
+        <input
+          type="text"
+          placeholder="发表评论..."
+          value="{{newComment}}"
+          bindinput="onCommentInput"
+        />
+        <button bindtap="handleComment" data-post-id="{{post._id}}">
+          发表
+        </button>
+      </view>
+    </view>
+  </view>
+</view>

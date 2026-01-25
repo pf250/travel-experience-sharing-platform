@@ -1,7 +1,7 @@
 <view class="container">
   <!-- 帖子列表 -->
   <block wx:for="{{posts}}" wx:key="_id">
-    <view class="post-card">
+    <view class="post-card" bindtap="navigateToDetail" data-post-id="{{item._id}}">
       <view class="userinfo">
         <!-- 头像 -->
         <image class="avatar" src="{{item.avatarUrl}}"></image>
@@ -46,29 +46,6 @@
         >
           <text>💬</text> {{item.commentCount || 0}}
         </button>
-      </view>
-      <!-- 评论区域（弹出层） -->
-      <view class="comments-section" wx:if="{{currentPostId === item._id}}">
-        <view class="comment-list">
-          <block wx:for="{{comments}}" wx:key="_id">
-            <view class="comment-item">
-              <text class="comment-author">{{item.userId}}:</text>
-              <text class="comment-content">{{item.content}}</text>
-            </view>
-          </block>
-        </view>
-        <!-- 发表评论输入框 -->
-        <view class="comment-input">
-          <input
-            type="text"
-            placeholder="发表评论..."
-            value="{{newComment}}"
-            bindinput="onCommentInput"
-          />
-          <button bindtap="handleComment" data-post-id="{{item._id}}">
-            发表
-          </button>
-        </view>
       </view>
     </view>
   </block>
