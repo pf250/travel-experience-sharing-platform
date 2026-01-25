@@ -10,6 +10,12 @@ Page({
     this.loadPosts();
   },
 
+  onShow() {
+    // 每次页面显示时都刷新数据
+    this.setData({ posts: [], postPage: 1, hasMorePosts: true }); // 重置数据
+    this.loadPosts(); // 重新加载帖子列表
+  },
+
   // 下拉刷新事件
   onPullDownRefresh() {
     console.log('下拉刷新');
@@ -50,8 +56,13 @@ Page({
         })
       );
 
+      // 确保没有重复的帖子
+      const newPosts = postsWithCounts.filter(newPost => 
+        !this.data.posts.some(existingPost => existingPost._id === newPost._id)
+      );
+
       this.setData({
-        posts: [...this.data.posts, ...postsWithCounts], // 追加新加载的帖子
+        posts: [...this.data.posts, ...newPosts], // 追加新加载的帖子
         postPage: postPage + 1, // 更新页码
       });
 
