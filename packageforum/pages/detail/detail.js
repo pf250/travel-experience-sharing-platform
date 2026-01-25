@@ -69,7 +69,14 @@ Page({
       return;
     }
 
-    const userId = wx.getStorageSync('userId'); // 假设用户 ID 存储在本地缓存中
+    const loginState = wx.getStorageSync('loginState');
+    if (!loginState || !loginState.userId) {
+      wx.showToast({ title: '用户信息获取失败', icon: 'none' });
+      return;
+    }
+
+    const userId = loginState.userId; // 使用从 loginState 中获取的 userId
+
     try {
       const likeRecord = await wx.cloud.database().collection('likes')
         .where({ postId, userId })
