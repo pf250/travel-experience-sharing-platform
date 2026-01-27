@@ -29,6 +29,14 @@
         "pages/privilege/vip/vip"
       ]
     },
+
+    {
+      "root": "packageforum",
+      "pages": [
+        "pages/detail/detail"
+      ]
+    },
+
     {
       "root": "packageUpload",
       "pages": [

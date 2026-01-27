@@ -7,17 +7,5 @@
     "urlCheck": false
   },
   "libVersion": "3.12.1",
-  "condition": {
-    "miniprogram": {
-      "list": [
-        {
-          "name": "pages/upload/upload",
-          "pathName": "pages/upload/upload",
-          "query": "",
-          "scene": null,
-          "launchMode": "default"
-        }
-      ]
-    }
-  }
+  "condition": {}
 }
