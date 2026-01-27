@@ -1,5 +1,7 @@
 Page({
   data: {
+
+    //还需要优化
     post: {}, // 当前帖子详情
     comments: [], // 帖子的评论列表
     newComment: '', // 新评论内容
