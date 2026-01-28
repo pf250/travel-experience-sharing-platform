@@ -206,6 +206,7 @@
   overflow: hidden;
   box-shadow: 0 4px 15px rgba(26, 173, 25, 0.3);
   transition: all 0.3s ease;
+  margin-bottom: 15px; /* Add margin for spacing */
 }
 
 .button-hover {
@@ -229,10 +230,18 @@
   mask-size: cover;
 }
 
+.icon-list {
+  width: 20px;
+  height: 20px;
+  background-color: white;
+  mask: url('data:image/svg+xml,<svg viewBox="0 0 24 24"><path d="M3 13h18v-2H3v2zm0 4h18v-2H3v2zm0-8h18V7H3v2zm0 12h18v-2H3v2z"/></svg>');
+  mask-size: cover;
+}
+
 .icon-arrow {
   width: 16px;
   height: 16px;
-  border: 2px solid white;
+  border: 2px solid #333;
   border-left: none;
   border-bottom: none;
   transform: rotate(45deg);
@@ -245,6 +254,20 @@
   text-align: center;
   padding-bottom: 15px;
   background: rgba(255, 255, 255, 0.1);
+}
+
+.records-link {
+  display: block;
+  color: #666; /* Shallow gray color */
+  font-size: 16px;
+  text-align: center;
+  margin-top: 10px;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.records-link:hover {
+  color: #333; /* Slightly darker gray on hover */
 }
 
 .verified-section {

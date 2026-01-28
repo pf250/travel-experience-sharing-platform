@@ -164,5 +164,11 @@ Page({
           icon: 'none'
         });
       });
+  },
+
+  viewApplicationRecords: function () {
+    wx.navigateTo({
+      url: '/packageProfile/pages/privilege/applications/applications'
+    });
   }
 });
