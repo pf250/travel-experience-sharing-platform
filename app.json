@@ -26,6 +26,7 @@
         "pages/privilege/privilege",
         "pages/privilege/admin/admin",
         "pages/privilege/merchant/merchant",
+        "pages/privilege/applications/applications",
         "pages/privilege/vip/vip"
       ]
     },

@@ -1,2 +1,94 @@
-<!--packageProfile/pages/privilege/admin/admin.wxml-->
-<text>packageProfile/pages/privilege/admin/admin.wxml</text>
+<!-- pages/privilege/admin/admin.wxml -->
+<view class="admin-container">
+  <!-- 标签页 -->
+  <view class="tabs">
+    <view 
+      wx:for="{{tabs}}" 
+      wx:key="index"
+      class="tab-item {{tabIndex === index ? 'active' : ''}}"
+      data-index="{{index}}"
+      bindtap="onTabChange"
+    >
+      {{item}}
+    </view>
+  </view>
+
+  <!-- 内容区域 -->
+  <view class="content">
+    <view wx:if="{{loading}}" class="loading">
+      <text>加载中...</text>
+    </view>
+    
+    <view wx:elif="{{applications.length === 0}}" class="empty">
+      <text>暂无数据</text>
+    </view>
+    
+    <view wx:else class="applications-list">
+      <view wx:for="{{applications}}" wx:key="_id" class="application-card">
+        <!-- 用户信息 -->
+        <view class="user-info">
+          <image class="avatar" src="{{item.avatarUrl}}" mode="aspectFill"></image>
+          <view class="user-details">
+            <text class="nickname">{{item.nickName}}</text>
+            <text class="user-id">用户ID: {{item.userId}}</text>
+            <text class="time">{{item.formattedTime}}</text>
+          </view>
+          <view class="status-tag {{item.statusInfo.class}}">
+            {{item.statusInfo.text}}
+          </view>
+        </view>
+
+        <!-- 申请信息 -->
+        <view class="application-info">
+          <view class="info-row">
+            <text class="label">商家名称：</text>
+            <text class="value">{{item.storeName || '未填写'}}</text>
+          </view>
+          <view class="info-row">
+            <text class="label">联系电话：</text>
+            <text class="value">{{item.phone || '未填写'}}</text>
+          </view>
+          <view class="info-row">
+            <text class="label">身份证号：</text>
+            <text class="value">{{item.idNumber || '未填写'}}</text>
+          </view>
+          <view wx:if="{{item.reason}}" class="info-row">
+            <text class="label">申请理由：</text>
+            <text class="value">{{item.reason}}</text>
+          </view>
+        </view>
+
+        <!-- 身份证照片 -->
+        <view wx:if="{{item.idPhotoUrl}}" class="photo-section">
+          <text class="section-title">身份证照片：</text>
+          <image 
+            class="id-photo" 
+            src="{{item.idPhotoUrl}}" 
+            mode="widthFix"
+            data-url="{{item.idPhotoUrl}}"
+            bindtap="previewImage"
+          ></image>
+        </view>
+
+        <!-- 操作按钮（仅待审核状态显示） -->
+        <view wx:if="{{item.status === 'pending'}}" class="action-buttons">
+          <button 
+            class="btn reject" 
+            data-id="{{item._id}}"
+            bindtap="rejectApplication"
+          >
+            拒绝
+          </button>
+          <button 
+            class="btn approve" 
+            data-id="{{item._id}}"
+            data-userid="{{item.userId}}"
+            bindtap="approveApplication"
+          >
+            同意
+          </button>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
