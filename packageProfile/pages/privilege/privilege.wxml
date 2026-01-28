@@ -15,10 +15,12 @@
   <view class="content">
     <!-- 用户身份卡片 -->
     <view class="identity-card">
-      <view class="card-header">
-        <text class="card-title">当前身份</text>
-        <view class="role-badge">{{ role }}</view>
-      </view>
+    <view class="card-header">
+      <text class="card-title">当前身份</text>
+      <view class="role-badge">
+    {{ role === 'user' ? '普通用户' : role }}
+  </view>
+</view>
       <view class="card-body">
         <view class="info-item">
           <view class="icon-user"></view>
