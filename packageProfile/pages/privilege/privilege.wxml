@@ -89,6 +89,6 @@
 
   <!-- 底部装饰 -->
   <view class="footer">
-    <text class="footer-text">如有疑问请联系客服：400-xxx-xxxx</text>
+    <text class="footer-text">如有疑问请联系客服：400-666-666</text>
   </view>
 </view>

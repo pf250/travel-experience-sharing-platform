@@ -7,17 +7,5 @@
     "urlCheck": false
   },
   "libVersion": "3.12.1",
-  "condition": {
-    "miniprogram": {
-      "list": [
-        {
-          "name": "packageProfile/pages/privilege/applications/applications",
-          "pathName": "packageProfile/pages/privilege/applications/applications",
-          "query": "",
-          "scene": null,
-          "launchMode": "default"
-        }
-      ]
-    }
-  }
+  "condition": {}
 }
