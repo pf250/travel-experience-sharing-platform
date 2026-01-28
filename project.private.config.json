@@ -11,9 +11,9 @@
     "miniprogram": {
       "list": [
         {
-          "name": "packageProfile/pages/privilege/privilege",
-          "pathName": "packageProfile/pages/privilege/privilege",
-          "query": "userId=1014&role=user",
+          "name": "packageProfile/pages/privilege/applications/applications",
+          "pathName": "packageProfile/pages/privilege/applications/applications",
+          "query": "",
           "scene": null,
           "launchMode": "default"
         }

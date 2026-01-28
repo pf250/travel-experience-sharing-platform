@@ -1,2 +1,90 @@
-<!--packageProfile/pages/privilege/applications/applications.wxml-->
-<text>packageProfile/pages/privilege/applications/applications.wxml</text>
+<!-- applications.wxml -->
+<view class="container">
+  <!-- 固定头部标题 -->
+  <view class="fixed-header">
+    <view class="header-content">
+      <view class="title">商家申请记录</view>
+      <view class="subtitle">共 {{applications.length}} 条申请</view>
+    </view>
+  </view>
+
+  <!-- 申请记录列表 -->
+  <scroll-view 
+    class="list-container" 
+    scroll-y 
+    enable-back-to-top
+    bindscrolltolower="onReachBottom"
+    refresher-enabled
+    bindrefresherrefresh="onPullDownRefresh"
+    refresher-triggered="{{loading && page === 1}}"
+    style="padding-top: {{headerHeight}}px"
+  >
+    <!-- 原来的列表内容保持不变 -->
+    <!-- 加载状态 -->
+    <view wx:if="{{loading && applications.length === 0}}" class="loading">
+      <view class="loading-text">加载中...</view>
+    </view>
+
+    <!-- 空状态 -->
+    <view wx:if="{{!loading && applications.length === 0}}" class="empty">
+      <view class="empty-icon">📄</view>
+      <view class="empty-text">暂无申请记录</view>
+      <view class="empty-subtext">快去提交商家申请吧</view>
+    </view>
+
+    <!-- 申请记录列表 -->
+    <view wx:for="{{applications}}" wx:key="_id" class="application-item">
+      <view class="card">
+        <!-- 状态栏 -->
+        <view class="status-bar {{item.statusInfo.className}}">
+          <view class="status">{{item.statusInfo.text}}</view>
+          <view class="time">{{item.formattedTime}}</view>
+        </view>
+
+        <!-- 申请信息 -->
+        <view class="content">
+          <!-- 照片预览 -->
+          <view wx:if="{{item.photoUrl}}" class="photo-section">
+            <view class="photo-label">申请照片：</view>
+            <image 
+              src="{{item.photoUrl}}" 
+              class="photo" 
+              mode="aspectFit"
+              data-index="{{index}}"
+              bindtap="previewImage"
+            />
+          </view>
+
+          <!-- 申请ID -->
+          <view class="info-row">
+            <view class="label">申请ID：</view>
+            <view class="value">{{item._id}}</view>
+          </view>
+
+          <!-- 用户ID -->
+          <view class="info-row">
+            <view class="label">用户ID：</view>
+            <view class="value">{{item.userId}}</view>
+          </view>
+
+          <!-- 状态 -->
+          <view class="info-row">
+            <view class="label">审核状态：</view>
+            <view class="value status-display {{item.statusInfo.className}}">
+              {{item.statusInfo.text}}
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 加载更多 -->
+    <view wx:if="{{loading && applications.length > 0}}" class="loading-more">
+      <view class="loading-text">加载中...</view>
+    </view>
+
+    <view wx:if="{{!hasMore && applications.length > 0}}" class="no-more">
+      没有更多数据了
+    </view>
+  </scroll-view>
+</view>

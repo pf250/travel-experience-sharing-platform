@@ -1,8 +1,9 @@
 Page({
   data: {
-    role: 'user', // 初始角色
+    role: 'user',
     userId: null,
-    tempFilePath: '' // 临时存储上传的照片路径
+    tempFilePath: '',
+    hasPendingApplication: false, // 新增：是否有待审核的申请
   },
 
   onLoad: function (options) {
@@ -14,11 +15,37 @@ Page({
 
     this.setData({
       userId: loginState.userId,
-      role: loginState.role || 'user' // 使用从 loginState 中获取的角色
+      role: loginState.role || 'user'
     });
 
     // 可选：重新获取用户角色信息以确保是最新的
     this.getUserRole();
+    
+    // 新增：检查是否有待审核的申请
+    this.checkPendingApplication();
+  },
+
+  // 新增：检查是否有待审核的申请
+  checkPendingApplication: function () {
+    const that = this;
+    const db = wx.cloud.database();
+    
+    db.collection('merchant_applications')
+      .where({
+        userId: that.data.userId,
+        status: 'pending'
+      })
+      .get()
+      .then((queryRes) => {
+        if (queryRes.data && queryRes.data.length > 0) {
+          that.setData({
+            hasPendingApplication: true
+          });
+        }
+      })
+      .catch((err) => {
+        console.error('检查申请记录失败:', err);
+      });
   },
 
   getUserRole: function () {
@@ -67,35 +94,86 @@ Page({
 
   applyForMerchant: function () {
     const that = this;
-
-    wx.chooseImage({
-      count: 1,
-      sizeType: ['original', 'compressed'],
-      sourceType: ['album', 'camera'],
-      success(res) {
-        const tempFilePaths = res.tempFilePaths;
-        that.setData({
-          tempFilePath: tempFilePaths[0]
-        });
-
-        that.uploadPhoto(tempFilePaths[0]).then((fileID) => {
-          that.submitMerchantApplication(fileID);
-        }).catch((err) => {
-          console.error('上传照片失败:', err);
-          wx.showToast({
-            title: '上传照片失败',
-            icon: 'none'
+    
+    // 新增：检查是否有待审核的申请
+    if (this.data.hasPendingApplication) {
+      wx.showModal({
+        title: '提示',
+        content: '您已经有一个待审核的商家申请，请等待审核结果。',
+        showCancel: false,
+        confirmText: '我知道了'
+      });
+      return;
+    }
+    
+    // 新增：也可以再次从数据库检查一次，确保数据一致性
+    const db = wx.cloud.database();
+    
+    wx.showLoading({
+      title: '检查申请状态...',
+      mask: true
+    });
+    
+    db.collection('merchant_applications')
+      .where({
+        userId: that.data.userId,
+        status: 'pending'
+      })
+      .get()
+      .then((queryRes) => {
+        wx.hideLoading();
+        
+        if (queryRes.data && queryRes.data.length > 0) {
+          that.setData({
+            hasPendingApplication: true
           });
+          wx.showModal({
+            title: '提示',
+            content: '您已经有一个待审核的商家申请，请等待审核结果。',
+            showCancel: false,
+            confirmText: '我知道了'
+          });
+          return;
+        }
+        
+        // 如果没有待审核的申请，继续原来的流程
+        wx.chooseImage({
+          count: 1,
+          sizeType: ['original', 'compressed'],
+          sourceType: ['album', 'camera'],
+          success(res) {
+            const tempFilePaths = res.tempFilePaths;
+            that.setData({
+              tempFilePath: tempFilePaths[0]
+            });
+
+            that.uploadPhoto(tempFilePaths[0]).then((fileID) => {
+              that.submitMerchantApplication(fileID);
+            }).catch((err) => {
+              console.error('上传照片失败:', err);
+              wx.showToast({
+                title: '上传照片失败',
+                icon: 'none'
+              });
+            });
+          },
+          fail(err) {
+            console.error('选择图片失败:', err);
+            wx.showToast({
+              title: '选择图片失败',
+              icon: 'none'
+            });
+          }
         });
-      },
-      fail(err) {
-        console.error('选择图片失败:', err);
+      })
+      .catch((err) => {
+        wx.hideLoading();
+        console.error('检查申请记录失败:', err);
         wx.showToast({
-          title: '选择图片失败',
+          title: '检查申请状态失败',
           icon: 'none'
         });
-      }
-    });
+      });
   },
 
   uploadPhoto(filePath) {
@@ -109,7 +187,6 @@ Page({
         return;
       }
 
-      // 生成唯一的文件名
       const timestamp = Date.now();
       const cloudPath = `merchant_applications/user_${userId}_${timestamp}.jpg`;
 
@@ -144,9 +221,9 @@ Page({
       .add({
         data: {
           userId: that.data.userId,
-          status: 'pending', // 状态为待审核
+          status: 'pending',
           createdAt: new Date(),
-          photo: fileID // 保存上传的照片fileID
+          photo: fileID
         }
       })
       .then(() => {
@@ -154,6 +231,11 @@ Page({
         wx.showToast({
           title: '申请已提交',
           icon: 'success'
+        });
+        
+        // 新增：提交成功后更新状态
+        that.setData({
+          hasPendingApplication: true
         });
       })
       .catch((err) => {
