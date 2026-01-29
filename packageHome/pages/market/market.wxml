@@ -1,2 +1,80 @@
-<!--packageHome/pages/market/market.wxml-->
-<text>packageHome/pages/market/market.wxml</text>
+<view class="container">
+  <!-- 固定的搜索栏 -->
+  <view class="search-bar-fixed">
+    <input 
+      class="search-input" 
+      placeholder="请输入关键词搜索" 
+      bindinput="onSearchInput" 
+      bindconfirm="onSearchConfirm"
+    />
+    <button class="search-button" bindtap="onSearch" style="width: 135rpx; display: block; box-sizing: border-box; left: 0rpx; top: 0rpx">搜索</button>
+  </view>
+
+  <!-- 固定的分类导航栏 -->
+  <view class="category-bar-fixed">
+    <block wx:for="{{categories}}" wx:key="index">
+      <view 
+        class="category-item {{selectedCategory === (item === '推荐' ? '' : item) ? 'category-item-active' : ''}}" 
+        bindtap="onCategoryTap" 
+        data-category="{{item}}"
+      >
+        {{item}}
+      </view>
+    </block>
+  </view>
+
+  <!-- 自定义下拉刷新和商品列表 -->
+  <scroll-view 
+    class="content-scroll" 
+    scroll-y 
+    refresher-enabled="{{true}}" 
+    refresher-triggered="{{isRefreshing}}" 
+    bindrefresherrefresh="onPullDownRefresh" 
+   
+  >
+    <!-- 刷新提示 -->
+    <view class="refreshing" wx:if="{{isRefreshing}}">
+      正在刷新...
+    </view>
+
+    <!-- 商品列表 -->
+    <view class="row" wx:for="{{chunkedItems}}" wx:key="index">
+      <block wx:for="{{item}}" wx:key="_id">
+        <view class="card" bindtap="navigateToDetail" data-item-id="{{item._id}}">
+          <!-- 商品图片 -->
+          <image class="item-image" src="{{item.images[0]}}" mode="aspectFill" lazy-load></image>
+          
+          <!-- 发货方式 -->
+          <view 
+            class="shipping" 
+            style="{{item.shipping === '自提' ? 'color: #ffcc00; background-color: #fff8dc;' : (item.shipping === '包邮' ? 'color: #3cb371; background-color: #e8f5e9;' : '')}}"
+          >
+            {{item.shipping}}
+          </view>
+          
+          <!-- 商品描述 -->
+          <view class="description">{{item.description}}</view>
+          
+          <!-- 商品价格 -->
+          <view class="price">￥{{item.price}}</view>
+          
+          <!-- 商家信息 -->
+          <view class="seller-info">
+            <image class="avatar" src="{{item.userAvatar}}" mode="aspectFill"></image>
+            <text class="nickname">{{item.userNickname}}</text>
+          </view>
+        </view>
+      </block>
+    </view>
+
+    <!-- 在列表末尾添加加载状态 -->
+    <view class="loading-container" wx:if="{{showLoadingType !== 'none'}}">
+      <block wx:if="{{showLoadingType === 'more'}}">
+        <view class="loading-more">加载中...</view>
+      </block>
+      <block wx:if="{{showLoadingType === 'noMore'}}">
+        <view class="no-more">没有更多了</view>
+      </block>
+    </view>
+  </scroll-view>
+</view>

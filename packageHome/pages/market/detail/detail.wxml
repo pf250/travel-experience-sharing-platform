@@ -1,0 +1,68 @@
+<view class="container">
+
+<!-- 商家信息 -->
+<view class="seller-info">
+  <image class="avatar" src="{{item.userAvatar}}" mode="aspectFill"></image>
+  <text class="nickname">{{item.userNickname}}</text>
+</view>
+
+ <!-- 创建时间 -->
+ <view class="created-at">发布时间：{{formattedCreatedAt}}</view> 
+
+<view class="price_shipping">
+<!-- 商品价格 -->
+<view class="price">{{item.price}}</view>
+
+<!-- 发货方式 -->
+<view class="shipping">{{item.shipping}}</view>
+</view>
+
+<!-- 商品描述 -->
+<view class="description">{{item.description}}</view>
+
+
+<!-- 商品图片列表 -->
+<view class="image-list">
+<block wx:for="{{item.images}}" wx:key="index">
+  <image 
+    class="item-image" 
+    src="{{item}}" 
+    mode="aspectFill"
+    bindtap="previewImage" 
+    data-index="{{index}}"
+  ></image>
+</block>
+</view>
+
+<!-- 加载提示 -->
+<view wx:if="{{!item}}" class="loading">加载中...</view>
+
+<!-- 底部按钮栏 -->
+<view class="bottom-bar">
+
+<view class="Comments_Favorite">
+<!-- 评论按钮 -->
+<button class="Comments" bindtap="showComments" style="position: relative; left: -25rpx; top: 0rpx">
+  <image class="icon" src="/images/contact/comment.png" mode="aspectFit"></image>
+</button>
+<!-- 收藏按钮 -->
+<button class="Favorite" bindtap="toggleFavorite" style="position: relative; left: -26rpx; top: 0rpx">
+  <image class="icon" src="{{isFavorite ? '/images/contact/favorite_active.png' : '/images/contact/favorite.png'}}" mode="aspectFit"></image>
+</button>
+</view>
+
+<view class="Buy_Seller">
+  <!-- 购买按钮（无图标） --> 
+  <button class="Buy" bindtap="buyProduct">
+  <text class="button-text">立即购买</text>
+  </button>
+  <!-- 联系商家按钮 -->
+  <button class="Seller" bindtap="contactSeller">
+  <image class="icon" src="/images/contact/Seller.png" mode="aspectFit"></image>
+  <text class="button-text">我想要</text>
+</button>
+</view>
+
+</view>
+
+</view>

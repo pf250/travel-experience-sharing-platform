@@ -1,0 +1,180 @@
+/* 容器样式 */
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* 占满整个屏幕高度 */
+}
+
+/* 固定的搜索栏 */
+.search-bar-fixed {
+  width: 720rpx;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000; /* 确保搜索栏在最上层 */
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 添加阴影效果 */
+}
+
+.search-input {
+  flex: 1;
+  height: 36px;
+  padding: 0 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.search-button {
+  margin-left: 10px;
+  height: 36px;
+  line-height: 36px;
+  padding: 0 15px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.search-button:hover {
+  background-color: #0056b3;
+}
+
+/* 固定的分类导航栏 */
+.category-bar-fixed {
+  position: fixed;
+  top: 50px; /* 搜索栏的高度 + 内边距 */
+  left: 0;
+  width: 100%;
+  background-color: #fff;
+  z-index: 999;
+  display: flex;
+  overflow-x: auto;
+  white-space: nowrap;
+  padding: 10rpx 0;
+  margin-top: 10rpx;
+  box-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.1);
+}
+
+.category-item {
+  padding: 10rpx 20rpx;
+  font-size: 28rpx;
+  color: #333;
+  cursor: pointer;
+  border-radius: 6rpx;
+  margin-right: 10rpx;
+}
+
+.category-item-active {
+  background-color: #f0f0f0; /* 灰色背景 */
+  color: #000; /* 文字颜色加深 */
+  font-weight: bold;
+}
+
+/* 内容区域样式 */
+.content-scroll {
+  margin-top: 15rpx; /* 给搜索栏和分类栏留出空间 */
+  width: 98%;
+  box-sizing: border-box;
+}
+
+/* 刷新提示 */
+.refreshing {
+  text-align: center;
+  padding: 10px;
+  background-color: #f8f8f8;
+  color: #666;
+}
+
+/* 每一行（两列） */
+.row {
+  display: flex;
+  justify-content: space-between; /* 两列之间留有间距 */
+  margin-bottom: 15rpx;
+}
+
+/* 卡片样式 */
+.card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  width: 48%; /* 每张卡片占 48% 的宽度 */
+  overflow: hidden;
+}
+
+/* 商品图片 */
+.item-image {
+  width: 100%;
+  height: 300rpx; /* 调整高度以适应两列布局 */
+  object-fit: cover;
+}
+
+/* 发货方式 */
+.shipping {
+  width: 70rpx;
+  border-radius: 5px;
+  font-weight: bold;
+  padding: 5px 5px;
+  text-align: center;
+}
+
+/* 商品描述 */
+.description {
+  display: -webkit-box; /* 使用弹性盒子布局 */
+  -webkit-box-orient: vertical; /* 设置垂直方向排列 */
+  -webkit-line-clamp: 2; /* 限制显示两行 */
+  overflow: hidden; /* 隐藏超出部分 */
+  text-overflow: ellipsis; /* 添加省略号 */
+  word-break: break-all; /* 确保长单词自动换行 */
+  line-height: 43rpx; /* 设置行高，避免文字过于紧凑 */
+  max-height: 80rpx; /* 根据行高设置最大高度（2 行 × 1.5 行高） */
+  padding: 5px;
+  font-size: 28rpx;
+  color: #333;
+}
+
+/* 商品价格 */
+.price {
+  color: red;
+  font-weight: bold;
+  font-size: 16px;
+  padding: 10px;
+}
+
+/* 商家信息 */
+.seller-info {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.nickname {
+  font-size: 14px;
+  color: #666;
+}
+
+/* 加载状态 */
+.loading-container {
+  text-align: center;
+  padding: 20px;
+}
+
+.loading-more {
+  color: #666;
+}
+
+.no-more {
+  color: #999;
+}

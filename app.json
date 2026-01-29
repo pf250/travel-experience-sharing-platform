@@ -14,7 +14,8 @@
         "pages/ranking/ranking",
         "pages/market/market",
         "pages/demandwall/demandwall",
-        "pages/resource/resource"
+        "pages/resource/resource",
+        "pages/market/detail/detail"
       ]
     },
     {

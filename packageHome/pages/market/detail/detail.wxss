@@ -1,0 +1,187 @@
+/* 容器样式 */
+.container {
+  padding: 20rpx;
+
+  padding-bottom: 120rpx; /* 避免内容被底部按钮遮挡 */
+}
+
+
+/* 商家信息 */
+.seller-info {
+  width: 700rpx;
+  height: 120rpx;
+  display: flex;
+  align-items: center;
+  margin-top: 20rpx;
+  margin-bottom:5rpx ;
+}
+
+.avatar {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+  margin-right: 20rpx;
+}
+
+.nickname {
+  margin-left: 20rpx;
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+/* 创建时间 */
+.created-at {
+  width: 700rpx;
+  font-size: 26rpx;
+  color: #999; 
+  margin-top: 5rpx;
+  text-align: left;
+}
+
+/* 图片列表容器 */
+.image-list {
+  width: 700rpx;
+  display: flex;
+  flex-wrap: wrap; /* 自动换行 */
+  gap: 10rpx; /* 图片之间的间距 */
+  margin-bottom: 20rpx;
+}
+
+/* 单张图片样式 */
+.item-image {
+  width: 700rpx; /* 每行显示一张图片 */
+  height: 750rpx; /* 固定高度 */
+  border-radius: 10rpx;
+}
+
+/* 商品描述 */
+.description {
+  white-space: pre-wrap; /* 保留空格和换行 */
+  word-break: break-all; /* 确保长单词自动换行 */
+  width: 700rpx;
+  font-size: 32rpx;
+  color: rgb(0, 0, 0);
+  margin-top: 20rpx;
+  margin-bottom: 20rpx;
+}
+
+/* 商品价格 */
+.price {
+  font-size: 60rpx;
+  color: #e4393c;
+  font-weight: bold;
+  text-align: left;
+  margin-right: 20rpx;
+}
+
+.price::before {
+  content: "￥"; /* 插入符号 */
+  font-size: 15px; /* 设置符号的字体大小 */
+  color: #e4393c; /* 设置符号的颜色 */
+  margin-right: 2px; /* 调整符号与数字之间的间距 */
+  vertical-align: middle; /* 确保符号与数字对齐 */
+}
+
+/* 发货方式 */
+.shipping {
+  font-size: 30rpx;
+  color: #333;
+  font-weight: bold;
+  margin-top: 20rpx;
+}
+.price_shipping{
+  width: 700rpx;
+  display: flex;
+  align-items: center;
+}
+
+
+
+/* 加载提示 */
+.loading {
+  text-align: center;
+  font-size: 32rpx;
+  color: #999;
+  margin-top: 50rpx;
+}
+
+/* 底部按钮栏 */
+.Comments_Favorite{
+  
+  width: 200rpx;
+  display: flex;
+  margin-right: 20rpx;
+  
+}
+.Comments{
+  
+  background-color: white;
+}
+.Favorite{
+  background-color: white;
+}
+
+
+.bottom-bar {
+  position: fixed;  
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100rpx;
+  border: none; /* 去掉默认边框 */
+  background-color: #fff;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  box-shadow: 0 -2rpx 10rpx rgba(0, 0, 0, 0.1); /* 添加阴影效果 */
+  z-index: 999; /* 确保按钮栏在最上层 */
+}
+
+
+/* 按钮样式 */
+.Seller {
+  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 28rpx;
+  color: #fff;
+  background-color: rgb(245, 228, 75);
+  border-radius: 100rpx;
+  padding: 10rpx;
+}
+
+.Buy {
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 28rpx;
+  color: #fff;
+  background-color: #ff9800; /* 不同背景颜色 */
+  border-radius: 100rpx;
+  padding: 10rpx;
+}
+
+
+.Buy_Seller{
+  width: 400rpx;
+  display: flex;
+
+}
+
+/* 图标样式 */
+.icon {
+  
+  width: 24px; /* 图标宽度 */
+  height: 24px; /* 图标高度 */
+  margin-right: 8px; /* 图标与文字之间的间距 */
+}
+
+.button-text {
+  font-size: 16px; /* 文字大小 */
+  color: #ffffff; /* 文字颜色 */
+  
+}
+
