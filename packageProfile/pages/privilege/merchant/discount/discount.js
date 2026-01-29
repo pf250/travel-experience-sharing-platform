@@ -418,6 +418,40 @@ Page({
       }
     }
     
+    // 验证所选门票是否已经有其他优惠方案
+    const db = wx.cloud.database();
+    const startTime = discount.startDate + ' ' + discount.startTime;
+    const endTime = discount.endDate + ' ' + discount.endTime;
+    
+    // 解析时间格式
+    const startParts = startTime.split(/[- :]/);
+    const newStartTime = new Date(startParts[0], startParts[1] - 1, startParts[2], startParts[3], startParts[4]);
+    const endParts = endTime.split(/[- :]/);
+    const newEndTime = new Date(endParts[0], endParts[1] - 1, endParts[2], endParts[3], endParts[4]);
+    
+    // 检查是否有重叠的优惠方案
+    for (const existingDiscount of this.data.discounts) {
+      // 解析现有优惠的时间
+      const existingStartParts = existingDiscount.startTime.split(/[- :]/);
+      const existingStartTime = new Date(existingStartParts[0], existingStartParts[1] - 1, existingStartParts[2], existingStartParts[3], existingStartParts[4]);
+      const existingEndParts = existingDiscount.endTime.split(/[- :]/);
+      const existingEndTime = new Date(existingEndParts[0], existingEndParts[1] - 1, existingEndParts[2], existingEndParts[3], existingEndParts[4]);
+      
+      // 检查时间是否重叠
+      const timeOverlap = !(newEndTime <= existingStartTime || newStartTime >= existingEndTime);
+      
+      // 检查是否有共同的门票
+      const commonTickets = discount.ticketIds.filter(ticketId => existingDiscount.ticketIds.includes(ticketId));
+      
+      if (timeOverlap && commonTickets.length > 0) {
+        wx.showToast({
+          title: '所选门票在该时间段内已有其他优惠方案',
+          icon: 'none'
+        });
+        return false;
+      }
+    }
+    
     return true;
   },
 
