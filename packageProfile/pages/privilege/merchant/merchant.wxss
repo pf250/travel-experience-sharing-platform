@@ -1,0 +1,118 @@
+/* 工作人员页面样式 */
+page {
+  background-color: #f5f5f5;
+  padding: 0;
+}
+
+.staff-container {
+  padding: 20rpx;
+}
+
+/* 用户信息区域 */
+.user-info {
+  background: linear-gradient(135deg, #1a73e8, #4285f4);
+  border-radius: 20rpx;
+  padding: 40rpx 30rpx;
+  color: white;
+  display: flex;
+  align-items: center;
+  margin-bottom: 30rpx;
+  box-shadow: 0 4rpx 12rpx rgba(26, 115, 232, 0.2);
+}
+
+.user-avatar {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 30rpx;
+  border: 4rpx solid rgba(255, 255, 255, 0.3);
+}
+
+.user-avatar image {
+  width: 100%;
+  height: 100%;
+}
+
+.user-detail {
+  flex: 1;
+}
+
+.nickName {
+  font-size: 36rpx;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.role {
+  font-size: 28rpx;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 4rpx 12rpx;
+  border-radius: 20rpx;
+  margin-right: 15rpx;
+}
+
+.scenic-name {
+  font-size: 28rpx;
+  opacity: 0.9;
+}
+
+.user-id {
+  font-size: 24rpx;
+  opacity: 0.7;
+}
+
+/* 功能卡片 */
+.function-cards {
+  margin-bottom: 30rpx;
+}
+
+.card {
+  background: white;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.card:active {
+  transform: translateY(-2rpx);
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.1);
+}
+
+.card-icon {
+  font-size: 48rpx;
+  margin-right: 30rpx;
+  width: 80rpx;
+  text-align: center;
+}
+
+.card-content {
+  flex: 1;
+}
+
+.card-title {
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #333;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.card-desc {
+  font-size: 26rpx;
+  color: #666;
+}
+
+.card-arrow {
+  font-size: 40rpx;
+  color: #999;
+  margin-left: 20rpx;
+}
+
+
+

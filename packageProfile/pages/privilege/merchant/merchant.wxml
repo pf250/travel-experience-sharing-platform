@@ -1,2 +1,49 @@
-<!--packageProfile/pages/privilege/merchant/merchant.wxml-->
-<text>packageProfile/pages/privilege/merchant/merchant.wxml</text>
+<!-- 工作人员主界面 -->
+<view class="staff-container">
+  <!-- 顶部用户信息 -->
+  <view class="user-info">
+    <view class="user-avatar">
+      <image src="{{avatarUrl || ''}}" mode="aspectFill"></image>
+    </view>
+    <view class="user-detail">
+      <text class="nickName">{{nickName}}</text>
+      <text class="role">{{role}}</text>
+    </view>
+    <view class="user-id">ID: {{userId}}</view>
+  </view>
+
+  <!-- 功能卡片 -->
+  <view class="function-cards">
+    <!-- 景区信息管理 -->
+    <view class="card" bindtap="navigateToScenicInfo">
+      <view class="card-icon">🏞️</view>
+      <view class="card-content">
+        <text class="card-title">景区信息管理</text>
+        <text class="card-desc">编辑景区介绍、图片等</text>
+      </view>
+      <view class="card-arrow">›</view>
+    </view>
+
+    <!-- 门票管理 -->
+    <view class="card" bindtap="navigateToTicketManage">
+      <view class="card-icon">🎫</view>
+      <view class="card-content">
+        <text class="card-title">门票管理</text>
+        <text class="card-desc">设置门票价格、类型</text>
+      </view>
+      <view class="card-arrow">›</view>
+    </view>
+
+    <!-- 优惠方案 -->
+    <view class="card" bindtap="navigateToDiscount">
+      <view class="card-icon">💰</view>
+      <view class="card-content">
+        <text class="card-title">优惠方案管理</text>
+        <text class="card-desc">设置各类优惠政策</text>
+      </view>
+      <view class="card-arrow">›</view>
+    </view>
+
+
+  </view>
+</view>
