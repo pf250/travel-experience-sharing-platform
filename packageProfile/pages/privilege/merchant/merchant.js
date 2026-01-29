@@ -58,7 +58,7 @@ Page({
   // 导航到优惠方案管理
   navigateToDiscount: function() {
     wx.navigateTo({
-      url: `/pages/discount/discount?userId=${this.data.userId}`
+      url: `/packageProfile/pages/privilege/merchant/discount/discount?userId=${this.data.userId}`
     });
   },
 
