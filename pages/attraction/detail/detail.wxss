@@ -1,0 +1,242 @@
+.detail-container {
+  padding-bottom: 20rpx;
+}
+
+/* 加载状态 */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 400rpx;
+  color: #999;
+}
+
+/* 图片轮播 */
+.image-carousel {
+  width: 100%;
+  height: 400rpx;
+  position: relative;
+}
+
+.image-carousel swiper {
+  width: 100%;
+  height: 100%;
+}
+
+.image-carousel image {
+  width: 100%;
+  height: 100%;
+}
+
+/* 景区基本信息 */
+.scenic-info {
+  padding: 20rpx;
+  background-color: #fff;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
+}
+
+.scenic-name {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10rpx;
+  display: block;
+}
+
+.scenic-status {
+  font-size: 20rpx;
+  color: #4CAF50;
+  background-color: #E8F5E9;
+  padding: 4rpx 12rpx;
+  border-radius: 12rpx;
+  display: inline-block;
+  margin-bottom: 15rpx;
+}
+
+.scenic-description {
+  font-size: 24rpx;
+  color: #666;
+  line-height: 36rpx;
+  margin-bottom: 20rpx;
+}
+
+.scenic-contact {
+  margin-top: 15rpx;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12rpx;
+  font-size: 22rpx;
+}
+
+.contact-label {
+  color: #999;
+  width: 60rpx;
+  flex-shrink: 0;
+}
+
+.contact-value {
+  color: #333;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.contact-btn {
+  font-size: 20rpx;
+  padding: 4rpx 16rpx;
+  border-radius: 16rpx;
+  background-color: #f0f0f0;
+  color: #333;
+  margin-left: 10rpx;
+  min-width: 80rpx;
+}
+
+/* 通用区块样式 */
+.section {
+  background-color: #fff;
+  padding: 20rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
+}
+
+.section-title {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 15rpx;
+  display: block;
+  border-left: 4rpx solid #4CAF50;
+  padding-left: 12rpx;
+}
+
+.empty-section {
+  text-align: center;
+  padding: 40rpx;
+  color: #999;
+  font-size: 22rpx;
+}
+
+/* 门票列表 */
+.ticket-list {
+  margin-top: 10rpx;
+}
+
+.ticket-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.ticket-item:last-child {
+  border-bottom: none;
+}
+
+.ticket-info {
+  flex: 1;
+}
+
+.ticket-name {
+  font-size: 24rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8rpx;
+  display: block;
+}
+
+.ticket-description {
+  font-size: 20rpx;
+  color: #666;
+  line-height: 28rpx;
+}
+
+.ticket-price {
+  text-align: right;
+}
+
+.original-price {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #ff6b6b;
+  display: block;
+  margin-bottom: 4rpx;
+}
+
+.stock {
+  font-size: 20rpx;
+  color: #999;
+}
+
+/* 优惠方案列表 */
+.discount-list {
+  margin-top: 10rpx;
+}
+
+.discount-item {
+  padding: 15rpx;
+  background-color: #f9f9f9;
+  border-radius: 8rpx;
+  margin-bottom: 12rpx;
+}
+
+.discount-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10rpx;
+}
+
+.discount-title {
+  font-size: 24rpx;
+  font-weight: bold;
+  color: #333;
+  flex: 1;
+}
+
+.discount-status {
+  font-size: 18rpx;
+  padding: 2rpx 8rpx;
+  border-radius: 10rpx;
+}
+
+.status-pending {
+  color: #ffc107;
+  background-color: #fff3cd;
+}
+
+.status-active {
+  color: #28a745;
+  background-color: #d4edda;
+}
+
+.status-ended {
+  color: #6c757d;
+  background-color: #e2e3e5;
+}
+
+.discount-value {
+  font-size: 22rpx;
+  color: #ff6b6b;
+  font-weight: bold;
+  margin-bottom: 6rpx;
+  display: block;
+}
+
+.discount-time {
+  font-size: 20rpx;
+  color: #666;
+  margin-bottom: 6rpx;
+  display: block;
+}
+
+.discount-tickets {
+  font-size: 20rpx;
+  color: #999;
+  display: block;
+}

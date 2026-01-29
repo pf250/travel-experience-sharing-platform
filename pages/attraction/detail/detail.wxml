@@ -1,0 +1,84 @@
+<!--pages/attraction/detail/detail.wxml-->
+<view class="detail-container">
+  <!-- 加载状态 -->
+  <view wx:if="{{isLoading}}" class="loading-container">
+    <text>加载中...</text>
+  </view>
+
+  <!-- 景区详情 -->
+  <view wx:else class="scenic-detail">
+    <!-- 图片轮播 -->
+    <view class="image-carousel">
+      <swiper indicator-dots="{{true}}" indicator-color="rgba(255,255,255,0.5)" indicator-active-color="#fff" autoplay="{{true}}" interval="3000" duration="500" bindchange="changeImage">
+        <swiper-item wx:for="{{scenic.images || []}}" wx:key="{{index}}">
+          <image src="{{item}}" mode="aspectFill"></image>
+        </swiper-item>
+        <swiper-item wx:if="{{(!scenic.images || scenic.images.length === 0)}}">
+          <image src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=scenic%20spot%20placeholder%20image&image_size=landscape_16_9" mode="aspectFill"></image>
+        </swiper-item>
+      </swiper>
+    </view>
+
+    <!-- 景区基本信息 -->
+    <view class="scenic-info">
+      <text class="scenic-name">{{scenic.name}}</text>
+      <text class="scenic-status">{{scenic.status}}</text>
+      <view class="scenic-description">
+        <text>{{scenic.description}}</text>
+      </view>
+      <view class="scenic-contact">
+        <view class="contact-item">
+          <text class="contact-label">地址：</text>
+          <text class="contact-value">{{scenic.address}}</text>
+          <button class="contact-btn" bindtap="openLocation">导航</button>
+        </view>
+        <view class="contact-item">
+          <text class="contact-label">电话：</text>
+          <text class="contact-value">{{scenic.contactPhone}}</text>
+          <button class="contact-btn" bindtap="makePhoneCall">拨打</button>
+        </view>
+      </view>
+    </view>
+
+    <!-- 门票信息 -->
+    <view class="section">
+      <text class="section-title">门票信息</text>
+      <view wx:if="{{tickets.length === 0}}" class="empty-section">
+        <text>暂无门票信息</text>
+      </view>
+      <view wx:else class="ticket-list">
+        <view wx:for="{{tickets}}" wx:key="{{item._id}}" class="ticket-item">
+          <view class="ticket-info">
+            <text class="ticket-name">{{item.name}}</text>
+            <text class="ticket-description">{{item.description}}</text>
+          </view>
+          <view class="ticket-price">
+            <text class="original-price">¥{{item.price}}</text>
+            <text class="stock">库存：{{item.stock}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 优惠方案 -->
+    <view class="section">
+      <text class="section-title">优惠方案</text>
+      <view wx:if="{{discounts.length === 0}}" class="empty-section">
+        <text>暂无优惠方案</text>
+      </view>
+      <view wx:else class="discount-list">
+        <view wx:for="{{discounts}}" wx:key="{{item._id}}" class="discount-item">
+          <view class="discount-header">
+            <text class="discount-title">{{item.title}}</text>
+            <text wx:if="{{item.status === 0}}" class="discount-status status-pending">未开始</text>
+            <text wx:elif="{{item.status === 1}}" class="discount-status status-active">进行中</text>
+            <text wx:else class="discount-status status-ended">已结束</text>
+          </view>
+          <text class="discount-value">直减金额：¥{{item.discountValue}}</text>
+          <text class="discount-time">有效期：{{item.startTime}} 至 {{item.endTime}}</text>
+          <text class="discount-tickets">适用门票：{{item.ticketIds.length}} 种</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
