@@ -39,17 +39,23 @@
 /* 景区列表 */
 .scenic-list {
   padding: 10rpx;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
 }
 
 /* 景区项 */
 .scenic-item {
-  display: flex;
+  width: 48%;
+  height: 500rpx;
   margin-bottom: 20rpx;
   background-color: #fff;
   border-radius: 12rpx;
   box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
   overflow: hidden;
   transition: transform 0.2s ease;
+  display: flex;
+  flex-direction: column;
 }
 
 .scenic-item:active {
@@ -58,9 +64,8 @@
 
 /* 景区图片 */
 .scenic-image {
-  width: 200rpx;
-  height: 150rpx;
-  flex-shrink: 0;
+  width: 100%;
+  height: 200rpx;
 }
 
 .scenic-image image {
@@ -70,11 +75,10 @@
 
 /* 景区信息 */
 .scenic-info {
-  flex: 1;
   padding: 15rpx;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  flex: 1;
 }
 
 .scenic-name {
