@@ -146,6 +146,49 @@ Page({
     this.setData({
       'scenic.images': images
     });
+    
+    console.log('删除图片后剩余:', images.length, '张');
+  },
+
+  // 上传图片到云存储
+  uploadImages: function(images) {
+    return new Promise((resolve, reject) => {
+      if (!images || images.length === 0) {
+        resolve([]);
+        return;
+      }
+      
+      const uploadPromises = images.map((tempFilePath, index) => {
+        return new Promise((uploadResolve, uploadReject) => {
+          const timestamp = Date.now();
+          const userId = this.data.userId;
+          const cloudPath = `scenic/user_${userId}_${timestamp}_${index}.jpg`;
+          
+          console.log('上传到云存储路径:', cloudPath);
+          
+          wx.cloud.uploadFile({
+            cloudPath: cloudPath,
+            filePath: tempFilePath,
+            success: (res) => {
+              console.log('上传成功:', res.fileID);
+              uploadResolve(res.fileID);
+            },
+            fail: (err) => {
+              console.error('上传失败:', err);
+              uploadReject(err);
+            }
+          });
+        });
+      });
+      
+      Promise.all(uploadPromises)
+        .then((fileIDs) => {
+          resolve(fileIDs);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
   },
 
   // 保存景区信息
@@ -155,71 +198,90 @@ Page({
       return;
     }
     
-    const db = wx.cloud.database();
-    const scenicData = {
-      ...this.data.scenic,
-      userId: Number(this.data.userId),
-      updatedAt: db.serverDate()
-    };
-    
     wx.showLoading({
-      title: '保存中...',
+      title: '上传图片中...',
     });
     
-    if (this.data.hasScenic && this.data.scenicId) {
-      // 更新现有景区
-      db.collection('scenic').doc(this.data.scenicId).update({
-        data: scenicData,
-        success: () => {
-          wx.hideLoading();
-          wx.showToast({
-            title: '更新成功',
-            icon: 'success'
+    // 上传图片到云存储
+    this.uploadImages(this.data.scenic.images)
+      .then((fileIDs) => {
+        const db = wx.cloud.database();
+        const scenicData = {
+          ...this.data.scenic,
+          images: fileIDs, // 使用云存储路径
+          userId: Number(this.data.userId),
+          updatedAt: db.serverDate()
+        };
+        
+        wx.showLoading({
+          title: '保存中...',
+        });
+        
+        if (this.data.hasScenic && this.data.scenicId) {
+          // 更新现有景区
+          db.collection('scenic').doc(this.data.scenicId).update({
+            data: scenicData,
+            success: () => {
+              wx.hideLoading();
+              wx.showToast({
+                title: '更新成功',
+                icon: 'success'
+              });
+              
+              // 更新本地状态
+              this.setData({
+                hasScenic: true,
+                'scenic.images': fileIDs
+              });
+            },
+            fail: (err) => {
+              wx.hideLoading();
+              wx.showToast({
+                title: '更新失败',
+                icon: 'error'
+              });
+              console.error('更新失败:', err);
+            }
           });
+        } else {
+          // 创建新景区
+          scenicData.createdAt = db.serverDate();
           
-          // 更新本地状态
-          this.setData({
-            hasScenic: true
+          db.collection('scenic').add({
+            data: scenicData,
+            success: (res) => {
+              wx.hideLoading();
+              wx.showToast({
+                title: '创建成功',
+                icon: 'success'
+              });
+              
+              // 更新本地状态，设为编辑模式
+              this.setData({
+                hasScenic: true,
+                scenicId: res._id,
+                'scenic.images': fileIDs
+              });
+            },
+            fail: (err) => {
+              wx.hideLoading();
+              wx.showToast({
+                title: '创建失败',
+                icon: 'error'
+              });
+              console.error('创建失败:', err);
+            }
           });
-        },
-        fail: (err) => {
-          wx.hideLoading();
-          wx.showToast({
-            title: '更新失败',
-            icon: 'error'
-          });
-          console.error('更新失败:', err);
         }
+      })
+      .catch((err) => {
+        wx.hideLoading();
+        wx.showToast({
+          title: '图片上传失败',
+          icon: 'error'
+        });
+        console.error('图片上传失败:', err);
       });
-    } else {
-      // 创建新景区
-      scenicData.createdAt = db.serverDate();
-      
-      db.collection('scenic').add({
-        data: scenicData,
-        success: (res) => {
-          wx.hideLoading();
-          wx.showToast({
-            title: '创建成功',
-            icon: 'success'
-          });
-          
-          // 更新本地状态，设为编辑模式
-          this.setData({
-            hasScenic: true,
-            scenicId: res._id
-          });
-        },
-        fail: (err) => {
-          wx.hideLoading();
-          wx.showToast({
-            title: '创建失败',
-            icon: 'error'
-          });
-          console.error('创建失败:', err);
-        }
-      });
-    }
   },
 
   // 表单验证
