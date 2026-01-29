@@ -23,8 +23,8 @@
       <view class="discount-info">
         <text class="discount-title">{{item.title}}</text>
         <view class="discount-type-value">
-          <text class="discount-type">{{item.discountType === 1 ? '直减金额' : '折扣'}}</text>
-          <text class="discount-value">{{item.discountType === 1 ? '¥' + item.discountValue : item.discountValue * 10 + '折'}}</text>
+          <text class="discount-type">直减金额</text>
+          <text class="discount-value">¥{{item.discountValue}}</text>
         </view>
         <view class="discount-time">
           <text>{{item.startTime}} 至 {{item.endTime}}</text>
@@ -39,9 +39,6 @@
         </view>
       </view>
       <view class="discount-actions">
-        <button class="action-btn edit-btn" bindtap="showEditDiscountModal" data-discount="{{item}}">
-          编辑
-        </button>
         <button class="action-btn delete-btn" bindtap="deleteDiscount" data-id="{{item._id}}">
           删除
         </button>
@@ -53,28 +50,14 @@
   <view wx:if="{{showModal}}" class="modal-overlay" bindtap="hideModal">
     <view class="modal-content" catchtap="stopPropagation">
       <view class="modal-header">
-        <text>{{isEditMode ? '编辑优惠方案' : '添加优惠方案'}}</text>
+        <text>添加优惠方案</text>
         <button class="close-btn" bindtap="hideModal">×</button>
       </view>
       <view class="modal-body">
         <form bindsubmit="saveDiscount">
           <input type="text" name="title" placeholder="优惠标题（如：国庆特惠）" value="{{currentDiscount.title}}" class="form-input" />
           
-          <view class="form-group">
-            <text class="form-label">优惠类型</text>
-            <radio-group bindchange="onDiscountTypeChange" value="{{currentDiscount.discountType}}">
-              <label class="radio-item">
-                <radio value="1" />
-                <text>直减金额</text>
-              </label>
-              <label class="radio-item">
-                <radio value="2" />
-                <text>折扣</text>
-              </label>
-            </radio-group>
-          </view>
-          
-          <input type="number" name="discountValue" placeholder="{{currentDiscount.discountType === 1 ? '优惠金额（元）' : '折扣值（如：0.8）'}}" value="{{currentDiscount.discountValue}}" class="form-input" />
+          <input type="number" name="discountValue" placeholder="优惠金额（元）" value="{{currentDiscount.discountValue}}" class="form-input" />
           
           <view class="form-group">
             <text class="form-label">开始时间</text>

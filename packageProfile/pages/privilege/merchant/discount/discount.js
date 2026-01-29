@@ -17,8 +17,6 @@ Page({
     isLoading: true,
     // 弹窗状态
     showModal: false,
-    // 是否编辑模式
-    isEditMode: false,
     // 当前年份、月份、日期
     currentYear: new Date().getFullYear(),
     currentMonth: (new Date().getMonth() + 1).toString().padStart(2, '0'),
@@ -26,7 +24,6 @@ Page({
     // 当前编辑的优惠方案
     currentDiscount: {
       title: '',
-      discountType: 1,
       discountValue: '',
       startDate: '',
       startTime: '',
@@ -146,11 +143,12 @@ Page({
         const discounts = res.data.map(discount => {
           // 计算优惠状态
           const now = new Date();
-          // 转换日期格式为iOS支持的格式
-          const startTimeStr = discount.startTime.replace(/-/g, '/').replace(' ', 'T');
-          const endTimeStr = discount.endTime.replace(/-/g, '/').replace(' ', 'T');
-          const startTime = new Date(startTimeStr);
-          const endTime = new Date(endTimeStr);
+          // 解析开始时间
+          const startParts = discount.startTime.split(/[- :]/);
+          const startTime = new Date(startParts[0], startParts[1] - 1, startParts[2], startParts[3], startParts[4]);
+          // 解析结束时间
+          const endParts = discount.endTime.split(/[- :]/);
+          const endTime = new Date(endParts[0], endParts[1] - 1, endParts[2], endParts[3], endParts[4]);
           
           let status = 0;
           if (now < startTime) {
@@ -232,10 +230,8 @@ Page({
     
     this.setData({
       showModal: true,
-      isEditMode: false,
       currentDiscount: {
         title: '',
-        discountType: 1,
         discountValue: '',
         startDate: defaultStartDate,
         startTime: defaultStartTime,
@@ -247,51 +243,7 @@ Page({
     });
   },
 
-  /**
-   * 显示编辑优惠方案弹窗
-   */
-  showEditDiscountModal: function(e) {
-    const discount = e.currentTarget.dataset.discount;
-    
-    // 解析开始时间和结束时间
-    let startDate = '';
-    let startTime = '';
-    let endDate = '';
-    let endTime = '';
-    
-    if (discount.startTime) {
-      const parts = discount.startTime.split(' ');
-      startDate = parts[0];
-      startTime = parts[1] || '00:00';
-    }
-    
-    if (discount.endTime) {
-      const parts = discount.endTime.split(' ');
-      endDate = parts[0];
-      endTime = parts[1] || '23:59';
-    }
-    
-    // 确保ticketIds是一个数组
-    const ticketIds = discount.ticketIds || [];
-    
-    console.log('编辑优惠方案:', discount);
-    console.log('编辑时的ticketIds:', ticketIds, '类型:', Array.isArray(ticketIds));
-    
-    this.setData({
-      showModal: true,
-      isEditMode: true,
-      currentDiscount: {
-        ...discount,
-        startDate: startDate,
-        startTime: startTime,
-        endDate: endDate,
-        endTime: endTime,
-        ticketIds: ticketIds
-      }
-    });
-    
-    console.log('设置后的currentDiscount:', this.data.currentDiscount);
-  },
+
 
   /**
    * 隐藏弹窗
@@ -313,12 +265,12 @@ Page({
    * 优惠类型变更
    */
   onDiscountTypeChange: function(e) {
-    // 直接更新优惠类型，确保radio能正确切换
-    const discountType = Number(e.detail.value);
+    // 使用字符串类型，与radio的value属性类型一致
+    const discountType = e.detail.value;
     this.setData({
       'currentDiscount.discountType': discountType
     });
-    console.log('选择优惠类型:', discountType);
+    console.log('选择优惠类型:', discountType, '类型:', typeof discountType);
   },
 
   /**
@@ -453,6 +405,19 @@ Page({
       return false;
     }
     
+    // 验证直减金额不大于选中门票的最低价格
+    const selectedTickets = this.data.tickets.filter(ticket => discount.ticketIds.includes(ticket._id));
+    if (selectedTickets.length > 0) {
+      const minPrice = Math.min(...selectedTickets.map(ticket => ticket.price));
+      if (Number(discount.discountValue) > minPrice) {
+        wx.showToast({
+          title: '直减金额不能大于门票原价',
+          icon: 'none'
+        });
+        return false;
+      }
+    }
+    
     return true;
   },
 
@@ -468,7 +433,7 @@ Page({
     const discount = {
       ...currentDiscount,
       ...discountData,
-      discountType: Number(currentDiscount.discountType),
+      discountType: 1,
       discountValue: Number(discountData.discountValue),
       ticketIds: currentDiscount.ticketIds
     };
@@ -485,7 +450,7 @@ Page({
     const db = wx.cloud.database();
     const discountToSave = {
       title: discount.title,
-      discountType: discount.discountType,
+      discountType: 1,
       discountValue: discount.discountValue,
       startTime: startTime,
       endTime: endTime,
@@ -498,53 +463,29 @@ Page({
       title: '保存中...',
     });
     
-    if (this.data.isEditMode) {
-      // 更新现有优惠方案
-      db.collection('discounts').doc(currentDiscount._id).update({
-        data: discountToSave,
-        success: () => {
-          wx.hideLoading();
-          wx.showToast({
-            title: '更新成功',
-            icon: 'success'
-          });
-          this.hideModal();
-          this.queryDiscounts();
-        },
-        fail: (err) => {
-          wx.hideLoading();
-          wx.showToast({
-            title: '更新失败',
-            icon: 'error'
-          });
-          console.error('更新优惠方案失败:', err);
-        }
-      });
-    } else {
-      // 添加新优惠方案
-      discountToSave.createdAt = db.serverDate();
-      
-      db.collection('discounts').add({
-        data: discountToSave,
-        success: () => {
-          wx.hideLoading();
-          wx.showToast({
-            title: '添加成功',
-            icon: 'success'
-          });
-          this.hideModal();
-          this.queryDiscounts();
-        },
-        fail: (err) => {
-          wx.hideLoading();
-          wx.showToast({
-            title: '添加失败',
-            icon: 'error'
-          });
-          console.error('添加优惠方案失败:', err);
-        }
-      });
-    }
+    // 添加新优惠方案
+    discountToSave.createdAt = db.serverDate();
+    
+    db.collection('discounts').add({
+      data: discountToSave,
+      success: () => {
+        wx.hideLoading();
+        wx.showToast({
+          title: '添加成功',
+          icon: 'success'
+        });
+        this.hideModal();
+        this.queryDiscounts();
+      },
+      fail: (err) => {
+        wx.hideLoading();
+        wx.showToast({
+          title: '添加失败',
+          icon: 'error'
+        });
+        console.error('添加优惠方案失败:', err);
+      }
+    });
   },
 
   /**
