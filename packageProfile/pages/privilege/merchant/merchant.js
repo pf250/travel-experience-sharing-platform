@@ -1,66 +1,66 @@
-// packageProfile/pages/privilege/merchant/merchant.js
 Page({
-
-  /**
-   * 页面的初始数据
-   */
   data: {
-
+    userId: '',
+    nickName: '工作人员',
+    role: '景区管理员',
+    avatarUrl: '',
+    showStats: true
   },
 
-  /**
-   * 生命周期函数--监听页面加载
-   */
-  onLoad(options) {
-
+  onLoad: function(options) {
+    this.checkLogin();
   },
 
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady() {
+  // 检查登录状态
+  checkLogin: function() {
+    const loginState = wx.getStorageSync('loginState');
+    if (!loginState || !loginState.userId) {
+      wx.showToast({ 
+        title: '用户信息获取失败', 
+        icon: 'none',
+        duration: 2000
+      });
+      
+      // 跳转到登录页
+      setTimeout(() => {
+        wx.redirectTo({
+          url: '/pages/login/login'
+        });
+      }, 1500);
+      return false;
+    }
 
+    const userId = loginState.userId;
+    const nickName = loginState.nickName;
+    const avatarUrl = loginState.avatarUrl;
+
+    
+    this.setData({ userId });
+    this.setData({ nickName });
+    this.setData({ avatarUrl });
+    return true;
   },
 
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow() {
-
+  // 导航到景区信息管理
+  navigateToScenicInfo: function() {
+    wx.navigateTo({
+      url: `/packageProfile/pages/privilege/merchant/scenic-info/scenic-info?userId=${this.data.userId}`
+    });
   },
 
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide() {
-
+  // 导航到门票管理
+  navigateToTicketManage: function() {
+    wx.navigateTo({
+      url: `/packageProfile/pages/privilege/merchant/ticket-manage/ticket-manage?userId=${this.data.userId}`
+    });
   },
 
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload() {
-
+  // 导航到优惠方案管理
+  navigateToDiscount: function() {
+    wx.navigateTo({
+      url: `/packageProfile/pages/privilege/merchant/discount/discount?userId=${this.data.userId}`
+    });
   },
 
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh() {
 
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom() {
-
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage() {
-
-  }
-})
+});

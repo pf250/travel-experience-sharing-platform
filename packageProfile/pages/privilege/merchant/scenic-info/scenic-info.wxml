@@ -1,0 +1,139 @@
+<!-- scenic-info.wxml - 页面结构（修改版） -->
+<view class="container">
+  <!-- 加载状态 -->
+  <view wx:if="{{isLoading}}" class="loading-container">
+    <view class="loading">加载中...</view>
+  </view>
+  
+  <!-- 内容区域 -->
+  <view wx:else>
+    <!-- 顶部状态提示 -->
+    <view class="mode-tip">
+      <text wx:if="{{hasScenic}}">📝 编辑景区信息</text>
+      <text wx:else>➕ 创建景区信息</text>
+    </view>
+    
+    <!-- 景区名称 -->
+    <view class="form-item">
+      <view class="form-label">景区名称</view>
+      <input 
+        value="{{scenic.name}}" 
+        placeholder="请输入景区名称"
+        data-field="name"
+        bindinput="handleInputChange"
+      />
+    </view>
+    
+    <!-- 景区描述 -->
+    <view class="form-item">
+      <view class="form-label">景区描述</view>
+      <textarea 
+        value="{{scenic.description}}" 
+        placeholder="请输入景区描述"
+        data-field="description"
+        bindinput="handleInputChange"
+        auto-height
+      />
+    </view>
+    
+    <!-- 景区地址 -->
+    <view class="form-item">
+      <view class="form-label">景区地址</view>
+      <input 
+        value="{{scenic.address}}" 
+        placeholder="请输入景区地址"
+        data-field="address"
+        bindinput="handleInputChange"
+      />
+    </view>
+    
+    <!-- 联系电话 -->
+    <view class="form-item">
+      <view class="form-label">联系电话</view>
+      <input 
+        value="{{scenic.contactPhone}}" 
+        placeholder="请输入联系电话"
+        data-field="contactPhone"
+        bindinput="handleInputChange"
+        type="number"
+      />
+    </view>
+    
+    <!-- 营业状态 -->
+    <view class="form-item">
+      <view class="form-label">营业状态</view>
+      <picker 
+        range="{{statusOptions}}" 
+        value="{{statusOptions.indexOf(scenic.status)}}" 
+        bindchange="handleStatusChange"
+      >
+        <view class="picker">{{scenic.status}}</view>
+      </picker>
+    </view>
+    
+    <!-- 景区图片 -->
+    <view class="form-item">
+      <view class="form-label">景区图片</view>
+      <view class="images-container">
+        <!-- 已有图片 -->
+        <block wx:for="{{scenic.images}}" wx:key="index">
+          <view class="image-item">
+            <image 
+              src="{{item}}" 
+              mode="aspectFill" 
+              data-url="{{item}}"
+              bindtap="previewImage"
+            />
+            <view class="delete-btn" data-index="{{index}}" bindtap="deleteImage">×</view>
+          </view>
+        </block>
+        
+        <!-- 添加图片按钮 -->
+        <view 
+          class="add-image-btn" 
+          bindtap="chooseImage"
+          wx:if="{{scenic.images.length < 5}}"
+        >
+          <text>+</text>
+          <text>添加图片</text>
+        </view>
+      </view>
+      <view class="image-tips">最多可上传5张图片</view>
+    </view>
+    
+    <!-- 操作按钮 -->
+    <view class="action-buttons">
+      <button type="primary" bindtap="saveScenicInfo">
+        {{hasScenic ? '保存修改' : '创建景区'}}
+      </button>
+      
+      <!-- 只有有景区时才显示重置按钮 -->
+      <button 
+        type="default" 
+        bindtap="resetForm"
+        wx:if="{{!hasScenic}}"
+      >
+        重置表单
+      </button>
+      
+      <!-- 只有有景区时才显示删除按钮 -->
+      <button 
+        type="warn" 
+        bindtap="deleteScenic"
+        wx:if="{{hasScenic}}"
+      >
+        删除景区
+      </button>
+    </view>
+    
+    <!-- 底部提示 -->
+    <view class="bottom-tips">
+      <text wx:if="{{hasScenic}}">
+        💡 提示：每个工作人员只能管理一个景区，已为您加载现有景区信息
+      </text>
+      <text wx:else>
+        💡 提示：您还没有创建景区，请填写以下信息创建您的第一个景区
+      </text>
+    </view>
+  </view>
+</view>

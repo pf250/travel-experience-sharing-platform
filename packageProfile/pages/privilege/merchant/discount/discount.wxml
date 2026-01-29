@@ -1,0 +1,105 @@
+<!--packageProfile/pages/privilege/merchant/discount/discount.wxml-->
+<view class="discount-manage-container">
+  <!-- 顶部导航栏 -->
+  <view class="header">
+    <text class="title">优惠方案管理</text>
+    <button class="add-btn" bindtap="showAddDiscountModal">+ 添加优惠</button>
+  </view>
+
+  <!-- 加载状态 -->
+  <view wx:if="{{isLoading}}" class="loading-container">
+    <text>加载中...</text>
+  </view>
+
+  <!-- 无优惠方案提示 -->
+  <view wx:elif="{{discounts.length === 0}}" class="empty-container">
+    <text>暂无优惠方案</text>
+    <button class="primary-btn" bindtap="showAddDiscountModal">添加第一个优惠方案</button>
+  </view>
+
+  <!-- 优惠方案列表 -->
+  <view wx:else class="discount-list">
+    <view wx:for="{{discounts}}" wx:key="{{item._id}}" class="discount-item">
+      <view class="discount-info">
+        <text class="discount-title">{{item.title}}</text>
+        <view class="discount-type-value">
+          <text class="discount-type">直减金额</text>
+          <text class="discount-value">¥{{item.discountValue}}</text>
+        </view>
+        <view class="discount-time">
+          <text>{{item.startTime}} 至 {{item.endTime}}</text>
+        </view>
+        <view class="discount-tickets">
+          <text>适用门票: {{item.ticketNames || '未设置'}}</text>
+        </view>
+        <view class="discount-status">
+          <text wx:if="{{item.status === 0}}" class="status-pending">未开始</text>
+          <text wx:elif="{{item.status === 1}}" class="status-active">进行中</text>
+          <text wx:else class="status-ended">已结束</text>
+        </view>
+      </view>
+      <view class="discount-actions">
+        <button class="action-btn delete-btn" bindtap="deleteDiscount" data-id="{{item._id}}">
+          删除
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 添加/编辑优惠方案弹窗 -->
+  <view wx:if="{{showModal}}" class="modal-overlay" bindtap="hideModal">
+    <view class="modal-content" catchtap="stopPropagation">
+      <view class="modal-header">
+        <text>添加优惠方案</text>
+        <button class="close-btn" bindtap="hideModal">×</button>
+      </view>
+      <view class="modal-body">
+        <form bindsubmit="saveDiscount">
+          <input type="text" name="title" placeholder="优惠标题（如：国庆特惠）" value="{{currentDiscount.title}}" class="form-input" />
+          
+          <input type="number" name="discountValue" placeholder="优惠金额（元）" value="{{currentDiscount.discountValue}}" class="form-input" />
+          
+          <view class="form-group">
+            <text class="form-label">开始时间</text>
+            <picker mode="date" start="{{currentYear}}-{{currentMonth}}-{{currentDay}}" bindchange="onStartDateChange" class="form-picker">
+              <text>{{currentDiscount.startDate || '选择开始日期'}}</text>
+            </picker>
+            <picker mode="time" bindchange="onStartTimeChange" class="form-picker">
+              <text>{{currentDiscount.startTime || '选择开始时间'}}</text>
+            </picker>
+          </view>
+          
+          <view class="form-group">
+            <text class="form-label">结束时间</text>
+            <picker mode="date" start="{{currentYear}}-{{currentMonth}}-{{currentDay}}" bindchange="onEndDateChange" class="form-picker">
+              <text>{{currentDiscount.endDate || '选择结束日期'}}</text>
+            </picker>
+            <picker mode="time" bindchange="onEndTimeChange" class="form-picker">
+              <text>{{currentDiscount.endTime || '选择结束时间'}}</text>
+            </picker>
+          </view>
+          
+          <view class="form-group">
+            <text class="form-label">适用门票</text>
+            <view class="ticket-selector">
+              <view wx:if="{{tickets.length === 0}}" class="no-tickets">
+                <text>暂无可用门票</text>
+              </view>
+              <checkbox-group wx:else class="ticket-list" bindchange="onTicketSelect" value="{{currentDiscount.ticketIds}}">
+                <label wx:for="{{tickets}}" wx:key="_id" class="checkbox-item">
+                  <checkbox value="{{item._id}}" />
+                  <text>{{item.name}}</text>
+                </label>
+              </checkbox-group>
+            </view>
+          </view>
+          
+          <view class="form-buttons">
+            <button formType="submit" class="primary-btn">保存</button>
+            <button bindtap="hideModal" class="cancel-btn">取消</button>
+          </view>
+        </form>
+      </view>
+    </view>
+  </view>
+</view>

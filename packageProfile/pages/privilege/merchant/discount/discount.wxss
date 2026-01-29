@@ -1,0 +1,332 @@
+/* packageProfile/pages/privilege/merchant/discount/discount.wxss */
+
+/* 容器样式 */
+.discount-manage-container {
+  padding: 20rpx;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
+
+/* 顶部导航栏 */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30rpx;
+  padding: 20rpx 0;
+  border-bottom: 2rpx solid #e0e0e0;
+}
+
+.title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.add-btn {
+  background-color: #007aff;
+  color: white;
+  border-radius: 8rpx;
+  padding: 10rpx 20rpx;
+  font-size: 24rpx;
+}
+
+/* 加载状态 */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 100rpx 0;
+  color: #999;
+}
+
+/* 无数据提示 */
+.empty-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 100rpx 0;
+  color: #999;
+}
+
+.empty-container text {
+  margin-bottom: 30rpx;
+  font-size: 28rpx;
+}
+
+/* 优惠方案列表 */
+.discount-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+/* 优惠方案项 */
+.discount-item {
+  background-color: white;
+  border-radius: 12rpx;
+  padding: 24rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+}
+
+.discount-info {
+  margin-bottom: 20rpx;
+}
+
+.discount-title {
+  display: block;
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 12rpx;
+}
+
+.discount-type-value {
+  display: flex;
+  gap: 20rpx;
+  margin-bottom: 12rpx;
+}
+
+.discount-type {
+  padding: 6rpx 12rpx;
+  background-color: #f0f0f0;
+  border-radius: 6rpx;
+  font-size: 22rpx;
+  color: #666;
+}
+
+.discount-value {
+  padding: 6rpx 12rpx;
+  background-color: #ffebee;
+  border-radius: 6rpx;
+  font-size: 22rpx;
+  color: #d32f2f;
+  font-weight: bold;
+}
+
+.discount-time {
+  margin-bottom: 12rpx;
+  color: #666;
+  font-size: 24rpx;
+}
+
+.discount-tickets {
+  margin-bottom: 12rpx;
+  color: #666;
+  font-size: 24rpx;
+}
+
+.discount-status {
+  margin-top: 12rpx;
+}
+
+.status-pending {
+  color: #ff9800;
+  font-size: 24rpx;
+  font-weight: 500;
+}
+
+.status-active {
+  color: #2ed573;
+  font-size: 24rpx;
+  font-weight: 500;
+}
+
+.status-ended {
+  color: #999;
+  font-size: 24rpx;
+  font-weight: 500;
+}
+
+/* 操作按钮区域 */
+.discount-actions {
+  display: flex;
+  gap: 12rpx;
+  margin-top: 20rpx;
+  padding-top: 20rpx;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.action-btn {
+  flex: 1;
+  padding: 12rpx 0;
+  border-radius: 8rpx;
+  font-size: 24rpx;
+}
+
+.edit-btn {
+  background-color: #1e90ff;
+  color: white;
+}
+
+.delete-btn {
+  background-color: #e74c3c;
+  color: white;
+}
+
+/* 弹窗样式 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: white;
+  border-radius: 16rpx;
+  width: 85%;
+  max-width: 550rpx;
+  padding: 32rpx;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32rpx;
+  padding-bottom: 20rpx;
+  border-bottom: 2rpx solid #e0e0e0;
+}
+
+.modal-header text {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.close-btn {
+  font-size: 40rpx;
+  color: #999;
+  padding: 0;
+  min-width: 40rpx;
+}
+
+/* 表单样式 */
+.form-group {
+  margin-bottom: 32rpx;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 12rpx;
+  font-size: 26rpx;
+  font-weight: 500;
+  color: #333;
+}
+
+.form-input {
+  width: 100%;
+  padding: 20rpx;
+  margin-bottom: 32rpx;
+  border: 2rpx solid #e0e0e0;
+  border-radius: 8rpx;
+  font-size: 26rpx;
+}
+
+.form-picker {
+  width: 100%;
+  padding: 20rpx;
+  border: 2rpx solid #e0e0e0;
+  border-radius: 8rpx;
+  font-size: 26rpx;
+  color: #333;
+}
+
+.radio-group {
+  display: flex;
+  gap: 40rpx;
+}
+
+.radio-item {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  font-size: 26rpx;
+  color: #333;
+}
+
+.ticket-selector {
+  border: 2rpx solid #e0e0e0;
+  border-radius: 8rpx;
+  padding: 20rpx;
+  min-height: 150rpx;
+}
+
+.no-tickets {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100rpx;
+  color: #999;
+  font-size: 24rpx;
+}
+
+.ticket-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  font-size: 24rpx;
+  color: #333;
+}
+
+.form-buttons {
+  display: flex;
+  gap: 20rpx;
+  margin-top: 40rpx;
+}
+
+.primary-btn {
+  flex: 1;
+  background-color: #007aff;
+  color: white;
+  padding: 20rpx 0;
+  border-radius: 8rpx;
+  font-size: 26rpx;
+  font-weight: 500;
+}
+
+.cancel-btn {
+  flex: 1;
+  background-color: #f5f5f5;
+  color: #333;
+  padding: 20rpx 0;
+  border-radius: 8rpx;
+  font-size: 26rpx;
+  font-weight: 500;
+}
+
+/* 响应式设计 */
+@media (max-width: 375px) {
+  .discount-actions {
+    flex-direction: column;
+  }
+  
+  .action-btn {
+    width: 100%;
+  }
+  
+  .modal-content {
+    width: 90%;
+  }
+  
+  .radio-group {
+    flex-direction: column;
+    gap: 12rpx;
+  }
+}

@@ -27,17 +27,18 @@
         "pages/privilege/admin/admin",
         "pages/privilege/merchant/merchant",
         "pages/privilege/applications/applications",
-        "pages/privilege/vip/vip"
+        "pages/privilege/vip/vip",
+        "pages/privilege/merchant/scenic-info/scenic-info",
+        "pages/privilege/merchant/ticket-manage/ticket-manage",
+        "pages/privilege/merchant/discount/discount"
       ]
     },
-
     {
       "root": "packageforum",
       "pages": [
         "pages/detail/detail"
       ]
     },
-
     {
       "root": "packageUpload",
       "pages": [
