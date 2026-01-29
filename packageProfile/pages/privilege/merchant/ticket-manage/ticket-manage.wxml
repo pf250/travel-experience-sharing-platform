@@ -1,0 +1,71 @@
+<!--packageProfile/pages/privilege/merchant/ticket-manage/ticket-manage.wxml-->
+<view class="ticket-manage-container">
+  <!-- 顶部导航栏 -->
+  <view class="header">
+    <text class="title">门票管理</text>
+    <button class="add-btn" bindtap="showAddTicketModal">+ 添加门票</button>
+  </view>
+
+  <!-- 加载状态 -->
+  <view wx:if="{{isLoading}}" class="loading-container">
+    <text>加载中...</text>
+  </view>
+
+  <!-- 无门票提示 -->
+  <view wx:elif="{{tickets.length === 0}}" class="empty-container">
+    <text>暂无门票数据</text>
+    <button class="primary-btn" bindtap="showAddTicketModal">添加第一张门票</button>
+  </view>
+
+  <!-- 门票列表 -->
+  <view wx:else class="ticket-list">
+    <view wx:for="{{tickets}}" wx:key="{{item._id}}" class="ticket-item">
+      <view class="ticket-info">
+        <text class="ticket-name">{{item.name}}</text>
+        <text class="ticket-price">¥{{item.price}}</text>
+        <text class="ticket-stock">库存: {{item.stock}}</text>
+        <text class="ticket-description">{{item.description}}</text>
+        <view class="ticket-status">
+          <text wx:if="{{item.status === 1}}" class="status-active">已上架</text>
+          <text wx:else class="status-inactive">已下架</text>
+        </view>
+      </view>
+      <view class="ticket-actions">
+        <button class="action-btn edit-btn" bindtap="showEditTicketModal" data-ticket="{{item}}">
+          编辑
+        </button>
+        <button wx:if="{{item.status === 1}}" class="action-btn down-btn" bindtap="updateTicketStatus" data-id="{{item._id}}" data-status="0">
+          下架
+        </button>
+        <button wx:else class="action-btn up-btn" bindtap="updateTicketStatus" data-id="{{item._id}}" data-status="1">
+          上架
+        </button>
+        <button class="action-btn delete-btn" bindtap="deleteTicket" data-id="{{item._id}}">
+          删除
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 添加/编辑门票弹窗 -->
+  <view wx:if="{{showModal}}" class="modal-overlay" bindtap="hideModal">
+    <view class="modal-content" catchtap="stopPropagation">
+      <view class="modal-header">
+        <text>{{isEditMode ? '编辑门票' : '添加门票'}}</text>
+        <button class="close-btn" bindtap="hideModal">×</button>
+      </view>
+      <view class="modal-body">
+        <form bindsubmit="saveTicket">
+          <input type="text" name="name" placeholder="门票名称（如：成人票、学生票）" value="{{currentTicket.name}}" class="form-input" />
+          <input type="number" name="price" placeholder="原价" value="{{currentTicket.price}}" class="form-input" />
+          <input type="number" name="stock" placeholder="库存" value="{{currentTicket.stock}}" class="form-input" />
+          <textarea name="description" placeholder="门票描述" value="{{currentTicket.description}}" class="form-textarea"></textarea>
+          <view class="form-buttons">
+            <button formType="submit" class="primary-btn">保存</button>
+            <button bindtap="hideModal" class="cancel-btn">取消</button>
+          </view>
+        </form>
+      </view>
+    </view>
+  </view>
+</view>

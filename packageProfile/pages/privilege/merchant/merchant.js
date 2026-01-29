@@ -51,7 +51,7 @@ Page({
   // 导航到门票管理
   navigateToTicketManage: function() {
     wx.navigateTo({
-      url: `/pages/ticket-manage/ticket-manage?userId=${this.data.userId}`
+      url: `/packageProfile/pages/privilege/merchant/ticket-manage/ticket-manage?userId=${this.data.userId}`
     });
   },
 
