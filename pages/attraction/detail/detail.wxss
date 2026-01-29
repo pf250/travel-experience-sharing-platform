@@ -171,6 +171,17 @@
 .stock {
   font-size: 20rpx;
   color: #999;
+  margin-bottom: 10rpx;
+}
+
+.book-btn {
+  font-size: 22rpx;
+  padding: 8rpx 24rpx;
+  border-radius: 20rpx;
+  background-color: #1296db;
+  color: #fff;
+  margin-top: 10rpx;
+  min-width: 100rpx;
 }
 
 /* 优惠方案列表 */

@@ -55,6 +55,7 @@
           <view class="ticket-price">
             <text class="original-price">¥{{item.price}}</text>
             <text class="stock">库存：{{item.stock}}</text>
+            <button class="book-btn" bindtap="bookTicket" data-ticket-id="{{item._id}}" data-ticket-name="{{item.name}}" data-ticket-price="{{item.price}}">预定</button>
           </view>
         </view>
       </view>

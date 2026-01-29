@@ -183,5 +183,52 @@ Page({
       return discount.discountValue;
     }
     return null;
+  },
+
+  /**
+   * 预定门票
+   */
+  bookTicket(e) {
+    const ticketId = e.currentTarget.dataset.ticketId;
+    const ticketName = e.currentTarget.dataset.ticketName;
+    const ticketPrice = e.currentTarget.dataset.ticketPrice;
+    
+    // 查找对应的门票信息
+    const ticket = this.data.tickets.find(t => t._id === ticketId);
+    if (!ticket) {
+      wx.showToast({
+        title: '门票信息不存在',
+        icon: 'error'
+      });
+      return;
+    }
+    
+    // 检查库存
+    if (ticket.stock <= 0) {
+      wx.showToast({
+        title: '门票已售罄',
+        icon: 'error'
+      });
+      return;
+    }
+    
+    // 显示预定模态框
+    wx.showModal({
+      title: '预定门票',
+      content: `您确定要预定 ${ticketName} 吗？\n价格：¥${ticketPrice}`,
+      success: (res) => {
+        if (res.confirm) {
+          // 这里可以实现具体的预定逻辑，比如创建订单
+          // 暂时模拟预定成功
+          wx.showToast({
+            title: '预定成功',
+            icon: 'success'
+          });
+          
+          // 可以跳转到订单页面或其他相关页面
+          // wx.navigateTo({ url: '/pages/order/order' });
+        }
+      }
+    });
   }
 })
