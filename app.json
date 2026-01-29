@@ -4,6 +4,7 @@
     "pages/forum/forum",
     "pages/upload/upload",
     "pages/attraction/attraction",
+    "pages/attraction/detail/detail",
     "pages/profile/profile"
   ],
   "subPackages": [
