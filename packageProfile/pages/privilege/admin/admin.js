@@ -165,9 +165,8 @@ Page({
           // 弹出拒绝原因输入框
           wx.showModal({
             title: '拒绝原因',
-            content: '请输入拒绝该申请的原因',
             editable: true,
-            placeholderText: '请输入拒绝原因',
+            placeholderText: '请输入拒绝该申请的原因',
             success: function (reasonRes) {
               if (reasonRes.confirm && reasonRes.content) {
                 that.updateApplicationStatus(id, null, 'rejected', '已拒绝申请', reasonRes.content);

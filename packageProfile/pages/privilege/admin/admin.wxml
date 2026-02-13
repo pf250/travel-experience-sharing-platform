@@ -42,7 +42,7 @@
         <view wx:if="{{item.reason}}" class="application-info">
           <view class="info-row">
             <text class="label">申请理由：</text>
-            <text class="value">{{item.reason}}</text>
+            <text class="value application-reason">{{item.reason}}</text>
           </view>
         </view>
 

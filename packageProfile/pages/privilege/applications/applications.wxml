@@ -61,18 +61,16 @@
             <view class="value">{{item._id}}</view>
           </view>
 
-          <!-- 用户ID -->
-          <view class="info-row">
-            <view class="label">用户ID：</view>
-            <view class="value">{{item.userId}}</view>
+          <!-- 申请原因 -->
+          <view wx:if="{{item.reason}}" class="info-row">
+            <view class="label">申请原因：</view>
+            <view class="value">{{item.reason}}</view>
           </view>
 
-          <!-- 状态 -->
-          <view class="info-row">
-            <view class="label">审核状态：</view>
-            <view class="value status-display {{item.statusInfo.className}}">
-              {{item.statusInfo.text}}
-            </view>
+          <!-- 拒绝原因 -->
+          <view wx:if="{{item.rejectReason}}" class="info-row">
+            <view class="label">拒绝原因：</view>
+            <view class="value reject-reason">{{item.rejectReason}}</view>
           </view>
         </view>
       </view>
