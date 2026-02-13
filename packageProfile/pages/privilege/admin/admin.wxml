@@ -62,7 +62,7 @@
         <view wx:if="{{item.rejectReason}}" class="application-info">
           <view class="info-row">
             <text class="label">拒绝原因：</text>
-            <text class="value">{{item.rejectReason}}</text>
+            <text class="value reject-reason">{{item.rejectReason}}</text>
           </view>
         </view>
 
