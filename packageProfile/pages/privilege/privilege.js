@@ -137,32 +137,50 @@ Page({
         }
         
         // 如果没有待审核的申请，继续原来的流程
-        wx.chooseImage({
-          count: 1,
-          sizeType: ['original', 'compressed'],
-          sourceType: ['album', 'camera'],
-          success(res) {
-            const tempFilePaths = res.tempFilePaths;
-            that.setData({
-              tempFilePath: tempFilePaths[0]
-            });
+        // 先弹出申请原因输入框
+        wx.showModal({
+          title: '申请原因',
+          editable: true,
+          placeholderText: '请输入您申请成为商家的原因',
+          success: function (reasonRes) {
+            if (reasonRes.confirm && reasonRes.content) {
+              const reason = reasonRes.content;
+              
+              // 然后选择图片
+              wx.chooseImage({
+                count: 1,
+                sizeType: ['original', 'compressed'],
+                sourceType: ['album', 'camera'],
+                success(res) {
+                  const tempFilePaths = res.tempFilePaths;
+                  that.setData({
+                    tempFilePath: tempFilePaths[0]
+                  });
 
-            that.uploadPhoto(tempFilePaths[0]).then((fileID) => {
-              that.submitMerchantApplication(fileID);
-            }).catch((err) => {
-              console.error('上传照片失败:', err);
+                  that.uploadPhoto(tempFilePaths[0]).then((fileID) => {
+                    that.submitMerchantApplication(fileID, reason);
+                  }).catch((err) => {
+                    console.error('上传照片失败:', err);
+                    wx.showToast({
+                      title: '上传照片失败',
+                      icon: 'none'
+                    });
+                  });
+                },
+                fail(err) {
+                  console.error('选择图片失败:', err);
+                  wx.showToast({
+                    title: '选择图片失败',
+                    icon: 'none'
+                  });
+                }
+              });
+            } else if (reasonRes.confirm) {
               wx.showToast({
-                title: '上传照片失败',
+                title: '请输入申请原因',
                 icon: 'none'
               });
-            });
-          },
-          fail(err) {
-            console.error('选择图片失败:', err);
-            wx.showToast({
-              title: '选择图片失败',
-              icon: 'none'
-            });
+            }
           }
         });
       })
@@ -208,7 +226,7 @@ Page({
     });
   },
 
-  submitMerchantApplication(fileID) {
+  submitMerchantApplication(fileID, reason) {
     const that = this;
     const db = wx.cloud.database();
 
@@ -223,7 +241,8 @@ Page({
           userId: that.data.userId,
           status: 'pending',
           createdAt: new Date(),
-          photo: fileID
+          photo: fileID,
+          reason: reason
         }
       })
       .then(() => {
