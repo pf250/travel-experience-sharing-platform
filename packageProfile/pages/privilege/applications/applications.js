@@ -62,7 +62,8 @@ Page({
           return {
             ...item,
             statusInfo: that.getStatusInfo(item.status), // 添加状态信息
-            formattedTime: that.formatTime(item.createdAt) // 添加格式化时间
+            formattedTime: that.formatTime(item.createdAt), // 添加格式化时间
+            formattedReviewedTime: item.reviewedAt ? that.formatTime(item.reviewedAt) : '' // 添加回复时间格式化
           };
         });
         

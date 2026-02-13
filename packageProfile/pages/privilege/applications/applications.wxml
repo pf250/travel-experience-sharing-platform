@@ -72,6 +72,12 @@
             <view class="label">拒绝原因：</view>
             <view class="value reject-reason">{{item.rejectReason}}</view>
           </view>
+
+          <!-- 回复时间 -->
+          <view wx:if="{{item.reviewedAt}}" class="info-row">
+            <view class="label">回复时间：</view>
+            <view class="value">{{item.formattedReviewedTime}}</view>
+          </view>
         </view>
       </view>
     </view>
