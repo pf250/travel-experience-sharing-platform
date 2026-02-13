@@ -13,7 +13,7 @@ Page({
         id: 1, 
         name: '跳蚤市场', 
         icon: '/images/home/market.png', 
-        url: '/packageHome_market/pages/market/market' 
+        url: '/packageHome/pages/market/market' 
       },
       { 
         id: 2, 
