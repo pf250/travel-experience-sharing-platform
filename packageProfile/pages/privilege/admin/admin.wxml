@@ -38,36 +38,40 @@
           </view>
         </view>
 
-        <!-- 申请信息 -->
-        <view class="application-info">
+        <!-- 申请理由 -->
+        <view wx:if="{{item.reason}}" class="application-info">
           <view class="info-row">
-            <text class="label">商家名称：</text>
-            <text class="value">{{item.storeName || '未填写'}}</text>
-          </view>
-          <view class="info-row">
-            <text class="label">联系电话：</text>
-            <text class="value">{{item.phone || '未填写'}}</text>
-          </view>
-          <view class="info-row">
-            <text class="label">身份证号：</text>
-            <text class="value">{{item.idNumber || '未填写'}}</text>
-          </view>
-          <view wx:if="{{item.reason}}" class="info-row">
             <text class="label">申请理由：</text>
-            <text class="value">{{item.reason}}</text>
+            <text class="value application-reason">{{item.reason}}</text>
           </view>
         </view>
 
-        <!-- 身份证照片 -->
-        <view wx:if="{{item.idPhotoUrl}}" class="photo-section">
-          <text class="section-title">身份证照片：</text>
+        <!-- 申请材料照片 -->
+        <view wx:if="{{item.photoUrl}}" class="photo-section">
+          <text class="section-title">申请材料照片：</text>
           <image 
             class="id-photo" 
-            src="{{item.idPhotoUrl}}" 
+            src="{{item.photoUrl}}" 
             mode="widthFix"
-            data-url="{{item.idPhotoUrl}}"
+            data-url="{{item.photoUrl}}"
             bindtap="previewImage"
           ></image>
+        </view>
+
+        <!-- 拒绝原因 -->
+        <view wx:if="{{item.rejectReason}}" class="application-info">
+          <view class="info-row">
+            <text class="label">拒绝原因：</text>
+            <text class="value reject-reason">{{item.rejectReason}}</text>
+          </view>
+        </view>
+
+        <!-- 回复时间 -->
+        <view wx:if="{{item.reviewedAt}}" class="application-info">
+          <view class="info-row">
+            <text class="label">回复时间：</text>
+            <text class="value">{{item.formattedReviewedTime}}</text>
+          </view>
         </view>
 
         <!-- 操作按钮（仅待审核状态显示） -->

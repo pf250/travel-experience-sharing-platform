@@ -162,6 +162,21 @@
   flex: 1;
   word-break: break-all;
 }
+.application-reason {
+  font-size: 28rpx;
+  color: #49f766;
+  
+  flex: 1;
+  word-break: break-all;
+}
+
+.reject-reason {
+  font-size: 28rpx;
+  color: #f44336;
+  font-weight: bold;
+  flex: 1;
+  word-break: break-all;
+}
 
 /* 照片区域 */
 .photo-section {
@@ -178,9 +193,12 @@
 }
 
 .id-photo {
-  width: 100%;
+  width: 200rpx;
+  height: 150rpx;
+  object-fit: cover;
   border-radius: 8rpx;
   border: 1rpx solid #eee;
+  cursor: pointer;
 }
 
 /* 操作按钮 */

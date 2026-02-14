@@ -12,7 +12,7 @@ Page({
   },
 
   onShow: function () {
-    this.loadApplications();
+    // 移除自动加载，避免从图片预览返回时重新加载数据
   },
 
   // 切换标签页
@@ -96,7 +96,8 @@ Page({
             ...userInfo,
             statusInfo: that.getStatusInfo(app.status),
             formattedTime: that.formatTime(app.createdAt),
-            idPhotoUrl: '' // 初始化身份证照片URL
+            formattedReviewedTime: app.reviewedAt ? that.formatTime(app.reviewedAt) : '', // 添加回复时间格式化
+            photoUrl: '' // 初始化申请材料照片URL
           };
         });
         
@@ -119,12 +120,12 @@ Page({
     const that = this;
     
     applications.forEach((app, index) => {
-      if (app.idPhoto) {
+      if (app.photo) {
         wx.cloud.getTempFileURL({
-          fileList: [app.idPhoto],
+          fileList: [app.photo],
           success: (res) => {
             if (res.fileList && res.fileList[0]) {
-              const key = `applications[${index}].idPhotoUrl`;
+              const key = `applications[${index}].photoUrl`;
               that.setData({
                 [key]: res.fileList[0].tempFileURL
               });
@@ -162,25 +163,48 @@ Page({
       content: '确定要拒绝该商家的申请吗？',
       success: function (res) {
         if (res.confirm) {
-          that.updateApplicationStatus(id, null, 'rejected', '已拒绝申请');
+          // 弹出拒绝原因输入框
+          wx.showModal({
+            title: '拒绝原因',
+            editable: true,
+            placeholderText: '请输入拒绝该申请的原因',
+            success: function (reasonRes) {
+              if (reasonRes.confirm && reasonRes.content) {
+                that.updateApplicationStatus(id, null, 'rejected', '已拒绝申请', reasonRes.content);
+              } else if (reasonRes.confirm) {
+                wx.showToast({
+                  title: '请输入拒绝原因',
+                  icon: 'none'
+                });
+              }
+            }
+          });
         }
       }
     });
   },
 
   // 更新申请状态
-  updateApplicationStatus: function (id, userId, status, message) {
+  updateApplicationStatus: function (id, userId, status, message, rejectReason) {
     const that = this;
     const db = wx.cloud.database();
     
     wx.showLoading({ title: '处理中...' });
     
+    // 准备更新数据
+    const updateData = {
+      status: status,
+      reviewedAt: new Date()
+    };
+    
+    // 如果是拒绝申请，添加拒绝原因
+    if (status === 'rejected' && rejectReason) {
+      updateData.rejectReason = rejectReason;
+    }
+    
     // 更新商家申请状态
     db.collection('merchant_applications').doc(id).update({
-      data: {
-        status: status,
-        reviewedAt: new Date()
-      }
+      data: updateData
     })
     .then(() => {
       // 如果是同意申请，还需要更新用户角色
