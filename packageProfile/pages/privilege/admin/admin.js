@@ -96,6 +96,7 @@ Page({
             ...userInfo,
             statusInfo: that.getStatusInfo(app.status),
             formattedTime: that.formatTime(app.createdAt),
+            formattedReviewedTime: app.reviewedAt ? that.formatTime(app.reviewedAt) : '', // 添加回复时间格式化
             photoUrl: '' // 初始化申请材料照片URL
           };
         });

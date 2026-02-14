@@ -66,6 +66,14 @@
           </view>
         </view>
 
+        <!-- 回复时间 -->
+        <view wx:if="{{item.reviewedAt}}" class="application-info">
+          <view class="info-row">
+            <text class="label">回复时间：</text>
+            <text class="value">{{item.formattedReviewedTime}}</text>
+          </view>
+        </view>
+
         <!-- 操作按钮（仅待审核状态显示） -->
         <view wx:if="{{item.status === 'pending'}}" class="action-buttons">
           <button 
