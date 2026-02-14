@@ -35,6 +35,31 @@ Page({
   },
 
   /**
+   * 格式化时间为中文格式
+   */
+  formatTime(date) {
+    if (!date) return '';
+    
+    let d;
+    if (date instanceof Date) {
+      d = date;
+    } else if (date.$date) {
+      d = new Date(date.$date);
+    } else {
+      d = new Date(date);
+    }
+    
+    const year = d.getFullYear();
+    const month = (d.getMonth() + 1).toString().padStart(2, '0');
+    const day = d.getDate().toString().padStart(2, '0');
+    const hour = d.getHours().toString().padStart(2, '0');
+    const minute = d.getMinutes().toString().padStart(2, '0');
+    const second = d.getSeconds().toString().padStart(2, '0');
+    
+    return `${year}/${month}/${day} ${hour}:${minute}:${second}`;
+  },
+
+  /**
    * 查询用户信息
    */
   fetchUserInfo(userId) {
@@ -54,7 +79,7 @@ Page({
             name: userData.name,
             sex: userData.sex,
             registerTime: userData.registerTime
-              ? new Date(userData.registerTime).toLocaleString()
+              ? this.formatTime(userData.registerTime)
               : ''
           });
         } else {
