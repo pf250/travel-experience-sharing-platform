@@ -158,36 +158,52 @@ Page({
         return;
       }
       
-      const uploadPromises = images.map((tempFilePath, index) => {
-        return new Promise((uploadResolve, uploadReject) => {
-          const timestamp = Date.now();
-          const userId = this.data.userId;
-          const cloudPath = `scenic/user_${userId}_${timestamp}_${index}.jpg`;
-          
-          console.log('上传到云存储路径:', cloudPath);
-          
-          wx.cloud.uploadFile({
-            cloudPath: cloudPath,
-            filePath: tempFilePath,
-            success: (res) => {
-              console.log('上传成功:', res.fileID);
-              uploadResolve(res.fileID);
-            },
-            fail: (err) => {
-              console.error('上传失败:', err);
-              uploadReject(err);
-            }
-          });
-        });
+      const fileIDs = [];
+      const uploadPromises = [];
+      
+      images.forEach((path, index) => {
+        // 检查是否已经是云存储路径（以cloud://开头）
+        if (path.startsWith('cloud://')) {
+          // 已经是云存储路径，直接添加到结果中
+          fileIDs.push(path);
+        } else {
+          // 是本地临时文件路径，需要上传
+          uploadPromises.push(new Promise((uploadResolve, uploadReject) => {
+            const timestamp = Date.now();
+            const userId = this.data.userId;
+            const cloudPath = `scenic/user_${userId}_${timestamp}_${index}.jpg`;
+            
+            console.log('上传到云存储路径:', cloudPath);
+            
+            wx.cloud.uploadFile({
+              cloudPath: cloudPath,
+              filePath: path,
+              success: (res) => {
+                console.log('上传成功:', res.fileID);
+                uploadResolve(res.fileID);
+              },
+              fail: (err) => {
+                console.error('上传失败:', err);
+                uploadReject(err);
+              }
+            });
+          }));
+        }
       });
       
-      Promise.all(uploadPromises)
-        .then((fileIDs) => {
-          resolve(fileIDs);
-        })
-        .catch((err) => {
-          reject(err);
-        });
+      if (uploadPromises.length === 0) {
+        // 没有需要上传的图片，直接返回已有的fileIDs
+        resolve(fileIDs);
+      } else {
+        // 上传新图片并合并结果
+        Promise.all(uploadPromises)
+          .then((uploadedFileIDs) => {
+            resolve(fileIDs.concat(uploadedFileIDs));
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      }
     });
   },
 
@@ -218,9 +234,21 @@ Page({
         });
         
         if (this.data.hasScenic && this.data.scenicId) {
+          // 构建更新数据，排除系统保留字段
+          const updateData = {
+            name: this.data.scenic.name,
+            description: this.data.scenic.description,
+            address: this.data.scenic.address,
+            contactPhone: this.data.scenic.contactPhone,
+            images: fileIDs,
+            status: this.data.scenic.status,
+            userId: Number(this.data.userId),
+            updatedAt: db.serverDate()
+          };
+          
           // 更新现有景区
           db.collection('scenic').doc(this.data.scenicId).update({
-            data: scenicData,
+            data: updateData,
             success: () => {
               wx.hideLoading();
               wx.showToast({
