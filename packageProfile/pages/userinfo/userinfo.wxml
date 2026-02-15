@@ -72,7 +72,7 @@
     </view>
   </view>
 
-  
+
 
   <!-- 保存按钮 -->
   <button class="save-button" bindtap="handleSave">保存</button>
