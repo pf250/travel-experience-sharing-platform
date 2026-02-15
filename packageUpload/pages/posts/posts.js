@@ -7,6 +7,9 @@ Page({
     description: '', // 描述内容
     images: [], // 图片数组，存储已上传的图片路径
     isLogin: false, // 登录状态
+    // AI编辑相关状态
+    showAIDialog: false, // AI编辑对话框显示状态
+    aiScenicSpot: '', // AI编辑景点名字
   },
 
   onLoad() {
@@ -45,12 +48,20 @@ Page({
 
   // 显示加载动画
   showLoading(title = '加载中...') {
-    wx.showLoading({ title });
+    wx.showLoading({ 
+      title,
+      mask: true
+    });
   },
 
   // 隐藏加载动画
   hideLoading() {
-    wx.hideLoading();
+    try {
+      wx.hideLoading();
+    } catch (error) {
+      // 忽略 hideLoading 可能的错误
+      console.log('hideLoading error:', error);
+    }
   },
 
   // 监听标题输入
@@ -175,5 +186,107 @@ Page({
     this.hideLoading();
     // 显示失败提示
     this.showToast('发布失败，请重试');
+  },
+
+  // 显示AI编辑对话框
+  showAIDialog() {
+    this.setData({ showAIDialog: true });
+  },
+
+  // 隐藏AI编辑对话框
+  hideAIDialog() {
+    this.setData({ 
+      showAIDialog: false,
+      aiScenicSpot: '' // 清空输入
+    });
+  },
+
+  // 处理景点名字输入
+  onAIScenicSpotInput(e) {
+    this.setData({ aiScenicSpot: e.detail.value.trim() });
+  },
+
+  // 调用AI模型生成内容
+  async generateAIContent() {
+    const { aiScenicSpot } = this.data;
+
+    // 验证输入
+    if (!aiScenicSpot.trim()) {
+      this.showToast('请输入景点名字');
+      return;
+    }
+
+    // 显示加载提示
+    this.showLoading('AI生成中...');
+
+    try {
+      // 初始化AI模型
+      const hy = wx.cloud.extend.AI.createModel('hunyuan-exp');
+
+      // 构建提示词
+      const prompt = `请为旅游景点"${aiScenicSpot}"生成一篇旅游攻略，包含以下内容：
+1. 一个吸引人的标题（1-20字）
+2. 一段详细的描述（200-300字），介绍景点的特色、历史文化、游览建议等
+
+请严格按照以下格式输出：
+标题：[生成的标题]
+描述：[生成的描述]`;
+
+      // 调用AI模型
+      const res = await hy.generateText({
+        model: 'hunyuan-t1-latest',
+        messages: [
+          {
+            role: 'user',
+            content: prompt
+          }
+        ]
+      });
+
+      // 解析AI生成的内容
+      const aiContent = res.choices[0].message.content;
+      console.log('AI生成内容:', aiContent);
+
+      // 提取标题和描述
+      // 匹配不同格式的输出
+      let title = '';
+      let description = '';
+
+      // 尝试匹配第一种格式：标题：[标题内容] 描述：[描述内容]
+      const format1Match = aiContent.match(/标题：\[(.*?)\]\s*描述：\[(.*?)\]/s);
+      if (format1Match) {
+        title = format1Match[1].trim();
+        description = format1Match[2].trim();
+      } 
+      // 尝试匹配第二种格式：标题：标题内容 描述：描述内容
+      else {
+        const format2Match = aiContent.match(/标题：([^描述]*)描述：(.*)/s);
+        if (format2Match) {
+          title = format2Match[1].trim();
+          description = format2Match[2].trim();
+        }
+      }
+
+      if (title && description) {
+        // 将AI生成的数据放入输入栏和文本域
+        this.setData({ title, description });
+
+        // 显示成功提示
+        this.showToast('AI生成成功', 'success');
+      } else {
+        // 解析失败，显示错误提示
+        this.showToast('AI生成格式错误，请重试');
+        console.log('解析失败的AI内容:', aiContent);
+      }
+    } catch (error) {
+      console.error('AI生成失败:', error);
+      // 显示失败提示
+      this.showToast('AI生成失败，请重试');
+    } finally {
+      // 隐藏加载提示
+      this.hideLoading();
+      // 隐藏对话框
+      this.hideAIDialog();
+    }
   },
 });
