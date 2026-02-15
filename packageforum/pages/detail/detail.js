@@ -64,13 +64,15 @@ Page({
         replyMap[comment._id] = comment;
       });
       
-      // 为每个回复添加replyTargetAuthor字段
+      // 为每个回复添加replyTargetAuthor字段和isReplyToReply字段
       allComments.forEach(comment => {
         if (comment.parentId) {
           // 查找直接父评论的作者昵称
           const parentComment = replyMap[comment.parentId];
           if (parentComment) {
             comment.replyTargetAuthor = parentComment.nickName;
+            // 检查父评论是否也是回复（即是否有parentId）
+            comment.isReplyToReply = !!parentComment.parentId;
           }
         }
       });
