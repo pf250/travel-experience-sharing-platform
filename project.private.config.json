@@ -11,9 +11,9 @@
     "miniprogram": {
       "list": [
         {
-          "name": "packageProfile/pages/privilege/admin/admin",
-          "pathName": "packageProfile/pages/privilege/admin/admin",
-          "query": "userId=1001&role=admin",
+          "name": "packageProfile/pages/userinfo/userinfo",
+          "pathName": "packageProfile/pages/userinfo/userinfo",
+          "query": "userId=1001",
           "scene": null,
           "launchMode": "default"
         }
