@@ -2,7 +2,7 @@
 .profile-edit-container {
   display: flex;
   flex-direction: column;
-  padding: 20px;
+  padding: 15px;
   background-color: #f5f5f5;
   min-height: 100vh;
 }
@@ -12,17 +12,18 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 30px;
-  padding: 20px;
+  margin-bottom: 20px;
+  padding: 15px;
   background-color: #fff;
   border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   width: 100%;
+  box-sizing: border-box;
 }
 
 .avatar-wrapper {
-  width: 120px;
-  height: 120px;
+  width: 100px;
+  height: 150px;
   border-radius: 50%;
   overflow: hidden;
   display: flex;
@@ -35,45 +36,48 @@
 
 .avatar-wrapper:hover {
   border-color: #09d570;
-  box-shadow: 0 0 15px rgba(7, 193, 96, 0.2);
+  box-shadow: 0 0 10px rgba(7, 193, 96, 0.2);
   transform: scale(1.05);
 }
 
 .avatar {
   width: 100%;
   height: 100%;
+  object-fit: cover;
   border-radius: 50%;
 }
 
 .avatar-tip {
-  font-size: 14px;
+  font-size: 12px;
   color: #666;
-  margin-top: 15px;
+  margin-top: 10px;
 }
 
 /* 信息列表 */
 .info-list {
   background-color: #fff;
   border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-  margin-bottom: 20px;
+  padding: 15px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-bottom: 15px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .info-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 0;
+  padding: 12px 0;
   border-bottom: 1px solid #f0f0f0;
   transition: all 0.2s ease;
 }
 
 .info-item:hover {
   background-color: #f9f9f9;
-  padding-left: 10px;
-  padding-right: 10px;
-  border-radius: 8px;
+  padding-left: 8px;
+  padding-right: 8px;
+  border-radius: 6px;
 }
 
 .info-item:last-child {
@@ -81,18 +85,18 @@
 }
 
 .info-label {
-  font-size: 16px;
+  font-size: 15px;
   color: #333;
-  min-width: 80px; /* 固定宽度，确保对齐 */
+  min-width: 70px; /* 固定宽度，确保对齐 */
   font-weight: 500;
 }
 
 .info-input {
   flex: 1;
-  height: 40px;
-  padding: 0 10px;
+  height: 35px;
+  padding: 0 8px;
   border: none;
-  font-size: 15px;
+  font-size: 14px;
   text-align: right;
   color: #333;
   background-color: transparent;
@@ -106,17 +110,17 @@
 .picker-result {
   flex: 1;
   text-align: right;
-  font-size: 15px;
+  font-size: 14px;
   color: #333;
-  padding: 10px 0;
+  padding: 8px 0;
 }
 
 .info-value {
   flex: 1;
   text-align: right;
-  font-size: 14px;
+  font-size: 13px;
   color: #666;
-  padding: 10px 0;
+  padding: 8px 0;
   word-break: break-all;
 }
 
@@ -124,19 +128,19 @@
 .save-button {
   background-color: #07c160;
   color: white;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 500;
-  padding: 15px;
+  padding: 12px;
   border-radius: 8px;
-  margin-top: 20px;
+  margin-top: 15px;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(7, 193, 96, 0.3);
+  box-shadow: 0 2px 6px rgba(7, 193, 96, 0.3);
 }
 
 .save-button:hover {
   background-color: #09d570;
-  box-shadow: 0 4px 12px rgba(7, 193, 96, 0.4);
-  transform: translateY(-2px);
+  box-shadow: 0 3px 9px rgba(7, 193, 96, 0.4);
+  transform: translateY(-1px);
 }
 
 .save-button:active {
@@ -147,19 +151,19 @@
 .logout-button {
   background-color: #ff4d4f;
   color: white;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 500;
-  padding: 15px;
+  padding: 12px;
   border-radius: 8px;
-  margin-top: 15px;
+  margin-top: 10px;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(255, 77, 79, 0.3);
+  box-shadow: 0 2px 6px rgba(255, 77, 79, 0.3);
 }
 
 .logout-button:hover {
   background-color: #ff7875;
-  box-shadow: 0 4px 12px rgba(255, 77, 79, 0.4);
-  transform: translateY(-2px);
+  box-shadow: 0 3px 9px rgba(255, 77, 79, 0.4);
+  transform: translateY(-1px);
 }
 
 .logout-button:active {
@@ -169,19 +173,19 @@
 /* 响应式调整 */
 @media (max-width: 375px) {
   .profile-edit-container {
-    padding: 15px;
+    padding: 12px;
   }
   
   .info-list {
-    padding: 15px;
+    padding: 12px;
   }
   
   .info-item {
-    padding: 12px 0;
+    padding: 10px 0;
   }
   
   .save-button,
   .logout-button {
-    padding: 12px;
+    padding: 10px;
   }
 }

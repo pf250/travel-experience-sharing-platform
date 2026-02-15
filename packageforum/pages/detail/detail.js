@@ -7,6 +7,11 @@ Page({
     newComment: '', // 新评论内容
     currentPostId: null, // 当前展开评论的帖子 ID
     showCommentInput: false, // 控制评论输入框的显示
+    // 回复相关状态
+    showReplyInput: false, // 控制回复输入框的显示
+    replyTargetId: null, // 回复目标评论的 ID
+    replyTargetAuthor: '', // 回复目标评论的作者昵称
+    newReply: '', // 新回复内容
   },
 
   onLoad(options) {
@@ -25,7 +30,8 @@ Page({
       const post = res.data;
       const likeCount = await this.getLikeCount(postId);
       const commentCount = await this.getCommentCount(postId);
-      this.setData({ post: { ...post, likeCount, commentCount } });
+      const formattedTime = this.formatTime(post.createdAt);
+      this.setData({ post: { ...post, likeCount, commentCount, formattedTime } });
     } catch (error) {
       console.error('加载帖子详情失败:', error);
       wx.showToast({ title: '加载失败，请稍后重试', icon: 'none' });
@@ -39,7 +45,66 @@ Page({
         .where({ postId })
         .orderBy('createdAt', 'desc')
         .get();
-      this.setData({ comments: comments.data });
+      
+      // 格式化所有评论的时间
+      const allComments = comments.data.map(comment => {
+        return {
+          ...comment,
+          formattedTime: this.formatTime(comment.createdAt),
+          replies: []
+        };
+      });
+      
+      // 构建评论-回复的层级结构
+      const topLevelComments = [];
+      const replyMap = {};
+      
+      // 首先创建所有评论的映射
+      allComments.forEach(comment => {
+        replyMap[comment._id] = comment;
+      });
+      
+      // 为每个回复添加replyTargetAuthor字段和isReplyToReply字段
+      allComments.forEach(comment => {
+        if (comment.parentId) {
+          // 查找直接父评论的作者昵称
+          const parentComment = replyMap[comment.parentId];
+          if (parentComment) {
+            comment.replyTargetAuthor = parentComment.nickName;
+            // 检查父评论是否也是回复（即是否有parentId）
+            comment.isReplyToReply = !!parentComment.parentId;
+          }
+        }
+      });
+      
+      // 然后构建层级
+      allComments.forEach(comment => {
+        if (!comment.parentId) {
+          // 顶级评论
+          comment.isExpanded = false; // 默认折叠所有回复
+          topLevelComments.push(comment);
+        } else {
+          // 回复评论，找到最终的顶级父评论
+          let currentParentId = comment.parentId;
+          let topLevelParentId = currentParentId;
+          
+          // 递归查找顶级父评论
+          while (replyMap[topLevelParentId] && replyMap[topLevelParentId].parentId) {
+            topLevelParentId = replyMap[topLevelParentId].parentId;
+          }
+          
+          // 将回复添加到顶级父评论的replies数组中
+          const topLevelParent = replyMap[topLevelParentId];
+          if (topLevelParent) {
+            if (!topLevelParent.replies) {
+              topLevelParent.replies = [];
+            }
+            topLevelParent.replies.push(comment);
+          }
+        }
+      });
+      
+      this.setData({ comments: topLevelComments });
     } catch (error) {
       console.error('加载评论失败:', error);
       wx.showToast({ title: '加载评论失败，请稍后重试', icon: 'none' });
@@ -169,6 +234,87 @@ Page({
     }
   },
 
+  // 显示回复输入框
+  showReplyInput(e) {
+    if (!this.checkLogin()) {
+      wx.showToast({ title: '请先登录', icon: 'none' });
+      return;
+    }
+
+    const commentId = e.currentTarget.dataset.commentId;
+    const commentAuthor = e.currentTarget.dataset.commentAuthor;
+    this.setData({
+      showReplyInput: true,
+      replyTargetId: commentId,
+      replyTargetAuthor: commentAuthor,
+      newReply: ''
+    });
+  },
+
+  // 隐藏回复输入框
+  hideReplyInput() {
+    this.setData({
+      showReplyInput: false,
+      replyTargetId: null,
+      replyTargetAuthor: '',
+      newReply: ''
+    });
+  },
+
+  // 输入回复内容
+  onReplyInput(e) {
+    this.setData({ newReply: e.detail.value });
+  },
+
+  // 发表回复
+  async handleReply(e) {
+    const postId = this.data.currentPostId;
+    const parentId = e.currentTarget.dataset.commentId;
+    const content = this.data.newReply.trim();
+
+    if (!this.checkLogin()) {
+      wx.showToast({ title: '请先登录', icon: 'none' });
+      return;
+    }
+
+    if (!content) {
+      wx.showToast({ title: '请输入回复内容', icon: 'none' });
+      return;
+    }
+
+    // 获取用户信息
+    const loginState = wx.getStorageSync('loginState');
+    if (!loginState || !loginState.userId || !loginState.avatarUrl || !loginState.nickName) {
+      wx.showToast({ title: '用户信息获取失败', icon: 'none' });
+      return;
+    }
+
+    const { userId, avatarUrl, nickName } = loginState;
+
+    try {
+      await wx.cloud.database().collection('comments').add({
+        data: { postId, userId, content, avatarUrl, nickName, parentId, createdAt: new Date() },
+      });
+      this.loadComments(postId);
+      this.hideReplyInput(); // 清空输入框并隐藏回复输入框
+    } catch (error) {
+      console.error('发表回复失败:', error);
+      wx.showToast({ title: '发表回复失败，请稍后重试', icon: 'none' });
+    }
+  },
+
+  // 切换评论回复的展开/折叠状态
+  toggleReplyExpanded(e) {
+    const commentId = e.currentTarget.dataset.commentId;
+    const comments = this.data.comments.map(comment => {
+      if (comment._id === commentId) {
+        return { ...comment, isExpanded: !comment.isExpanded };
+      }
+      return comment;
+    });
+    this.setData({ comments });
+  },
+
   // 检查用户是否登录
   checkLogin() {
     const loginState = wx.getStorageSync('loginState');
@@ -177,7 +323,52 @@ Page({
 
   // 格式化时间
   formatTime(date) {
-    const d = new Date(date);
-    return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()} ${d.getHours()}:${d.getMinutes()}`;
+    if (!date) return '';
+    
+    let d;
+    if (date instanceof Date) {
+      d = date;
+    } else if (date.$date) {
+      d = new Date(date.$date);
+    } else {
+      d = new Date(date);
+    }
+    
+    const now = new Date();
+    const diff = now - d;
+    const diffHours = Math.floor(diff / (1000 * 60 * 60));
+    
+    // 如果是24小时内，显示相对时间
+    if (diffHours < 24) {
+      if (diffHours < 1) {
+        const diffMinutes = Math.floor(diff / (1000 * 60));
+        if (diffMinutes < 1) {
+          const diffSeconds = Math.floor(diff / 1000);
+          // 确保从1秒开始显示，避免"0秒前"
+          return `${Math.max(1, diffSeconds)}秒前`;
+        }
+        return `${diffMinutes}分钟前`;
+      }
+      return `${diffHours}小时前`;
+    }
+    
+    // 计算日期差值
+    const nowDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const targetDate = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    const diffDays = Math.floor((nowDate - targetDate) / (1000 * 60 * 60 * 24));
+    
+    // 根据日期差值显示不同格式
+    if (diffDays === 1) {
+      return '昨天';
+    } else if (diffDays === 2) {
+      return '前天';
+    } else if (diffDays <= 7) {
+      return `${diffDays}天前`;
+    } else {
+      // 超过7天，显示具体的月和日
+      const month = (d.getMonth() + 1).toString().padStart(2, '0');
+      const day = d.getDate().toString().padStart(2, '0');
+      return `${month}-${day}`;
+    }
   },
 });

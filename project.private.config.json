@@ -6,18 +6,6 @@
     "skylineRenderEnable": false,
     "urlCheck": false
   },
-  "libVersion": "3.12.1",
-  "condition": {
-    "miniprogram": {
-      "list": [
-        {
-          "name": "packageProfile/pages/privilege/admin/admin",
-          "pathName": "packageProfile/pages/privilege/admin/admin",
-          "query": "userId=1001&role=admin",
-          "scene": null,
-          "launchMode": "default"
-        }
-      ]
-    }
-  }
+  "libVersion": "3.14.2",
+  "condition": {}
 }

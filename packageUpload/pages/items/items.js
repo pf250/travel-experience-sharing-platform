@@ -38,7 +38,20 @@ Page({
 
   // 输入价格
   onPriceInput(e) {
-    this.setData({ price: e.detail.value });
+    // 只允许输入数字和小数点，且小数点只能出现一次
+    let value = e.detail.value;
+    // 移除非数字和小数点的字符
+    value = value.replace(/[^0-9.]/g, '');
+    // 确保小数点只出现一次
+    const parts = value.split('.');
+    if (parts.length > 2) {
+      value = parts[0] + '.' + parts.slice(1).join('');
+    }
+    // 限制小数点后最多两位
+    if (parts.length === 2 && parts[1].length > 2) {
+      value = parts[0] + '.' + parts[1].slice(0, 2);
+    }
+    this.setData({ price: value });
   },
 
   // 选择地点
@@ -101,6 +114,16 @@ Page({
     if (!description || !price || locationIndex === null || categoryIndex === null || shippingIndex === null) {
       wx.showToast({
         title: '请填写完整信息',
+        icon: 'none',
+      });
+      return;
+    }
+
+    // 检查价格是否为有效的数字，并且大于0
+    const priceNum = parseFloat(price);
+    if (isNaN(priceNum) || priceNum <= 0) {
+      wx.showToast({
+        title: '请输入有效的价格',
         icon: 'none',
       });
       return;
