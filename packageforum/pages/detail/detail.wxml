@@ -61,7 +61,7 @@
                 <text class="comment-nickname">{{item.nickName}}</text>
               </view>
               <!-- 评论内容 -->
-              <text class="comment-content">{{item.content}}</text>
+                <text class="comment-content">{{item.parentId ? '回复 @' + item.replyTargetAuthor + '：' : ''}}{{item.content}}</text>
               <view class="comment-footer">
                 <!-- 评论时间 -->
                 <text class="comment-time">{{item.formattedTime}}</text>
@@ -84,7 +84,7 @@
                     <text class="comment-nickname">{{item.nickName}}</text>
                   </view>
                   <!-- 评论内容 -->
-                  <text class="comment-content">{{item.content}}</text>
+                <text class="comment-content">{{item.parentId ? '回复 @' + item.replyTargetAuthor + '：' : ''}}{{item.content}}</text>
                   <view class="comment-footer">
                     <!-- 评论时间 -->
                     <text class="comment-time">{{item.formattedTime}}</text>

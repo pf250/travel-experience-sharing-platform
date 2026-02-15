@@ -64,6 +64,17 @@ Page({
         replyMap[comment._id] = comment;
       });
       
+      // 为每个回复添加replyTargetAuthor字段
+      allComments.forEach(comment => {
+        if (comment.parentId) {
+          // 查找直接父评论的作者昵称
+          const parentComment = replyMap[comment.parentId];
+          if (parentComment) {
+            comment.replyTargetAuthor = parentComment.nickName;
+          }
+        }
+      });
+      
       // 然后构建层级
       allComments.forEach(comment => {
         if (!comment.parentId) {
@@ -71,13 +82,22 @@ Page({
           comment.isExpanded = false; // 默认折叠所有回复
           topLevelComments.push(comment);
         } else {
-          // 回复评论
-          const parentComment = replyMap[comment.parentId];
-          if (parentComment) {
-            if (!parentComment.replies) {
-              parentComment.replies = [];
+          // 回复评论，找到最终的顶级父评论
+          let currentParentId = comment.parentId;
+          let topLevelParentId = currentParentId;
+          
+          // 递归查找顶级父评论
+          while (replyMap[topLevelParentId] && replyMap[topLevelParentId].parentId) {
+            topLevelParentId = replyMap[topLevelParentId].parentId;
+          }
+          
+          // 将回复添加到顶级父评论的replies数组中
+          const topLevelParent = replyMap[topLevelParentId];
+          if (topLevelParent) {
+            if (!topLevelParent.replies) {
+              topLevelParent.replies = [];
             }
-            parentComment.replies.push(comment);
+            topLevelParent.replies.push(comment);
           }
         }
       });
