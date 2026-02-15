@@ -160,8 +160,30 @@
   text-align: right;
 }
 
+.price-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
 .original-price {
   font-size: 28rpx;
+  font-weight: bold;
+  color: #ff6b6b;
+  display: block;
+  margin-bottom: 4rpx;
+}
+
+.original-price.discounted {
+  font-size: 24rpx;
+  font-weight: normal;
+  color: #999;
+  text-decoration: line-through;
+  margin-bottom: 2rpx;
+}
+
+.current-price {
+  font-size: 32rpx;
   font-weight: bold;
   color: #ff6b6b;
   display: block;

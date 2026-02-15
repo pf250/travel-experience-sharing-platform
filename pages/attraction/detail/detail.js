@@ -110,6 +110,9 @@ Page({
           discounts: discountsWithStatus
         });
         console.log('查询优惠方案成功:', discountsWithStatus.length, '个');
+        
+        // 为门票添加优惠信息
+        this.addDiscountInfoToTickets();
       },
       fail: (err) => {
         console.error('查询优惠方案失败:', err);
@@ -172,7 +175,7 @@ Page({
   /**
    * 获取优惠后的价格
    */
-  getDiscountedPrice(ticketId) {
+  getDiscountedPrice(ticketId, originalPrice) {
     const discounts = this.data.discounts.filter(discount => {
       return discount.status === 1 && discount.ticketIds.includes(ticketId);
     });
@@ -180,9 +183,29 @@ Page({
     if (discounts.length > 0) {
       // 取第一个有效的优惠方案
       const discount = discounts[0];
-      return discount.discountValue;
+      // 计算优惠后的价格
+      const discountedPrice = originalPrice - discount.discountValue;
+      return Math.max(0, discountedPrice); // 确保价格不小于0
     }
     return null;
+  },
+  
+  /**
+   * 为门票添加优惠信息
+   */
+  addDiscountInfoToTickets() {
+    const ticketsWithDiscount = this.data.tickets.map(ticket => {
+      const discountedPrice = this.getDiscountedPrice(ticket._id, ticket.price);
+      return {
+        ...ticket,
+        discountedPrice: discountedPrice,
+        hasDiscount: discountedPrice !== null
+      };
+    });
+    
+    this.setData({
+      tickets: ticketsWithDiscount
+    });
   },
 
   /**

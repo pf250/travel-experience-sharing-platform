@@ -53,9 +53,13 @@
             <text class="ticket-description">{{item.description}}</text>
           </view>
           <view class="ticket-price">
-            <text class="original-price">¥{{item.price}}</text>
+            <view class="price-container">
+              <text wx:if="{{item.hasDiscount}}" class="original-price discounted">¥{{item.price}}</text>
+              <text wx:else class="original-price">¥{{item.price}}</text>
+              <text wx:if="{{item.hasDiscount}}" class="current-price">¥{{item.discountedPrice}}</text>
+            </view>
             <text class="stock">库存：{{item.stock}}</text>
-            <button class="book-btn" bindtap="bookTicket" data-ticket-id="{{item._id}}" data-ticket-name="{{item.name}}" data-ticket-price="{{item.price}}">预定</button>
+            <button class="book-btn" bindtap="bookTicket" data-ticket-id="{{item._id}}" data-ticket-name="{{item.name}}" data-ticket-price="{{item.hasDiscount ? item.discountedPrice : item.price}}">预定</button>
           </view>
         </view>
       </view>
