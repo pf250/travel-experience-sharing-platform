@@ -117,6 +117,9 @@ Page({
       success: async (res) => {
         if (res.confirm) {
           try {
+            // 显示删除中加载提示
+            wx.showLoading({ title: '删除中...', mask: true });
+            
             // 先删除与该帖子相关的所有评论和回复
             await this.deletePostComments(postId);
             
@@ -124,6 +127,9 @@ Page({
             await wx.cloud.database().collection('posts')
               .doc(postId)
               .remove();
+            
+            // 隐藏加载提示
+            wx.hideLoading();
             
             // 显示删除成功提示
             wx.showToast({ title: '删除成功', icon: 'success' });
@@ -134,6 +140,9 @@ Page({
               this.loadUserPosts(userId);
             }
           } catch (error) {
+            // 隐藏加载提示
+            wx.hideLoading();
+            
             console.error('删除帖子失败:', error);
             wx.showToast({ title: '删除失败，请稍后重试', icon: 'none' });
           }
