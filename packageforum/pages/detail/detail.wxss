@@ -15,8 +15,16 @@
 
 .userinfo {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
   margin-bottom: 10px;
+}
+
+.userinfo-top {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 5px;
 }
 
 .avatar {
@@ -29,6 +37,7 @@
 .username {
   font-size: 18px;
   font-weight: bold;
+  margin-right: auto;
 }
 
 .post-meta {
@@ -36,6 +45,7 @@
   align-items: center;
   color: #888;
   font-size: 14px;
+  width: 100%;
 }
 
 .post-meta text {

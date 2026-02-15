@@ -11,9 +11,9 @@
     "miniprogram": {
       "list": [
         {
-          "name": "pages/forum/forum",
-          "pathName": "pages/forum/forum",
-          "query": "",
+          "name": "packageforum/pages/detail/detail",
+          "pathName": "packageforum/pages/detail/detail",
+          "query": "postId=ee4af104697bb5b5002e55f61183c92c",
           "scene": null,
           "launchMode": "default"
         }

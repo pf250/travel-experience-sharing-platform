@@ -2,14 +2,16 @@
   <!-- 帖子详情 -->
   <view class="post-detail">
     <view class="userinfo">
-      <!-- 头像 -->
-      <image class="avatar" src="{{post.avatarUrl}}"></image>
-      <!-- 昵称 -->
-      <text class="username">{{post.nickName}}</text>
+      <view class="userinfo-top">
+        <!-- 头像 -->
+        <image class="avatar" src="{{post.avatarUrl}}"></image>
+        <!-- 昵称 -->
+        <text class="username">{{post.nickName}}</text>
+      </view>
       <!-- 用户信息 -->
       <view class="post-meta">
         <text class="post-author">Uid: {{post.userId}}</text>
-        <text class="post-time">{{formatTime(post.createdAt)}}</text>
+        <text class="post-time">时间：{{post.formattedTime}}</text>
       </view>
     </view>
     <!-- 标题 -->
@@ -58,7 +60,7 @@
             <!-- 评论内容 -->
             <text class="comment-content">{{item.content}}</text>
             <!-- 评论时间 -->
-            <text class="comment-time">{{formatTime(item.createdAt)}}</text>
+            <text class="comment-time">{{item.formattedTime}}</text>
           </view>
         </block>
       </view>
