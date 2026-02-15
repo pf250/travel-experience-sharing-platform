@@ -18,10 +18,11 @@
       <!-- 描述 -->
       <view class="post-description">{{item.description}}</view>
       <!-- 图片 -->
-      <view class="post-images" wx:if="{{item.images.length > 0}}">
+      <view class="post-images" wx:if="{{item.images && item.images.length > 0}}">
         <image
           wx:for="{{item.images}}"
           wx:key="index"
+          wx:if="{{index < 3}}"
           src="{{item}}"
           mode="aspectFill"
           class="post-image"
