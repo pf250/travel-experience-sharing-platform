@@ -11,9 +11,9 @@
     "miniprogram": {
       "list": [
         {
-          "name": "packageProfile/pages/privilege/merchant/merchant",
-          "pathName": "packageProfile/pages/privilege/merchant/merchant",
-          "query": "userId=1020&role=merchant",
+          "name": "pages/attraction/detail/detail",
+          "pathName": "pages/attraction/detail/detail",
+          "query": "id=8a59a50e697b6d8f0027f4752d2576e9",
           "scene": null,
           "launchMode": "default"
         }

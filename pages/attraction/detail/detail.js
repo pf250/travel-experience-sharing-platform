@@ -9,7 +9,8 @@ Page({
     tickets: [],
     discounts: [],
     isLoading: true,
-    currentImageIndex: 0
+    currentImageIndex: 0,
+    showFullDescription: false
   },
 
   /**
@@ -37,6 +38,8 @@ Page({
         });
         console.log('查询景区详情成功:', res.data);
         this.setLoading(false);
+        
+
       },
       fail: (err) => {
         console.error('查询景区详情失败:', err);
@@ -170,6 +173,15 @@ Page({
         }
       });
     }
+  },
+  
+  /**
+   * 切换景区描述展开/收起状态
+   */
+  toggleDescription() {
+    this.setData({
+      showFullDescription: !this.data.showFullDescription
+    });
   },
 
   /**
