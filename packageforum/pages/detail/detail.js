@@ -7,6 +7,11 @@ Page({
     newComment: '', // 新评论内容
     currentPostId: null, // 当前展开评论的帖子 ID
     showCommentInput: false, // 控制评论输入框的显示
+    // 回复相关状态
+    showReplyInput: false, // 控制回复输入框的显示
+    replyTargetId: null, // 回复目标评论的 ID
+    replyTargetAuthor: '', // 回复目标评论的作者昵称
+    newReply: '', // 新回复内容
   },
 
   onLoad(options) {
@@ -40,13 +45,40 @@ Page({
         .where({ postId })
         .orderBy('createdAt', 'desc')
         .get();
-      const formattedComments = comments.data.map(comment => {
+      
+      // 格式化所有评论的时间
+      const allComments = comments.data.map(comment => {
         return {
           ...comment,
-          formattedTime: this.formatTime(comment.createdAt)
+          formattedTime: this.formatTime(comment.createdAt),
+          replies: []
         };
       });
-      this.setData({ comments: formattedComments });
+      
+      // 构建评论-回复的层级结构
+      const topLevelComments = [];
+      const replyMap = {};
+      
+      // 首先创建所有评论的映射
+      allComments.forEach(comment => {
+        replyMap[comment._id] = comment;
+      });
+      
+      // 然后构建层级
+      allComments.forEach(comment => {
+        if (!comment.parentId) {
+          // 顶级评论
+          topLevelComments.push(comment);
+        } else {
+          // 回复评论
+          const parentComment = replyMap[comment.parentId];
+          if (parentComment) {
+            parentComment.replies.push(comment);
+          }
+        }
+      });
+      
+      this.setData({ comments: topLevelComments });
     } catch (error) {
       console.error('加载评论失败:', error);
       wx.showToast({ title: '加载评论失败，请稍后重试', icon: 'none' });
@@ -176,6 +208,75 @@ Page({
     }
   },
 
+  // 显示回复输入框
+  showReplyInput(e) {
+    if (!this.checkLogin()) {
+      wx.showToast({ title: '请先登录', icon: 'none' });
+      return;
+    }
+
+    const commentId = e.currentTarget.dataset.commentId;
+    const commentAuthor = e.currentTarget.dataset.commentAuthor;
+    this.setData({
+      showReplyInput: true,
+      replyTargetId: commentId,
+      replyTargetAuthor: commentAuthor,
+      newReply: ''
+    });
+  },
+
+  // 隐藏回复输入框
+  hideReplyInput() {
+    this.setData({
+      showReplyInput: false,
+      replyTargetId: null,
+      replyTargetAuthor: '',
+      newReply: ''
+    });
+  },
+
+  // 输入回复内容
+  onReplyInput(e) {
+    this.setData({ newReply: e.detail.value });
+  },
+
+  // 发表回复
+  async handleReply(e) {
+    const postId = this.data.currentPostId;
+    const parentId = e.currentTarget.dataset.commentId;
+    const content = this.data.newReply.trim();
+
+    if (!this.checkLogin()) {
+      wx.showToast({ title: '请先登录', icon: 'none' });
+      return;
+    }
+
+    if (!content) {
+      wx.showToast({ title: '请输入回复内容', icon: 'none' });
+      return;
+    }
+
+    // 获取用户信息
+    const loginState = wx.getStorageSync('loginState');
+    if (!loginState || !loginState.userId || !loginState.avatarUrl || !loginState.nickName) {
+      wx.showToast({ title: '用户信息获取失败', icon: 'none' });
+      return;
+    }
+
+    const { userId, avatarUrl, nickName } = loginState;
+
+    try {
+      await wx.cloud.database().collection('comments').add({
+        data: { postId, userId, content, avatarUrl, nickName, parentId, createdAt: new Date() },
+      });
+      this.loadComments(postId);
+      this.hideReplyInput(); // 清空输入框并隐藏回复输入框
+    } catch (error) {
+      console.error('发表回复失败:', error);
+      wx.showToast({ title: '发表回复失败，请稍后重试', icon: 'none' });
+    }
+  },
+
   // 检查用户是否登录
   checkLogin() {
     const loginState = wx.getStorageSync('loginState');
@@ -213,20 +314,18 @@ Page({
     const targetDate = new Date(d.getFullYear(), d.getMonth(), d.getDate());
     const diffDays = Math.floor((nowDate - targetDate) / (1000 * 60 * 60 * 24));
     
-    const hour = d.getHours().toString().padStart(2, '0');
-    const minute = d.getMinutes().toString().padStart(2, '0');
-    
     // 根据日期差值显示不同格式
     if (diffDays === 1) {
-      return `昨天 ${hour}:${minute}`;
+      return '昨天';
     } else if (diffDays === 2) {
-      return `前天 ${hour}:${minute}`;
+      return '前天';
+    } else if (diffDays <= 7) {
+      return `${diffDays}天前`;
     } else {
-      // 超过前天，显示具体日期
-      const year = d.getFullYear();
+      // 超过7天，显示具体的月和日
       const month = (d.getMonth() + 1).toString().padStart(2, '0');
       const day = d.getDate().toString().padStart(2, '0');
-      return `${year}-${month}-${day} ${hour}:${minute}`;
+      return `${month}-${day}`;
     }
   },
 });

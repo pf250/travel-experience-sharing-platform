@@ -52,27 +52,90 @@
     <view class="comments-section">
       <view class="comment-list">
         <block wx:for="{{comments}}" wx:key="_id">
-          <view class="comment-item">
+          <view class="comment-item" data-comment-id="{{item._id}}">
             <!-- 头像 -->
             <image class="comment-avatar" src="{{item.avatarUrl}}"></image>
-            <!-- 昵称 -->
-            <text class="comment-nickname">{{item.nickName}}:</text>
-            <!-- 评论内容 -->
-            <text class="comment-content">{{item.content}}</text>
-            <!-- 评论时间 -->
-            <text class="comment-time">{{item.formattedTime}}</text>
+            <view class="comment-content-wrapper">
+              <view class="comment-header">
+                <!-- 昵称 -->
+                <text class="comment-nickname">{{item.nickName}}</text>
+              </view>
+              <!-- 评论内容 -->
+              <text class="comment-content">{{item.content}}</text>
+              <view class="comment-footer">
+                <!-- 评论时间 -->
+                <text class="comment-time">{{item.formattedTime}}</text>
+                <!-- 回复按钮 -->
+                <button class="reply-btn" bindtap="showReplyInput" data-comment-id="{{item._id}}" data-comment-author="{{item.nickName}}">
+                  回复
+                </button>
+              </view>
+            </view>
+          </view>
+          <!-- 回复列表 -->
+          <view class="replies-list" wx:if="{{item.replies && item.replies.length > 0}}">
+            <block wx:for="{{item.replies}}" wx:key="_id">
+              <view class="reply-item">
+                <!-- 头像 -->
+                <image class="comment-avatar" src="{{item.avatarUrl}}"></image>
+                <view class="comment-content-wrapper">
+                  <view class="comment-header">
+                    <!-- 昵称 -->
+                    <text class="comment-nickname">{{item.nickName}}</text>
+                  </view>
+                  <!-- 评论内容 -->
+                  <text class="comment-content">{{item.content}}</text>
+                  <view class="comment-footer">
+                    <!-- 评论时间 -->
+                    <text class="comment-time">{{item.formattedTime}}</text>
+                    <!-- 回复按钮 -->
+                    <button class="reply-btn" bindtap="showReplyInput" data-comment-id="{{item._id}}" data-comment-author="{{item.nickName}}">
+                      回复
+                    </button>
+                  </view>
+                </view>
+              </view>
+            </block>
+          </view>
+          <!-- 回复输入框 -->
+          <view class="reply-input" wx:if="{{showReplyInput && replyTargetId === item._id}}">
+            <textarea
+              placeholder="回复 {{replyTargetAuthor}}..."
+              value="{{newReply}}"
+              bindinput="onReplyInput"
+              auto-height="{{true}}"
+              style="min-height: 100rpx;"
+            />
+            <view class="reply-input-buttons">
+              <button bindtap="hideReplyInput" class="cancel-btn">
+                取消
+              </button>
+              <button bindtap="handleReply" data-comment-id="{{item._id}}" class="submit-btn">
+                回复
+              </button>
+            </view>
           </view>
         </block>
       </view>
-      <!-- 发表评论输入框 -->
-      <view class="comment-input" wx:if="{{showCommentInput}}">
-        <input
-          type="text"
-          placeholder="发表评论..."
-          value="{{newComment}}"
-          bindinput="onCommentInput"
-        />
-        <button bindtap="handleComment" data-post-id="{{post._id}}">
+    </view>
+  </view>
+  
+  <!-- 弹出式评论输入框 -->
+  <view class="comment-input-popup" wx:if="{{showCommentInput}}">
+    <view class="comment-input-content">
+      <textarea
+        placeholder="发表评论..."
+        value="{{newComment}}"
+        bindinput="onCommentInput"
+        focus="{{true}}"
+        auto-height="{{true}}"
+        style="min-height: 120rpx;"
+      />
+      <view class="comment-input-buttons">
+        <button bindtap="hideCommentInput" class="cancel-btn">
+          取消
+        </button>
+        <button bindtap="handleComment" data-post-id="{{post._id}}" class="submit-btn">
           发表
         </button>
       </view>

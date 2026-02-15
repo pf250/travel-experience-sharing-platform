@@ -128,20 +128,18 @@ Page({
     const targetDate = new Date(d.getFullYear(), d.getMonth(), d.getDate());
     const diffDays = Math.floor((nowDate - targetDate) / (1000 * 60 * 60 * 24));
     
-    const hour = d.getHours().toString().padStart(2, '0');
-    const minute = d.getMinutes().toString().padStart(2, '0');
-    
     // 根据日期差值显示不同格式
     if (diffDays === 1) {
-      return `昨天 ${hour}:${minute}`;
+      return '昨天';
     } else if (diffDays === 2) {
-      return `前天 ${hour}:${minute}`;
+      return '前天';
+    } else if (diffDays <= 7) {
+      return `${diffDays}天前`;
     } else {
-      // 超过前天，显示具体日期
-      const year = d.getFullYear();
+      // 超过7天，显示具体的月和日
       const month = (d.getMonth() + 1).toString().padStart(2, '0');
       const day = d.getDate().toString().padStart(2, '0');
-      return `${year}-${month}-${day} ${hour}:${minute}`;
+      return `${month}-${day}`;
     }
   },
 
