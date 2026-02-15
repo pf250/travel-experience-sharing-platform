@@ -1,7 +1,7 @@
 <view class="container">
   <!-- 第一个 block：描述 + 图片上传 -->
   <view class="block block-top">
-    <view class=" description-group">
+    <view class="description-group">
       <textarea 
         placeholder="添加宝贝描述..." 
         value="{{description}}"
@@ -70,6 +70,36 @@
     </view>
   </view>
 
-  <!-- 发布按钮 -->
-  <button class="publish-btn" bindtap="handlePublish">发布</button>
+  <!-- 按钮区域 -->
+  <view class="button-group">
+    <!-- AI编辑按钮 -->
+    <button class="ai-btn" bindtap="showAIDialog">
+      AI编辑
+    </button>
+    <!-- 发布按钮 -->
+    <button class="publish-btn" bindtap="handlePublish">发布</button>
+  </view>
+  
+  <!-- AI编辑对话框 -->
+  <view class="ai-dialog" wx:if="{{showAIDialog}}">
+    <view class="ai-dialog-content">
+      <view class="ai-dialog-header">
+        <text class="ai-dialog-title">AI编辑</text>
+        <text class="ai-dialog-close" bindtap="hideAIDialog">×</text>
+      </view>
+      <view class="ai-dialog-body">
+        <text class="ai-dialog-label">请输入宝贝类型：</text>
+        <input 
+          placeholder="例如：手机、书籍、衣服..." 
+          value="{{aiItemType}}"
+          bindinput="onAIItemTypeInput"
+          class="ai-dialog-input"
+        />
+      </view>
+      <view class="ai-dialog-footer">
+        <button class="ai-dialog-cancel" bindtap="hideAIDialog">取消</button>
+        <button class="ai-dialog-confirm" bindtap="generateAIContent">生成内容</button>
+      </view>
+    </view>
+  </view>
 </view>
