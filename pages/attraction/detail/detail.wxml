@@ -23,8 +23,13 @@
     <view class="scenic-info">
       <text class="scenic-name">{{scenic.name}}</text>
       <text class="scenic-status">{{scenic.status}}</text>
-      <view class="scenic-description">
-        <text>{{scenic.description}}</text>
+      <view class="scenic-description-container">
+        <view class="scenic-description {{!showFullDescription ? 'collapsed' : ''}}">
+          <text>{{scenic.description}}</text>
+        </view>
+        <text wx:if="{{scenic.description && scenic.description.length > 60}}" class="expand-btn" bindtap="toggleDescription">
+          {{showFullDescription ? '收起' : '展开'}}
+        </text>
       </view>
       <view class="scenic-contact">
         <view class="contact-item">
@@ -47,15 +52,23 @@
         <text>暂无门票信息</text>
       </view>
       <view wx:else class="ticket-list">
-        <view wx:for="{{tickets}}" wx:key="{{item._id}}" class="ticket-item">
-          <view class="ticket-info">
+        <view wx:for="{{tickets}}" wx:key="{{item._id}}" class="ticket-card">
+          <view class="ticket-header">
             <text class="ticket-name">{{item.name}}</text>
-            <text class="ticket-description">{{item.description}}</text>
           </view>
-          <view class="ticket-price">
-            <text class="original-price">¥{{item.price}}</text>
-            <text class="stock">库存：{{item.stock}}</text>
-            <button class="book-btn" bindtap="bookTicket" data-ticket-id="{{item._id}}" data-ticket-name="{{item.name}}" data-ticket-price="{{item.price}}">预定</button>
+          <view wx:if="{{item.description}}" class="ticket-description">
+            {{item.description}}
+          </view>
+          <view class="ticket-footer">
+            <view class="ticket-price">
+              <view class="price-container">
+                <text wx:if="{{item.hasDiscount}}" class="original-price discounted">¥{{item.price}}</text>
+                <text wx:else class="original-price">¥{{item.price}}</text>
+                <text wx:if="{{item.hasDiscount}}" class="current-price">¥{{item.discountedPrice}}</text>
+              </view>
+              <text class="stock">库存：{{item.stock}}</text>
+            </view>
+            <button class="book-btn" bindtap="bookTicket" data-ticket-id="{{item._id}}" data-ticket-name="{{item.name}}" data-ticket-price="{{item.hasDiscount ? item.discountedPrice : item.price}}">预定</button>
           </view>
         </view>
       </view>

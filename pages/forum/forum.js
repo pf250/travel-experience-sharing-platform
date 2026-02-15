@@ -118,6 +118,10 @@ Page({
     if (diffHours < 24) {
       if (diffHours < 1) {
         const diffMinutes = Math.floor(diff / (1000 * 60));
+        if (diffMinutes < 1) {
+          const diffSeconds = Math.floor(diff / 1000);
+          return `${Math.max(diffSeconds, 1)}秒前`;
+        }
         return `${diffMinutes}分钟前`;
       }
       return `${diffHours}小时前`;

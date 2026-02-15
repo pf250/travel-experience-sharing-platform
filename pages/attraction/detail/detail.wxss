@@ -58,7 +58,34 @@
   font-size: 24rpx;
   color: #666;
   line-height: 36rpx;
+  position: relative;
+}
+
+.scenic-description.collapsed {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: 108rpx; /* 3行 * 36rpx/行 */
+}
+
+.scenic-description-container {
   margin-bottom: 20rpx;
+  position: relative;
+}
+
+.scenic-description-container .expand-btn {
+  display: block;
+  margin-top: 8rpx;
+  text-align: right;
+}
+
+.expand-btn {
+  color: #1296db;
+  font-size: 22rpx;
+  margin-left: 8rpx;
+  cursor: pointer;
 }
 
 .scenic-contact {
@@ -124,40 +151,57 @@
 /* 门票列表 */
 .ticket-list {
   margin-top: 10rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 15rpx;
 }
 
-.ticket-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15rpx 0;
+.ticket-card {
+  background-color: #f9f9f9;
+  border-radius: 12rpx;
+  padding: 20rpx;
+  box-shadow: 0 1rpx 5rpx rgba(0, 0, 0, 0.05);
+}
+
+.ticket-header {
+  margin-bottom: 12rpx;
+  padding-bottom: 12rpx;
   border-bottom: 1rpx solid #f0f0f0;
 }
 
-.ticket-item:last-child {
-  border-bottom: none;
-}
-
-.ticket-info {
-  flex: 1;
-}
-
 .ticket-name {
-  font-size: 24rpx;
+  font-size: 26rpx;
   font-weight: bold;
   color: #333;
-  margin-bottom: 8rpx;
   display: block;
 }
 
 .ticket-description {
-  font-size: 20rpx;
+  font-size: 22rpx;
   color: #666;
-  line-height: 28rpx;
+  line-height: 32rpx;
+  margin-bottom: 16rpx;
+  padding: 0 4rpx;
+}
+
+.ticket-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 12rpx;
+  border-top: 1rpx solid #f0f0f0;
 }
 
 .ticket-price {
-  text-align: right;
+  text-align: left;
+  flex: 1;
+}
+
+.price-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 4rpx;
 }
 
 .original-price {
@@ -168,20 +212,35 @@
   margin-bottom: 4rpx;
 }
 
+.original-price.discounted {
+  font-size: 24rpx;
+  font-weight: normal;
+  color: #999;
+  text-decoration: line-through;
+  margin-bottom: 2rpx;
+}
+
+.current-price {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #ff6b6b;
+  display: block;
+  margin-bottom: 4rpx;
+}
+
 .stock {
   font-size: 20rpx;
   color: #999;
-  margin-bottom: 10rpx;
 }
 
 .book-btn {
   font-size: 22rpx;
-  padding: 8rpx 24rpx;
-  border-radius: 20rpx;
+  padding: 10rpx 28rpx;
+  border-radius: 24rpx;
   background-color: #1296db;
   color: #fff;
-  margin-top: 10rpx;
-  min-width: 100rpx;
+  min-width: 120rpx;
+  text-align: center;
 }
 
 /* 优惠方案列表 */
