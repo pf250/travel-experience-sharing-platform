@@ -5,11 +5,15 @@
       <view class="userinfo">
         <!-- 头像 -->
         <image class="avatar" src="{{item.avatarUrl}}"></image>
-        <!-- 昵称 -->
-        <text class="username">{{item.nickName}}</text>
+        <!-- 用户详情 -->
+        <view class="user-details">
+          <!-- 昵称 -->
+          <text class="username">{{item.nickName}}</text>
+          <!-- Uid -->
+          <text class="user-id">Uid: {{item.userId}}</text>
+        </view>
         <!-- 用户信息 -->
         <view class="post-meta">
-          <text class="post-author">Uid: {{item.userId}}</text>
           <text class="post-time">{{item.formattedTime}}</text>
         </view>
       </view>

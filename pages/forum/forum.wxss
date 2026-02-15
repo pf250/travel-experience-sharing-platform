@@ -43,10 +43,23 @@
 
 .userinfo {
   display: flex; /* 使用 Flexbox 布局 */
-  align-items: center; /* 垂直居中对齐 */
+  align-items: flex-start; /* 顶部对齐 */
   padding: 10px; /* 内边距 */
   background-color: #fff; /* 背景颜色 */
   border-bottom: 1px solid #eee; /* 底部分割线 */
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+  margin-right: auto;
+}
+
+/* 用户ID样式 */
+.user-id {
+  font-size: 12px; /* 字体大小 */
+  color: #666; /* 字体颜色 */
+  margin-top: 2px;
 }
 
 .post-card {
