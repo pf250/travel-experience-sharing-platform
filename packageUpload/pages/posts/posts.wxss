@@ -148,3 +148,155 @@
   background: #068e4b;
   transform: scale(0.95);
 }
+
+/* 按钮区域 */
+.button-group {
+  display: flex;
+  gap: 16rpx;
+  margin: 40rpx 30rpx;
+}
+
+/* AI编辑按钮 */
+.ai-btn {
+  flex: 1;
+  background: #52c41a;
+  color: white;
+  border-radius: 50rpx;
+  font-size: 32rpx;
+  height: 90rpx;
+  line-height: 60rpx;
+  text-align: center;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.ai-btn:hover {
+  background: #45a818;
+  transform: scale(1.05);
+}
+
+.ai-btn:active {
+  background: #388e14;
+  transform: scale(0.95);
+}
+
+.ai-btn::after {
+  border: none;
+}
+
+/* 发布按钮 - 调整为flex布局 */
+.publish-btn {
+  flex: 1;
+  margin: 0;
+}
+
+/* AI编辑对话框 */
+.ai-dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.ai-dialog-content {
+  background-color: #fff;
+  border-radius: 16rpx;
+  width: 80%;
+  max-width: 500rpx;
+  overflow: hidden;
+}
+
+.ai-dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30rpx;
+  border-bottom: 1rpx solid #eee;
+}
+
+.ai-dialog-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.ai-dialog-close {
+  font-size: 40rpx;
+  color: #999;
+  line-height: 1;
+}
+
+.ai-dialog-body {
+  padding: 30rpx;
+}
+
+.ai-dialog-label {
+  display: block;
+  font-size: 28rpx;
+  color: #333;
+  margin-bottom: 20rpx;
+}
+
+.ai-dialog-input {
+  width: 100%;
+  padding: 20rpx;
+  border: 2rpx solid #ddd;
+  border-radius: 8rpx;
+  font-size: 28rpx;
+  color: #333;
+  background: #fafafa;
+  transition: background 0.2s ease;
+}
+
+.ai-dialog-input:focus {
+  background: #ffffff;
+  box-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.05);
+}
+
+.ai-dialog-footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 30rpx;
+  border-top: 1rpx solid #eee;
+  gap: 16rpx;
+}
+
+.ai-dialog-cancel,
+.ai-dialog-confirm {
+  flex: 1;
+  height: 80rpx;
+  line-height: 80rpx;
+  border-radius: 8rpx;
+  font-size: 28rpx;
+  font-weight: bold;
+  text-align: center;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.ai-dialog-cancel {
+  background: #f5f5f5;
+  color: #333;
+}
+
+.ai-dialog-cancel:hover {
+  background: #e8e8e8;
+}
+
+.ai-dialog-confirm {
+  background: #1890ff;
+  color: #fff;
+}
+
+.ai-dialog-confirm:hover {
+  background: #40a9ff;
+}
+
+.ai-dialog-cancel::after,
+.ai-dialog-confirm::after {
+  border: none;
+}

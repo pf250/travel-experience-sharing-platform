@@ -12,6 +12,9 @@ Page({
     categoryIndex: null, // 当前选中的分类索引
     shippingOptions: ['包邮', '自提'], // 发货方式选项
     shippingIndex: null, // 当前选中的发货方式索引
+    // AI编辑相关状态
+    showAIDialog: false, // AI编辑对话框显示状态
+    aiItemType: '', // AI编辑宝贝类型
   },
   
   onLoad() {
@@ -212,5 +215,104 @@ Page({
     // 从本地缓存中获取登录状态
     const loginState = wx.getStorageSync('loginState');
     return loginState && loginState.isLogin; // 如果有登录状态且 isLogin 为 true，则返回 true
+  },
+
+  // 显示AI编辑对话框
+  showAIDialog() {
+    this.setData({ showAIDialog: true });
+  },
+
+  // 隐藏AI编辑对话框
+  hideAIDialog() {
+    this.setData({ 
+      showAIDialog: false,
+      aiItemType: '' // 清空输入
+    });
+  },
+
+  // 处理宝贝类型输入
+  onAIItemTypeInput(e) {
+    this.setData({ aiItemType: e.detail.value.trim() });
+  },
+
+  // 调用AI模型生成内容
+  async generateAIContent() {
+    const { aiItemType } = this.data;
+
+    // 验证输入
+    if (!aiItemType.trim()) {
+      wx.showToast({
+        title: '请输入宝贝类型',
+        icon: 'none',
+      });
+      return;
+    }
+
+    // 显示加载提示
+    wx.showLoading({
+      title: 'AI生成中...',
+      mask: true,
+    });
+
+    try {
+      // 初始化AI模型
+      const hy = wx.cloud.extend.AI.createModel('hunyuan-exp');
+
+      // 构建提示词
+      const prompt = `请为"${aiItemType}"生成一段宝贝描述，包含以下内容：
+1. 产品的基本信息和特点
+2. 产品的使用场景和优势
+3. 产品的成色和状态（假设是九成新）
+4. 交易方式和售后保障
+
+要求：
+- 描述要详细、真实，符合二手交易的场景
+- 语言要简洁明了，突出产品的卖点
+- 字数控制在50-150字之间
+- 避免使用夸大其词的宣传语
+
+请直接输出描述内容，不要添加任何前缀或后缀。`;
+
+      // 调用AI模型
+      const res = await hy.generateText({
+        model: 'hunyuan-t1-latest',
+        messages: [
+          {
+            role: 'user',
+            content: prompt
+          }
+        ]
+      });
+
+      // 解析AI生成的内容
+      const aiContent = res.choices[0].message.content;
+      console.log('AI生成内容:', aiContent);
+
+      // 将AI生成的数据放入描述文本域
+      this.setData({ description: aiContent.trim() });
+
+      // 显示成功提示
+      wx.showToast({
+        title: 'AI生成成功',
+        icon: 'success',
+      });
+    } catch (error) {
+      console.error('AI生成失败:', error);
+      // 显示失败提示
+      wx.showToast({
+        title: 'AI生成失败，请重试',
+        icon: 'none',
+      });
+    } finally {
+      // 隐藏加载提示
+      try {
+        wx.hideLoading();
+      } catch (error) {
+        // 忽略 hideLoading 可能的错误
+        console.log('hideLoading error:', error);
+      }
+      // 隐藏对话框
+      this.hideAIDialog();
+    }
   },
 });
