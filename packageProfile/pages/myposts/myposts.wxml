@@ -1,2 +1,42 @@
 <!--packageProfile/pages/myposts/myposts.wxml-->
-<text>packageProfile/pages/myposts/myposts.wxml</text>
+<view class="container">
+  <!-- 加载中状态 -->
+  <view class="loading-container" wx:if="{{loading}}">
+    <text>加载中...</text>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-container" wx:elif="{{empty}}">
+    <text>暂无发布的帖子</text>
+  </view>
+
+  <!-- 帖子列表 -->
+  <view class="posts-list" wx:else>
+    <block wx:for="{{posts}}" wx:key="_id">
+      <view class="post-item" bindtap="navigateToPostDetail" data-post-id="{{item._id}}">
+        <!-- 帖子标题 -->
+        <view class="post-title">{{item.title}}</view>
+        
+        <!-- 帖子描述 -->
+        <view class="post-description">{{item.description}}</view>
+        
+        <!-- 帖子图片 -->
+        <view class="post-images" wx:if="{{item.images && item.images.length > 0}}">
+          <image
+            wx:for="{{item.images}}"
+            wx:key="index"
+            src="{{item}}"
+            mode="aspectFill"
+            class="post-image"
+          ></image>
+        </view>
+        
+        <!-- 帖子信息 -->
+        <view class="post-info">
+          <text class="post-time">{{item.formattedTime}}</text>
+          <button class="delete-btn" catchtap="deletePost" data-post-id="{{item._id}}">删除</button>
+        </view>
+      </view>
+    </block>
+  </view>
+</view>
