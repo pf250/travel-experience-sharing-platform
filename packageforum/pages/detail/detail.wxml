@@ -74,7 +74,7 @@
           </view>
           <!-- 回复列表 -->
           <view class="replies-list" wx:if="{{item.replies && item.replies.length > 0}}">
-            <block wx:for="{{item.replies}}" wx:key="_id">
+            <block wx:for="{{item.isExpanded ? item.replies : [item.replies[0]]}}" wx:key="_id">
               <view class="reply-item">
                 <!-- 头像 -->
                 <image class="comment-avatar" src="{{item.avatarUrl}}"></image>
@@ -96,25 +96,14 @@
                 </view>
               </view>
             </block>
-          </view>
-          <!-- 回复输入框 -->
-          <view class="reply-input" wx:if="{{showReplyInput && replyTargetId === item._id}}">
-            <textarea
-              placeholder="回复 {{replyTargetAuthor}}..."
-              value="{{newReply}}"
-              bindinput="onReplyInput"
-              auto-height="{{true}}"
-              style="min-height: 100rpx;"
-            />
-            <view class="reply-input-buttons">
-              <button bindtap="hideReplyInput" class="cancel-btn">
-                取消
-              </button>
-              <button bindtap="handleReply" data-comment-id="{{item._id}}" class="submit-btn">
-                回复
+            <!-- 展开/折叠按钮 -->
+            <view class="reply-toggle" wx:if="{{item.replies.length > 0}}">
+              <button bindtap="toggleReplyExpanded" data-comment-id="{{item._id}}" class="toggle-btn">
+                {{item.isExpanded ? '收起回复' : '查看全部回复 (' + item.replies.length + ')'}}
               </button>
             </view>
           </view>
+
         </block>
       </view>
     </view>
@@ -137,6 +126,28 @@
         </button>
         <button bindtap="handleComment" data-post-id="{{post._id}}" class="submit-btn">
           发表
+        </button>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 弹出式回复输入框 -->
+  <view class="comment-input-popup" wx:if="{{showReplyInput}}">
+    <view class="comment-input-content">
+      <textarea
+        placeholder="回复 {{replyTargetAuthor}}..."
+        value="{{newReply}}"
+        bindinput="onReplyInput"
+        focus="{{true}}"
+        auto-height="{{true}}"
+        style="min-height: 120rpx;"
+      />
+      <view class="comment-input-buttons">
+        <button bindtap="hideReplyInput" class="cancel-btn">
+          取消
+        </button>
+        <button bindtap="handleReply" data-comment-id="{{replyTargetId}}" class="submit-btn">
+          回复
         </button>
       </view>
     </view>

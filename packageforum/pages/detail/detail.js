@@ -68,11 +68,15 @@ Page({
       allComments.forEach(comment => {
         if (!comment.parentId) {
           // 顶级评论
+          comment.isExpanded = false; // 默认折叠所有回复
           topLevelComments.push(comment);
         } else {
           // 回复评论
           const parentComment = replyMap[comment.parentId];
           if (parentComment) {
+            if (!parentComment.replies) {
+              parentComment.replies = [];
+            }
             parentComment.replies.push(comment);
           }
         }
@@ -275,6 +279,18 @@ Page({
       console.error('发表回复失败:', error);
       wx.showToast({ title: '发表回复失败，请稍后重试', icon: 'none' });
     }
+  },
+
+  // 切换评论回复的展开/折叠状态
+  toggleReplyExpanded(e) {
+    const commentId = e.currentTarget.dataset.commentId;
+    const comments = this.data.comments.map(comment => {
+      if (comment._id === commentId) {
+        return { ...comment, isExpanded: !comment.isExpanded };
+      }
+      return comment;
+    });
+    this.setData({ comments });
   },
 
   // 检查用户是否登录
