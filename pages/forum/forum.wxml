@@ -10,7 +10,7 @@
         <!-- 用户信息 -->
         <view class="post-meta">
           <text class="post-author">Uid: {{item.userId}}</text>
-          <text class="post-time">{{formatTime(item.createdAt)}}</text>
+          <text class="post-time">{{item.formattedTime}}</text>
         </view>
       </view>
       <!-- 标题 -->

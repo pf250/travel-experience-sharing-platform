@@ -11,9 +11,9 @@
     "miniprogram": {
       "list": [
         {
-          "name": "packageProfile/pages/userinfo/userinfo",
-          "pathName": "packageProfile/pages/userinfo/userinfo",
-          "query": "userId=1001",
+          "name": "pages/forum/forum",
+          "pathName": "pages/forum/forum",
+          "query": "",
           "scene": null,
           "launchMode": "default"
         }

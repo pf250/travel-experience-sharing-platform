@@ -52,7 +52,8 @@ Page({
         res.data.map(async (post) => {
           const likeCount = await this.getLikeCount(post._id);
           const commentCount = await this.getCommentCount(post._id);
-          return { ...post, likeCount, commentCount };
+          const formattedTime = this.formatTime(post.createdAt);
+          return { ...post, likeCount, commentCount, formattedTime };
         })
       );
 
@@ -98,8 +99,50 @@ Page({
 
   // 格式化时间
   formatTime(date) {
-    const d = new Date(date);
-    return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()} ${d.getHours()}:${d.getMinutes()}`;
+    if (!date) return '';
+    
+    let d;
+    if (date instanceof Date) {
+      d = date;
+    } else if (date.$date) {
+      d = new Date(date.$date);
+    } else {
+      d = new Date(date);
+    }
+    
+    const now = new Date();
+    const diff = now - d;
+    const diffHours = Math.floor(diff / (1000 * 60 * 60));
+    
+    // 如果是24小时内，显示相对时间
+    if (diffHours < 24) {
+      if (diffHours < 1) {
+        const diffMinutes = Math.floor(diff / (1000 * 60));
+        return `${diffMinutes}分钟前`;
+      }
+      return `${diffHours}小时前`;
+    }
+    
+    // 计算日期差值
+    const nowDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const targetDate = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    const diffDays = Math.floor((nowDate - targetDate) / (1000 * 60 * 60 * 24));
+    
+    const hour = d.getHours().toString().padStart(2, '0');
+    const minute = d.getMinutes().toString().padStart(2, '0');
+    
+    // 根据日期差值显示不同格式
+    if (diffDays === 1) {
+      return `昨天 ${hour}:${minute}`;
+    } else if (diffDays === 2) {
+      return `前天 ${hour}:${minute}`;
+    } else {
+      // 超过前天，显示具体日期
+      const year = d.getFullYear();
+      const month = (d.getMonth() + 1).toString().padStart(2, '0');
+      const day = d.getDate().toString().padStart(2, '0');
+      return `${year}-${month}-${day} ${hour}:${minute}`;
+    }
   },
 
   // 导航到详情页面

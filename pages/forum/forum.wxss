@@ -22,10 +22,11 @@
 
 /* 用户信息容器样式 */
 .post-meta {
+  width: 320rpx;
   display: flex; /* 使用 Flexbox 布局 */
   flex-direction: column; /* 子元素垂直排列 */
   align-items: flex-end; /* 靠右对齐 */
-  margin-left: 10px; /* 左侧间距 */
+  margin-left: 10rpx; /* 左侧间距 */
 }
 
 /* 作者 UID 样式 */
