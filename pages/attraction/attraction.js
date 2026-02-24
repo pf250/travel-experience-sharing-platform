@@ -26,6 +26,20 @@ Page({
   },
 
   /**
+   * 更新特定景区的浏览量
+   */
+  updateScenicViewCount(scenicId, viewCount) {
+    const { scenicList } = this.data;
+    const updatedList = scenicList.map(item => {
+      if (item._id === scenicId) {
+        return { ...item, viewCount };
+      }
+      return item;
+    });
+    this.setData({ scenicList: updatedList });
+  },
+
+  /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
   onPullDownRefresh() {
@@ -125,20 +139,6 @@ Page({
    */
   navigateToDetail(e) {
     const scenicId = e.currentTarget.dataset.id;
-    
-    // 更新景区浏览量
-    const db = wx.cloud.database();
-    db.collection('scenic').doc(scenicId).update({
-      data: {
-        viewCount: db.command.inc(1)
-      },
-      success: () => {
-        console.log('浏览量更新成功');
-      },
-      fail: (err) => {
-        console.error('浏览量更新失败:', err);
-      }
-    });
     
     // 导航到详情页
     wx.navigateTo({

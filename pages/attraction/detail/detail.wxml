@@ -17,6 +17,11 @@
           <image src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=scenic%20spot%20placeholder%20image&image_size=landscape_16_9" mode="aspectFill"></image>
         </swiper-item>
       </swiper>
+      <!-- 浏览量显示 -->
+      <view class="view-count">
+        <image class="icon" src="/images/contact/viewCount.png"></image>
+        <text>{{scenic.viewCount || 0}}</text>
+      </view>
     </view>
 
     <!-- 景区基本信息 -->

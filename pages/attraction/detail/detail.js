@@ -37,9 +37,38 @@ Page({
           scenic: res.data
         });
         console.log('查询景区详情成功:', res.data);
-        this.setLoading(false);
         
-
+        // 更新景区浏览量
+        db.collection('scenic').doc(scenicId).update({
+          data: {
+            viewCount: db.command.inc(1)
+          },
+          success: (updateRes) => {
+            console.log('浏览量更新成功');
+            // 计算更新后的浏览量
+            const updatedViewCount = (res.data.viewCount || 0) + 1;
+            // 更新当前页面的浏览量显示
+            this.setData({
+              scenic: {
+                ...res.data,
+                viewCount: updatedViewCount
+              }
+            });
+            // 通知上一个页面更新对应景区的浏览量
+            const pages = getCurrentPages();
+            if (pages.length > 1) {
+              const prevPage = pages[pages.length - 2];
+              if (prevPage.updateScenicViewCount) {
+                prevPage.updateScenicViewCount(scenicId, updatedViewCount);
+              }
+            }
+          },
+          fail: (updateErr) => {
+            console.error('浏览量更新失败:', updateErr);
+          }
+        });
+        
+        this.setLoading(false);
       },
       fail: (err) => {
         console.error('查询景区详情失败:', err);
