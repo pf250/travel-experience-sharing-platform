@@ -67,7 +67,35 @@ Page({
       .limit(pageSize)
       .get({
         success: (res) => {
-          const newScenicList = res.data;
+          let newScenicList = res.data;
+          
+          // 实现排序逻辑：24小时内创建的按createdAt排序，超过24小时的按浏览量排序
+          const now = new Date();
+          const twentyFourHoursAgo = now.getTime() - 24 * 60 * 60 * 1000;
+          
+          newScenicList.sort((a, b) => {
+            // 获取创建时间
+            const aCreatedAt = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+            const bCreatedAt = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+            
+            // 检查是否在24小时内
+            const aIsNew = aCreatedAt >= twentyFourHoursAgo;
+            const bIsNew = bCreatedAt >= twentyFourHoursAgo;
+            
+            // 如果都是新的，按创建时间降序
+            if (aIsNew && bIsNew) {
+              return bCreatedAt - aCreatedAt;
+            }
+            // 如果都是旧的，按浏览量降序
+            else if (!aIsNew && !bIsNew) {
+              return (b.viewCount || 0) - (a.viewCount || 0);
+            }
+            // 如果一个是新的，一个是旧的，新的排在前面
+            else {
+              return aIsNew ? -1 : 1;
+            }
+          });
+          
           const updatedScenicList = page === 1 ? newScenicList : [...scenicList, ...newScenicList];
           
           this.setData({

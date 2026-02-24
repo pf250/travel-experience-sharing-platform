@@ -22,6 +22,10 @@
       <view class="scenic-info">
         <text class="scenic-name">{{item.name}}</text>
         <text class="scenic-address">{{item.address}}</text>
+        <view class="scenic-view-count">
+          <image class="icon" src="/images/contact/viewCount.png"></image>
+          <text>{{item.viewCount || 0}}</text>
+        </view>
         <view class="scenic-footer">
           <text class="scenic-status">{{item.status}}</text>
           <text class="scenic-contact">{{item.contactPhone}}</text>

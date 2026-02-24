@@ -87,10 +87,30 @@
   -webkit-box-orient: vertical;
 }
 
+.scenic-view-count {
+  display: flex;
+  align-items: center;
+  gap: 4rpx;
+  margin-bottom: 10rpx;
+  align-self: flex-start;
+}
+
+.scenic-view-count .icon {
+  width: 24rpx;
+  height: 24rpx;
+}
+
+.scenic-view-count text {
+  font-size: 20rpx;
+  color: #999;
+}
+
 .scenic-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 8rpx;
 }
 
 .scenic-status {
@@ -104,6 +124,9 @@
 .scenic-contact {
   font-size: 20rpx;
   color: #999;
+  flex: 1;
+  text-align: right;
+  min-width: 120rpx;
 }
 
 /* 加载更多提示 */
