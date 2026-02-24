@@ -206,20 +206,103 @@ Page({
    * 导航到地图
    */
   openLocation() {
-    const address = this.data.scenic.address;
+    const scenic = this.data.scenic;
+    const address = scenic.address;
+    
     if (address) {
-      wx.openLocation({
-        address: address,
-        success: (res) => {
-          console.log('打开地图成功:', res);
+      // 先复制地址到剪贴板
+      wx.setClipboardData({
+        data: address,
+        success: () => {
+          wx.showToast({
+            title: '地址已复制到剪贴板',
+            icon: 'success'
+          });
+          
+          // 然后打开微信内置地图
+          if (scenic.latitude && scenic.longitude) {
+            // 有经纬度时直接打开微信内置地图
+            wx.openLocation({
+              latitude: scenic.latitude,
+              longitude: scenic.longitude,
+              address: address,
+              name: scenic.name,
+              success: (res) => {
+                console.log('打开地图成功:', res);
+              },
+              fail: (err) => {
+                console.error('打开地图失败:', err);
+                wx.showToast({
+                  title: '打开地图失败',
+                  icon: 'none'
+                });
+              }
+            });
+          } else {
+            // 无经纬度时让用户在微信内置地图中选择位置
+            wx.chooseLocation({
+              success: (res) => {
+                // 用户选择位置后打开地图
+                wx.openLocation({
+                  latitude: res.latitude,
+                  longitude: res.longitude,
+                  address: address,
+                  name: scenic.name,
+                  success: (res) => {
+                    console.log('打开地图成功:', res);
+                  },
+                  fail: (err) => {
+                    console.error('打开地图失败:', err);
+                    wx.showToast({
+                      title: '打开地图失败',
+                      icon: 'none'
+                    });
+                  }
+                });
+              },
+              fail: (err) => {
+                console.error('选择位置失败:', err);
+                wx.showToast({
+                  title: '选择位置失败',
+                  icon: 'none'
+                });
+              }
+            });
+          }
         },
         fail: (err) => {
-          console.error('打开地图失败:', err);
+          console.error('复制地址失败:', err);
           wx.showToast({
-            title: '打开地图失败',
+            title: '复制地址失败',
             icon: 'none'
           });
+          
+          // 即使复制失败也尝试打开地图
+          if (scenic.latitude && scenic.longitude) {
+            wx.openLocation({
+              latitude: scenic.latitude,
+              longitude: scenic.longitude,
+              address: address,
+              name: scenic.name
+            });
+          } else {
+            wx.chooseLocation({
+              success: (res) => {
+                wx.openLocation({
+                  latitude: res.latitude,
+                  longitude: res.longitude,
+                  address: address,
+                  name: scenic.name
+                });
+              }
+            });
+          }
         }
+      });
+    } else {
+      wx.showToast({
+        title: '暂无地址信息',
+        icon: 'none'
       });
     }
   },
