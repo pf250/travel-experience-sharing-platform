@@ -123,6 +123,7 @@
   align-items: center;
   margin-bottom: 12rpx;
   font-size: 22rpx;
+  flex-wrap: nowrap;
 }
 
 .contact-label {
@@ -131,22 +132,38 @@
   flex-shrink: 0;
 }
 
+.contact-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .contact-value {
   color: #333;
-  flex: 1;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  margin-right: 12rpx;
+  flex: 1;
+  min-width: 0;
 }
 
 .contact-btn {
   font-size: 20rpx;
-  padding: 4rpx 16rpx;
-  border-radius: 16rpx;
+  padding: 6rpx ;
+  border-radius: 12rpx;
   background-color: #f0f0f0;
   color: #333;
-  margin-left: 10rpx;
   min-width: 80rpx;
+  max-width: 100rpx;
+  white-space: nowrap;
+  width: auto;
+  border: none;
+  margin: 0;
+  line-height: normal;
+  text-align: center;
+  flex-shrink: 0;
 }
 
 /* 通用区块样式 */
@@ -260,13 +277,16 @@
 }
 
 .book-btn {
-  font-size: 22rpx;
-  padding: 10rpx 28rpx;
-  border-radius: 24rpx;
+  font-size: 20rpx;
+  padding: 8rpx;
+  border-radius: 20rpx;
   background-color: #1296db;
   color: #fff;
-  min-width: 120rpx;
+  max-height: 90rpx;
+  max-width: 130rpx;
   text-align: center;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 /* 优惠方案列表 */

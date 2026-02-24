@@ -39,13 +39,17 @@
       <view class="scenic-contact">
         <view class="contact-item">
           <text class="contact-label">地址：</text>
-          <text class="contact-value" user-select="true">{{scenic.address}}</text>
-          <button class="contact-btn" bindtap="openLocation">导航</button>
+          <view class="contact-content">
+            <text class="contact-value" user-select="true">{{scenic.address}}</text>
+            <button class="contact-btn" bindtap="openLocation">导航</button>
+          </view>
         </view>
         <view class="contact-item">
           <text class="contact-label">电话：</text>
-          <text class="contact-value" user-select="true">{{scenic.contactPhone || '暂无电话'}}</text>
-          <button wx:if="{{scenic.contactPhone}}" class="contact-btn" bindtap="makePhoneCall">拨打</button>
+          <view class="contact-content">
+            <text class="contact-value" user-select="true">{{scenic.contactPhone || '暂无电话'}}</text>
+            <button wx:if="{{scenic.contactPhone}}" class="contact-btn" bindtap="makePhoneCall">拨打</button>
+          </view>
         </view>
       </view>
     </view>
