@@ -83,12 +83,11 @@
 }
 
 .post-image {
-  width: 100%;
+  width: 700rpx;
   height: 100%;
   margin-right: 10px;
   border-radius: 8px;
   flex-shrink: 0;
-  min-width: 100%;
 }
 
 .image-indicator {

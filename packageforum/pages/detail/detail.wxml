@@ -20,7 +20,7 @@
       <view class="image-indicator">
         <text class="indicator-text">{{currentImageIndex + 1}}/{{post.images.length}}</text>
       </view>
-      <scroll-view class="post-images-scroll" scroll-x="true" enable-flex="true" bindscroll="onImageScroll">
+      <scroll-view class="post-images-scroll" scroll-x="true" enable-flex="true" bindscroll="onImageScroll" scroll-with-animation="true">
         <view class="post-images-wrapper">
           <image
             wx:for="{{post.images}}"
@@ -38,8 +38,7 @@
         <view 
           wx:for="{{post.images}}" 
           wx:key="index"
-          class="dot"
-          wx:class="{{index === currentImageIndex ? 'active' : ''}}"
+          class="dot {{index === currentImageIndex ? 'active' : ''}}"
         ></view>
       </view>
     </view>
