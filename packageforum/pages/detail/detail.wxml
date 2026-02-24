@@ -2,16 +2,23 @@
   <!-- 帖子详情 -->
   <view class="post-detail">
     <view class="userinfo">
-      <view class="userinfo-top">
-        <!-- 头像 -->
-        <image class="avatar" src="{{post.avatarUrl}}"></image>
-        <!-- 昵称 -->
-        <text class="username">{{post.nickName}}</text>
-      </view>
-      <!-- 用户信息 -->
-      <view class="post-meta">
-        <text class="post-author">Uid: {{post.userId}}</text>
-        <text class="post-time">时间：{{post.formattedTime}}</text>
+      <view class="userinfo-content">
+        <view class="userinfo-left">
+          <view class="userinfo-top">
+            <!-- 头像 -->
+            <image class="avatar" src="{{post.avatarUrl}}"></image>
+            <div class="user-details">
+              <!-- 昵称 -->
+              <text class="username">{{post.nickName}}</text>
+              <!-- UID -->
+              <text class="post-author">Uid: {{post.userId}}</text>
+            </div>
+          </view>
+        </view>
+        <!-- 时间信息 -->
+        <view class="post-meta">
+          <text class="post-time">发布：{{post.formattedTime}}</text>
+        </view>
       </view>
     </view>
     <!-- 图片 -->
