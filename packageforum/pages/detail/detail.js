@@ -36,8 +36,22 @@ Page({
       const commentCount = await this.getCommentCount(postId);
       const formattedTime = this.formatTime(post.createdAt);
       const isLiked = await this.checkUserLikeStatus(postId);
+      
+      // 获取用户角色信息
+      let userRole = '';
+      try {
+        const userRes = await wx.cloud.database().collection('users')
+          .where({ userId: post.userId })
+          .get();
+        if (userRes.data.length > 0) {
+          userRole = userRes.data[0].role || '';
+        }
+      } catch (error) {
+        console.error('获取用户角色失败:', error);
+      }
+      
       this.setData({ 
-        post: { ...post, likeCount, commentCount, formattedTime },
+        post: { ...post, likeCount, commentCount, formattedTime, role: userRole },
         isLiked 
       });
     } catch (error) {

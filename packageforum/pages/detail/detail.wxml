@@ -8,8 +8,14 @@
             <!-- 头像 -->
             <image class="avatar" src="{{post.avatarUrl}}"></image>
             <div class="user-details">
-              <!-- 昵称 -->
-              <text class="username">{{post.nickName}}</text>
+              <view class="username-container">
+                <!-- 昵称 -->
+                <text class="username">{{post.nickName}}</text>
+                <!-- 身份标识符 -->
+                <text wx:if="{{post.role === 'merchant'}}" class="role-tag merchant">商家</text>
+                <text wx:elif="{{post.role === 'admin'}}" class="role-tag admin">管理员</text>
+                <text wx:elif="{{post.role === 'user'}}" class="role-tag user">用户</text>
+              </view>
               <!-- UID -->
               <text class="post-author">Uid: {{post.userId}}</text>
             </div>

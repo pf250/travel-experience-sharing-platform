@@ -55,9 +55,41 @@
   border-radius: 50%;
 }
 
+.username-container {
+  display: flex;
+  align-items: center;
+}
+
 .username {
   font-size: 18px;
   font-weight: bold;
+  margin-right: 8px;
+}
+
+.role-tag {
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+.role-tag.merchant {
+  background-color: #e6f7ff;
+  color: #1890ff;
+  border: 1px solid #91d5ff;
+}
+
+.role-tag.admin {
+  background-color: #fff1f0;
+  color: #ff4d4f;
+  border: 1px solid #ffccc7;
+}
+
+.role-tag.user {
+  background-color: #f6ffed;
+  color: #52c41a;
+  border: 1px solid #b7eb8f;
 }
 
 .post-author {
