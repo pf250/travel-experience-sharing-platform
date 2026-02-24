@@ -139,7 +139,7 @@ Page({
   // 同意申请
   approveApplication: function (e) {
     const id = e.currentTarget.dataset.id;
-    const userId = e.currentTarget.dataset.userid;
+    const userId = Number(e.currentTarget.dataset.userid);
     const that = this;
     
     wx.showModal({

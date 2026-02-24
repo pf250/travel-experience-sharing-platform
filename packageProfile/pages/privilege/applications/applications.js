@@ -20,7 +20,7 @@ Page({
     }
 
     this.setData({
-      userId: loginState.userId
+      userId: Number(loginState.userId)
     });
 
     this.loadApplications();
