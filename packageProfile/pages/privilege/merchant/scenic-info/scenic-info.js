@@ -8,7 +8,8 @@ Page({
       address: '',
       contactPhone: '',
       images: [],
-      status: '营业'
+      status: '营业',
+      viewCount: 0
     },
     
     // 状态选项
@@ -243,6 +244,7 @@ Page({
             images: fileIDs,
             status: this.data.scenic.status,
             userId: Number(this.data.userId),
+            viewCount: this.data.scenic.viewCount || 0,
             updatedAt: db.serverDate()
           };
           
@@ -274,6 +276,7 @@ Page({
         } else {
           // 创建新景区
           scenicData.createdAt = db.serverDate();
+          scenicData.viewCount = 0; // 初始浏览量为0
           
           db.collection('scenic').add({
             data: scenicData,
@@ -403,7 +406,8 @@ Page({
         address: '',
         contactPhone: '',
         images: [],
-        status: '营业'
+        status: '营业',
+        viewCount: 0
       }
     });
   }
