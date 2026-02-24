@@ -32,7 +32,8 @@ Page({
     const { scenicList } = this.data;
     const updatedList = scenicList.map(item => {
       if (item._id === scenicId) {
-        return { ...item, viewCount };
+        const formattedViewCount = this.formatViewCount(viewCount);
+        return { ...item, viewCount, formattedViewCount };
       }
       return item;
     });
@@ -83,11 +84,22 @@ Page({
         success: (res) => {
           let newScenicList = res.data;
           
+          // 为每个景区添加格式化后的浏览量
+          newScenicList = newScenicList.map(item => {
+            const formattedViewCount = this.formatViewCount(item.viewCount || 0);
+            return {
+              ...item,
+              formattedViewCount
+            };
+          });
+          
+          const updatedScenicList = page === 1 ? newScenicList : [...scenicList, ...newScenicList];
+          
           // 实现排序逻辑：24小时内创建的按createdAt排序，超过24小时的按浏览量排序
           const now = new Date();
           const twentyFourHoursAgo = now.getTime() - 24 * 60 * 60 * 1000;
           
-          newScenicList.sort((a, b) => {
+          updatedScenicList.sort((a, b) => {
             // 获取创建时间
             const aCreatedAt = a.createdAt ? new Date(a.createdAt).getTime() : 0;
             const bCreatedAt = b.createdAt ? new Date(b.createdAt).getTime() : 0;
@@ -110,8 +122,6 @@ Page({
             }
           });
           
-          const updatedScenicList = page === 1 ? newScenicList : [...scenicList, ...newScenicList];
-          
           this.setData({
             scenicList: updatedScenicList,
             hasMore: newScenicList.length === pageSize,
@@ -132,6 +142,18 @@ Page({
           if (callback) callback();
         }
       });
+  },
+
+  /**
+   * 格式化浏览量
+   */
+  formatViewCount(value) {
+    if (value >= 10000) {
+      return (value / 10000).toFixed(1) + 'W';
+    } else if (value >= 1000) {
+      return (value / 1000).toFixed(1) + 'K';
+    }
+    return value;
   },
 
   /**

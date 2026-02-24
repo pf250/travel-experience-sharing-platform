@@ -26,6 +26,18 @@ Page({
   },
 
   /**
+   * 格式化浏览量
+   */
+  formatViewCount(value) {
+    if (value >= 10000) {
+      return (value / 10000).toFixed(1) + 'W';
+    } else if (value >= 1000) {
+      return (value / 1000).toFixed(1) + 'K';
+    }
+    return value;
+  },
+
+  /**
    * 查询景区详情
    */
   queryScenicDetail(scenicId) {
@@ -33,8 +45,14 @@ Page({
     
     db.collection('scenic').doc(scenicId).get({
       success: (res) => {
+        // 为景区数据添加格式化后的浏览量
+        const scenicData = res.data;
+        const formattedViewCount = this.formatViewCount(scenicData.viewCount || 0);
         this.setData({
-          scenic: res.data
+          scenic: {
+            ...scenicData,
+            formattedViewCount
+          }
         });
         console.log('查询景区详情成功:', res.data);
         
@@ -47,11 +65,13 @@ Page({
             console.log('浏览量更新成功');
             // 计算更新后的浏览量
             const updatedViewCount = (res.data.viewCount || 0) + 1;
+            const updatedFormattedViewCount = this.formatViewCount(updatedViewCount);
             // 更新当前页面的浏览量显示
             this.setData({
               scenic: {
                 ...res.data,
-                viewCount: updatedViewCount
+                viewCount: updatedViewCount,
+                formattedViewCount: updatedFormattedViewCount
               }
             });
             // 通知上一个页面更新对应景区的浏览量

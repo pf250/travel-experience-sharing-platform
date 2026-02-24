@@ -20,7 +20,7 @@
       <!-- 浏览量显示 -->
       <view class="view-count">
         <image class="icon" src="/images/contact/viewCount.png"></image>
-        <text>{{scenic.viewCount || 0}}</text>
+        <text>{{scenic.formattedViewCount}}</text>
       </view>
     </view>
 
