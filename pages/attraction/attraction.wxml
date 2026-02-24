@@ -12,7 +12,7 @@
 
   <!-- 景区列表 -->
   <view wx:else class="scenic-list">
-    <view wx:for="{{scenicList}}" wx:key="{{item._id}}" class="scenic-item" bindtap="navigateToDetail" data-id="{{item._id}}">
+    <view wx:for="{{scenicList}}" wx:key="_id" class="scenic-item" bindtap="navigateToDetail" data-id="{{item._id}}">
       <!-- 景区图片 -->
       <view class="scenic-image">
         <image src="{{item.images && item.images.length > 0 ? item.images[0] : 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=scenic%20spot%20placeholder%20image&image_size=square'}}" mode="aspectFill"></image>

@@ -3,7 +3,8 @@ Page({
     posts: [], // 帖子列表
     hasMorePosts: true, // 是否还有更多帖子可以加载
     postPage: 1, // 当前帖子页码
-    postPageSize: 5, // 每页加载的帖子数量
+    postPageSize: 8, // 每页加载的帖子数量
+    isLoading: false, // 是否正在加载
   },
 
   onLoad() {
@@ -11,9 +12,7 @@ Page({
   },
 
   onShow() {
-    // 每次页面显示时都刷新数据
-    this.setData({ posts: [], postPage: 1, hasMorePosts: true }); // 重置数据
-    this.loadPosts(); // 重新加载帖子列表
+  
   },
 
   // 下拉刷新事件
@@ -25,9 +24,9 @@ Page({
 
   // 触底加载更多帖子
   onReachBottom() {
-    if (this.data.hasMorePosts) {
+    if (this.data.hasMorePosts && !this.data.isLoading) {
       this.loadPosts();
-    } else {
+    } else if (!this.data.hasMorePosts) {
       wx.showToast({ title: '没有更多帖子了', icon: 'none' });
     }
   },
@@ -35,6 +34,14 @@ Page({
   // 加载帖子列表
   async loadPosts() {
     try {
+      // 设置加载状态
+      this.setData({ isLoading: true });
+      
+      // 显示加载提示（仅在触底加载时显示，下拉刷新时不显示）
+      if (this.data.posts.length > 0) {
+        wx.showLoading({ title: '加载中...' });
+      }
+      
       const { postPage, postPageSize } = this.data;
       const res = await wx.cloud.database().collection('posts')
         .orderBy('createdAt', 'desc') // 按时间倒序排列
@@ -72,6 +79,10 @@ Page({
       console.error('加载帖子失败:', error);
       wx.showToast({ title: '加载失败，请稍后重试', icon: 'none' });
       wx.stopPullDownRefresh(); // 停止下拉刷新动画
+    } finally {
+      // 无论成功失败，都结束加载状态
+      this.setData({ isLoading: false });
+      wx.hideLoading(); // 隐藏加载提示
     }
   },
 
