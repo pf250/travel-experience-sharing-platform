@@ -181,23 +181,36 @@ Page({
         .get();
 
       let newIsLiked;
+      let newLikeCount = this.data.post.likeCount || 0;
+      
       if (likeRecord.data.length > 0) {
         await wx.cloud.database().collection('likes')
           .doc(likeRecord.data[0]._id)
           .remove();
         newIsLiked = false;
+        newLikeCount--;
       } else {
         await wx.cloud.database().collection('likes').add({
           data: { postId, userId, createdAt: new Date() },
         });
         newIsLiked = true;
+        newLikeCount++;
       }
 
-      this.setData({ isLiked: newIsLiked });
+      // 同步更新点赞状态和数量
+      const post = this.data.post;
+      this.setData({
+        isLiked: newIsLiked,
+        post: { ...post, likeCount: newLikeCount }
+      });
+      
+      // 后台更新点赞数并通知上一个页面
       this.updateLikeCount(postId);
     } catch (error) {
       console.error('点赞失败:', error);
       wx.showToast({ title: '操作失败，请重试', icon: 'none' });
+      // 失败后重新加载点赞数
+      this.updateLikeCount(postId);
     }
   },
 
