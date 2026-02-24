@@ -77,17 +77,10 @@
   height: 100%;
 }
 
-.post-images-wrapper {
-  display: flex;
-  height: 100%;
-}
-
 .post-image {
-  width: 700rpx;
+  width: 100%;
   height: 100%;
-  margin-right: 10px;
   border-radius: 8px;
-  flex-shrink: 0;
 }
 
 .image-indicator {

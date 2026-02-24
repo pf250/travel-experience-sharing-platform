@@ -16,23 +16,21 @@
     </view>
     <!-- 图片 -->
     <view class="post-images-container" wx:if="{{post.images.length > 0}}">
-      <!-- 数字指示器 -->
-      <view class="image-indicator">
-        <text class="indicator-text">{{currentImageIndex + 1}}/{{post.images.length}}</text>
-      </view>
-      <scroll-view class="post-images-scroll" scroll-x="true" enable-flex="true" bindscroll="onImageScroll" scroll-with-animation="true">
-        <view class="post-images-wrapper">
+      <swiper class="post-images-scroll" bindchange="onSwiperChange" indicator-dots="false" autoplay="{{false}}" circular="false" skip-hidden-item-layout="true">
+        <swiper-item wx:for="{{post.images}}" wx:key="index">
           <image
-            wx:for="{{post.images}}"
-            wx:key="index"
             src="{{item}}"
             mode="aspectFill"
             class="post-image"
             bindtap="previewImage"
             data-index="{{index}}"
           ></image>
-        </view>
-      </scroll-view>
+        </swiper-item>
+      </swiper>
+      <!-- 数字指示器 -->
+      <view class="image-indicator">
+        <text class="indicator-text">{{currentImageIndex + 1}}/{{post.images.length}}</text>
+      </view>
       <!-- 小灰点指示器 -->
       <view class="dots-indicator">
         <view 

@@ -384,22 +384,9 @@ Page({
     });
   },
 
-  // 监听图片滚动
-  onImageScroll(e) {
-    const scrollLeft = e.detail.scrollLeft;
-    // 获取窗口宽度，将rpx转换为实际像素
-    const windowInfo = wx.getWindowInfo();
-    const screenWidth = windowInfo.screenWidth;
-    // 700rpx转换为实际像素
-    const imageWidth = (700 / 750) * screenWidth;
-    // 加上图片之间的margin-right (10px)
-    const totalImageWidth = imageWidth + 10;
-    // 计算当前索引，当滚动超过一半时切换到下一张
-    const imageCount = this.data.post.images ? this.data.post.images.length : 0;
-    let currentIndex = Math.floor((scrollLeft + imageWidth / 2) / totalImageWidth);
-    // 确保索引在有效范围内
-    currentIndex = Math.max(0, Math.min(currentIndex, imageCount - 1));
-    console.log('scrollLeft:', scrollLeft, 'imageWidth:', imageWidth, 'totalImageWidth:', totalImageWidth, 'currentIndex:', currentIndex, 'imageCount:', imageCount);
+  // 监听 swiper 切换事件
+  onSwiperChange(event) {
+    const currentIndex = event.detail.current;
     this.setData({ currentImageIndex: currentIndex });
   },
 });
