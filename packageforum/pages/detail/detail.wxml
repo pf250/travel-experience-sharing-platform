@@ -56,7 +56,7 @@
     <view class="post-actions">
       <!-- 点赞按钮 -->
       <button
-        class="like-btn"
+        class="like-btn {{isLiked ? 'liked' : ''}}"
         bindtap="handleLike"
         data-post-id="{{post._id}}"
       >

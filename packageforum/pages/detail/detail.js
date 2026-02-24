@@ -14,6 +14,8 @@ Page({
     newReply: '', // 新回复内容
     // 图片滚动相关
     currentImageIndex: 0, // 当前图片索引
+    // 点赞状态
+    isLiked: false, // 当前用户是否已点赞
   },
 
   onLoad(options) {
@@ -33,10 +35,37 @@ Page({
       const likeCount = await this.getLikeCount(postId);
       const commentCount = await this.getCommentCount(postId);
       const formattedTime = this.formatTime(post.createdAt);
-      this.setData({ post: { ...post, likeCount, commentCount, formattedTime } });
+      const isLiked = await this.checkUserLikeStatus(postId);
+      this.setData({ 
+        post: { ...post, likeCount, commentCount, formattedTime },
+        isLiked 
+      });
     } catch (error) {
       console.error('加载帖子详情失败:', error);
       wx.showToast({ title: '加载失败，请稍后重试', icon: 'none' });
+    }
+  },
+
+  // 检查用户是否已点赞
+  async checkUserLikeStatus(postId) {
+    if (!this.checkLogin()) {
+      return false;
+    }
+    
+    const loginState = wx.getStorageSync('loginState');
+    if (!loginState || !loginState.userId) {
+      return false;
+    }
+    
+    const userId = loginState.userId;
+    try {
+      const likeRecord = await wx.cloud.database().collection('likes')
+        .where({ postId, userId })
+        .get();
+      return likeRecord.data.length > 0;
+    } catch (error) {
+      console.error('检查点赞状态失败:', error);
+      return false;
     }
   },
 
@@ -151,16 +180,20 @@ Page({
         .where({ postId, userId })
         .get();
 
+      let newIsLiked;
       if (likeRecord.data.length > 0) {
         await wx.cloud.database().collection('likes')
           .doc(likeRecord.data[0]._id)
           .remove();
+        newIsLiked = false;
       } else {
         await wx.cloud.database().collection('likes').add({
           data: { postId, userId, createdAt: new Date() },
         });
+        newIsLiked = true;
       }
 
+      this.setData({ isLiked: newIsLiked });
       this.updateLikeCount(postId);
     } catch (error) {
       console.error('点赞失败:', error);

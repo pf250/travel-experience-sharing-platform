@@ -168,8 +168,16 @@
   font-size: 16px;
 }
 
+.like-btn.liked {
+  background-color: #ff4757;
+}
+
 .like-btn:active, .comment-btn:active {
   background-color: #0056b3;
+}
+
+.like-btn.liked:active {
+  background-color: #ff3742;
 }
 
 .comments-section {
