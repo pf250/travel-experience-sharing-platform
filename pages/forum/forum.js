@@ -165,4 +165,28 @@ Page({
       url: `/packageforum/pages/detail/detail?postId=${postId}`,
     });
   },
+
+  // 更新帖子点赞数
+  updatePostLikeCount(postId, likeCount) {
+    const posts = this.data.posts;
+    const updatedPosts = posts.map(post => {
+      if (post._id === postId) {
+        return { ...post, likeCount };
+      }
+      return post;
+    });
+    this.setData({ posts: updatedPosts });
+  },
+
+  // 更新帖子评论数
+  updatePostCommentCount(postId, commentCount) {
+    const posts = this.data.posts;
+    const updatedPosts = posts.map(post => {
+      if (post._id === postId) {
+        return { ...post, commentCount };
+      }
+      return post;
+    });
+    this.setData({ posts: updatedPosts });
+  },
 });

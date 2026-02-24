@@ -173,6 +173,31 @@ Page({
     const likeCount = await this.getLikeCount(postId);
     const post = this.data.post;
     this.setData({ post: { ...post, likeCount } });
+    
+    // 通知上一个页面更新点赞数
+    const pages = getCurrentPages();
+    if (pages.length > 1) {
+      const prevPage = pages[pages.length - 2];
+      if (prevPage.updatePostLikeCount) {
+        prevPage.updatePostLikeCount(postId, likeCount);
+      }
+    }
+  },
+
+  // 更新评论数
+  async updateCommentCount(postId) {
+    const commentCount = await this.getCommentCount(postId);
+    const post = this.data.post;
+    this.setData({ post: { ...post, commentCount } });
+    
+    // 通知上一个页面更新评论数
+    const pages = getCurrentPages();
+    if (pages.length > 1) {
+      const prevPage = pages[pages.length - 2];
+      if (prevPage.updatePostCommentCount) {
+        prevPage.updatePostCommentCount(postId, commentCount);
+      }
+    }
   },
 
   // 切换评论输入框显示
@@ -230,6 +255,9 @@ Page({
       });
       this.loadComments(postId);
       this.setData({ newComment: '', showCommentInput: false }); // 清空输入框并隐藏评论输入框
+      
+      // 更新评论数并通知上一个页面
+      await this.updateCommentCount(postId);
     } catch (error) {
       console.error('发表评论失败:', error);
       wx.showToast({ title: '发表评论失败，请稍后重试', icon: 'none' });
@@ -299,6 +327,9 @@ Page({
       });
       this.loadComments(postId);
       this.hideReplyInput(); // 清空输入框并隐藏回复输入框
+      
+      // 更新评论数并通知上一个页面
+      await this.updateCommentCount(postId);
     } catch (error) {
       console.error('发表回复失败:', error);
       wx.showToast({ title: '发表回复失败，请稍后重试', icon: 'none' });

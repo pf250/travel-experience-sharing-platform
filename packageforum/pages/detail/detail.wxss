@@ -266,7 +266,7 @@
 }
 
 .comment-input button {
-  background-color: #007aff;
+  background-color: #a8d0fa;
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -275,7 +275,7 @@
 }
 
 .comment-input button:active {
-  background-color: #0056b3;
+  background-color: #a5ccf6;
 }
 
 /* 弹出式评论输入框样式 */
