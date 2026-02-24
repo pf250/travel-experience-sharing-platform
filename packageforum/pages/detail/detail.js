@@ -12,6 +12,8 @@ Page({
     replyTargetId: null, // 回复目标评论的 ID
     replyTargetAuthor: '', // 回复目标评论的作者昵称
     newReply: '', // 新回复内容
+    // 图片滚动相关
+    currentImageIndex: 0, // 当前图片索引
   },
 
   onLoad(options) {
@@ -370,5 +372,23 @@ Page({
       const day = d.getDate().toString().padStart(2, '0');
       return `${month}-${day}`;
     }
+  },
+
+  // 预览图片
+  previewImage(e) {
+    const index = e.currentTarget.dataset.index;
+    const images = this.data.post.images;
+    wx.previewImage({
+      current: images[index],
+      urls: images
+    });
+  },
+
+  // 监听图片滚动
+  onImageScroll(e) {
+    const scrollLeft = e.detail.scrollLeft;
+    const windowWidth = wx.getWindowInfo().windowWidth;
+    const currentIndex = Math.round(scrollLeft / windowWidth);
+    this.setData({ currentImageIndex: currentIndex });
   },
 });

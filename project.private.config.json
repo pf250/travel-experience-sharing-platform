@@ -11,9 +11,9 @@
     "miniprogram": {
       "list": [
         {
-          "name": "pages/attraction/detail/detail",
-          "pathName": "pages/attraction/detail/detail",
-          "query": "id=8a59a50e697b6d8f0027f4752d2576e9",
+          "name": "packageforum/pages/detail/detail",
+          "pathName": "packageforum/pages/detail/detail",
+          "query": "postId=26894d4e699d05ac01934e9b52adc9b0",
           "scene": null,
           "launchMode": "default"
         }

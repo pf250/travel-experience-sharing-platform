@@ -14,20 +14,39 @@
         <text class="post-time">时间：{{post.formattedTime}}</text>
       </view>
     </view>
+    <!-- 图片 -->
+    <view class="post-images-container" wx:if="{{post.images.length > 0}}">
+      <!-- 数字指示器 -->
+      <view class="image-indicator">
+        <text class="indicator-text">{{currentImageIndex + 1}}/{{post.images.length}}</text>
+      </view>
+      <scroll-view class="post-images-scroll" scroll-x="true" enable-flex="true" bindscroll="onImageScroll">
+        <view class="post-images-wrapper">
+          <image
+            wx:for="{{post.images}}"
+            wx:key="index"
+            src="{{item}}"
+            mode="aspectFill"
+            class="post-image"
+            bindtap="previewImage"
+            data-index="{{index}}"
+          ></image>
+        </view>
+      </scroll-view>
+      <!-- 小灰点指示器 -->
+      <view class="dots-indicator">
+        <view 
+          wx:for="{{post.images}}" 
+          wx:key="index"
+          class="dot"
+          wx:class="{{index === currentImageIndex ? 'active' : ''}}"
+        ></view>
+      </view>
+    </view>
     <!-- 标题 -->
     <view class="post-title">{{post.title}}</view>
     <!-- 描述 -->
     <view class="post-description">{{post.description}}</view>
-    <!-- 图片 -->
-    <view class="post-images" wx:if="{{post.images.length > 0}}">
-      <image
-        wx:for="{{post.images}}"
-        wx:key="index"
-        src="{{item}}"
-        mode="aspectFill"
-        class="post-image"
-      ></image>
-    </view>
 
     <!-- 点赞和评论 -->
     <view class="post-actions">
