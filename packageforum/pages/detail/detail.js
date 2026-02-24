@@ -12,6 +12,10 @@ Page({
     replyTargetId: null, // 回复目标评论的 ID
     replyTargetAuthor: '', // 回复目标评论的作者昵称
     newReply: '', // 新回复内容
+    // 图片滚动相关
+    currentImageIndex: 0, // 当前图片索引
+    // 点赞状态
+    isLiked: false, // 当前用户是否已点赞
   },
 
   onLoad(options) {
@@ -31,10 +35,53 @@ Page({
       const likeCount = await this.getLikeCount(postId);
       const commentCount = await this.getCommentCount(postId);
       const formattedTime = this.formatTime(post.createdAt);
-      this.setData({ post: { ...post, likeCount, commentCount, formattedTime } });
+      const isLiked = await this.checkUserLikeStatus(postId);
+      
+      // 获取用户角色信息
+      let userRole = '';
+      try {
+        // 确保userId是数字类型，与数据库存储一致
+        const userId = typeof post.userId === 'string' ? parseInt(post.userId) : post.userId;
+        const userRes = await wx.cloud.database().collection('users')
+          .where({ userId: userId })
+          .get();
+        if (userRes.data.length > 0) {
+          userRole = userRes.data[0].role || '';
+        }
+      } catch (error) {
+        console.error('获取用户角色失败:', error);
+      }
+      
+      this.setData({ 
+        post: { ...post, likeCount, commentCount, formattedTime, role: userRole },
+        isLiked 
+      });
     } catch (error) {
       console.error('加载帖子详情失败:', error);
       wx.showToast({ title: '加载失败，请稍后重试', icon: 'none' });
+    }
+  },
+
+  // 检查用户是否已点赞
+  async checkUserLikeStatus(postId) {
+    if (!this.checkLogin()) {
+      return false;
+    }
+    
+    const loginState = wx.getStorageSync('loginState');
+    if (!loginState || !loginState.userId) {
+      return false;
+    }
+    
+    const userId = loginState.userId;
+    try {
+      const likeRecord = await wx.cloud.database().collection('likes')
+        .where({ postId, userId })
+        .get();
+      return likeRecord.data.length > 0;
+    } catch (error) {
+      console.error('检查点赞状态失败:', error);
+      return false;
     }
   },
 
@@ -46,12 +93,19 @@ Page({
         .orderBy('createdAt', 'desc')
         .get();
       
+      // 获取帖子详情，用于判断评论者是否是帖子作者
+      const postRes = await wx.cloud.database().collection('posts')
+        .doc(postId)
+        .get();
+      const postAuthorId = postRes.data.userId;
+      
       // 格式化所有评论的时间
       const allComments = comments.data.map(comment => {
         return {
           ...comment,
           formattedTime: this.formatTime(comment.createdAt),
-          replies: []
+          replies: [],
+          isAuthor: String(comment.userId) === String(postAuthorId)
         };
       });
       
@@ -142,27 +196,46 @@ Page({
       return;
     }
 
-    const userId = loginState.userId; // 使用从 loginState 中获取的 userId
+    let userId = loginState.userId; // 使用从 loginState 中获取的 userId
+    // 确保userId是数字类型
+    userId = typeof userId === 'string' ? parseInt(userId) : userId;
 
     try {
       const likeRecord = await wx.cloud.database().collection('likes')
         .where({ postId, userId })
         .get();
 
+      let newIsLiked;
+      let newLikeCount = this.data.post.likeCount || 0;
+      
       if (likeRecord.data.length > 0) {
         await wx.cloud.database().collection('likes')
           .doc(likeRecord.data[0]._id)
           .remove();
+        newIsLiked = false;
+        newLikeCount--;
       } else {
         await wx.cloud.database().collection('likes').add({
           data: { postId, userId, createdAt: new Date() },
         });
+        newIsLiked = true;
+        newLikeCount++;
       }
 
+      // 同步更新点赞状态和数量
+      const post = this.data.post;
+      this.setData({
+        isLiked: newIsLiked,
+        post: { ...post, likeCount: newLikeCount }
+      });
+      
+      // 后台更新点赞数并通知上一个页面
       this.updateLikeCount(postId);
     } catch (error) {
       console.error('点赞失败:', error);
       wx.showToast({ title: '操作失败，请重试', icon: 'none' });
+      // 失败后重新加载点赞数
+      this.updateLikeCount(postId);
     }
   },
 
@@ -171,6 +244,31 @@ Page({
     const likeCount = await this.getLikeCount(postId);
     const post = this.data.post;
     this.setData({ post: { ...post, likeCount } });
+    
+    // 通知上一个页面更新点赞数
+    const pages = getCurrentPages();
+    if (pages.length > 1) {
+      const prevPage = pages[pages.length - 2];
+      if (prevPage.updatePostLikeCount) {
+        prevPage.updatePostLikeCount(postId, likeCount);
+      }
+    }
+  },
+
+  // 更新评论数
+  async updateCommentCount(postId) {
+    const commentCount = await this.getCommentCount(postId);
+    const post = this.data.post;
+    this.setData({ post: { ...post, commentCount } });
+    
+    // 通知上一个页面更新评论数
+    const pages = getCurrentPages();
+    if (pages.length > 1) {
+      const prevPage = pages[pages.length - 2];
+      if (prevPage.updatePostCommentCount) {
+        prevPage.updatePostCommentCount(postId, commentCount);
+      }
+    }
   },
 
   // 切换评论输入框显示
@@ -220,7 +318,9 @@ Page({
       return;
     }
 
-    const { userId, avatarUrl, nickName } = loginState;
+    let { userId, avatarUrl, nickName } = loginState;
+    // 确保userId是数字类型
+    userId = typeof userId === 'string' ? parseInt(userId) : userId;
 
     try {
       await wx.cloud.database().collection('comments').add({
@@ -228,6 +328,9 @@ Page({
       });
       this.loadComments(postId);
       this.setData({ newComment: '', showCommentInput: false }); // 清空输入框并隐藏评论输入框
+      
+      // 更新评论数并通知上一个页面
+      await this.updateCommentCount(postId);
     } catch (error) {
       console.error('发表评论失败:', error);
       wx.showToast({ title: '发表评论失败，请稍后重试', icon: 'none' });
@@ -289,7 +392,9 @@ Page({
       return;
     }
 
-    const { userId, avatarUrl, nickName } = loginState;
+    let { userId, avatarUrl, nickName } = loginState;
+    // 确保userId是数字类型
+    userId = typeof userId === 'string' ? parseInt(userId) : userId;
 
     try {
       await wx.cloud.database().collection('comments').add({
@@ -297,6 +402,9 @@ Page({
       });
       this.loadComments(postId);
       this.hideReplyInput(); // 清空输入框并隐藏回复输入框
+      
+      // 更新评论数并通知上一个页面
+      await this.updateCommentCount(postId);
     } catch (error) {
       console.error('发表回复失败:', error);
       wx.showToast({ title: '发表回复失败，请稍后重试', icon: 'none' });
@@ -370,5 +478,21 @@ Page({
       const day = d.getDate().toString().padStart(2, '0');
       return `${month}-${day}`;
     }
+  },
+
+  // 预览图片
+  previewImage(e) {
+    const index = e.currentTarget.dataset.index;
+    const images = this.data.post.images;
+    wx.previewImage({
+      current: images[index],
+      urls: images
+    });
+  },
+
+  // 监听 swiper 切换事件
+  onSwiperChange(event) {
+    const currentIndex = event.detail.current;
+    this.setData({ currentImageIndex: currentIndex });
   },
 });

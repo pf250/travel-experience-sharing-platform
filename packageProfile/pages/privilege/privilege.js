@@ -14,7 +14,7 @@ Page({
     }
 
     this.setData({
-      userId: loginState.userId,
+      userId: Number(loginState.userId),
       role: loginState.role || 'user'
     });
 

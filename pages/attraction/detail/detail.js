@@ -9,7 +9,8 @@ Page({
     tickets: [],
     discounts: [],
     isLoading: true,
-    currentImageIndex: 0
+    currentImageIndex: 0,
+    showFullDescription: false
   },
 
   /**
@@ -25,6 +26,18 @@ Page({
   },
 
   /**
+   * 格式化浏览量
+   */
+  formatViewCount(value) {
+    if (value >= 10000) {
+      return (value / 10000).toFixed(1) + 'W';
+    } else if (value >= 1000) {
+      return (value / 1000).toFixed(1) + 'K';
+    }
+    return value;
+  },
+
+  /**
    * 查询景区详情
    */
   queryScenicDetail(scenicId) {
@@ -32,10 +45,49 @@ Page({
     
     db.collection('scenic').doc(scenicId).get({
       success: (res) => {
+        // 为景区数据添加格式化后的浏览量
+        const scenicData = res.data;
+        const formattedViewCount = this.formatViewCount(scenicData.viewCount || 0);
         this.setData({
-          scenic: res.data
+          scenic: {
+            ...scenicData,
+            formattedViewCount
+          }
         });
         console.log('查询景区详情成功:', res.data);
+        
+        // 更新景区浏览量
+        db.collection('scenic').doc(scenicId).update({
+          data: {
+            viewCount: db.command.inc(1)
+          },
+          success: (updateRes) => {
+            console.log('浏览量更新成功');
+            // 计算更新后的浏览量
+            const updatedViewCount = (res.data.viewCount || 0) + 1;
+            const updatedFormattedViewCount = this.formatViewCount(updatedViewCount);
+            // 更新当前页面的浏览量显示
+            this.setData({
+              scenic: {
+                ...res.data,
+                viewCount: updatedViewCount,
+                formattedViewCount: updatedFormattedViewCount
+              }
+            });
+            // 通知上一个页面更新对应景区的浏览量
+            const pages = getCurrentPages();
+            if (pages.length > 1) {
+              const prevPage = pages[pages.length - 2];
+              if (prevPage.updateScenicViewCount) {
+                prevPage.updateScenicViewCount(scenicId, updatedViewCount);
+              }
+            }
+          },
+          fail: (updateErr) => {
+            console.error('浏览量更新失败:', updateErr);
+          }
+        });
+        
         this.setLoading(false);
       },
       fail: (err) => {
@@ -110,6 +162,9 @@ Page({
           discounts: discountsWithStatus
         });
         console.log('查询优惠方案成功:', discountsWithStatus.length, '个');
+        
+        // 为门票添加优惠信息
+        this.addDiscountInfoToTickets();
       },
       fail: (err) => {
         console.error('查询优惠方案失败:', err);
@@ -151,28 +206,120 @@ Page({
    * 导航到地图
    */
   openLocation() {
-    const address = this.data.scenic.address;
+    const scenic = this.data.scenic;
+    const address = scenic.address;
+    
     if (address) {
-      wx.openLocation({
-        address: address,
-        success: (res) => {
-          console.log('打开地图成功:', res);
+      // 先复制地址到剪贴板
+      wx.setClipboardData({
+        data: address,
+        success: () => {
+          wx.showToast({
+            title: '地址已复制到剪贴板',
+            icon: 'success'
+          });
+          
+          // 然后打开微信内置地图
+          if (scenic.latitude && scenic.longitude) {
+            // 有经纬度时直接打开微信内置地图
+            wx.openLocation({
+              latitude: scenic.latitude,
+              longitude: scenic.longitude,
+              address: address,
+              name: scenic.name,
+              success: (res) => {
+                console.log('打开地图成功:', res);
+              },
+              fail: (err) => {
+                console.error('打开地图失败:', err);
+                wx.showToast({
+                  title: '打开地图失败',
+                  icon: 'none'
+                });
+              }
+            });
+          } else {
+            // 无经纬度时让用户在微信内置地图中选择位置
+            wx.chooseLocation({
+              success: (res) => {
+                // 用户选择位置后打开地图
+                wx.openLocation({
+                  latitude: res.latitude,
+                  longitude: res.longitude,
+                  address: address,
+                  name: scenic.name,
+                  success: (res) => {
+                    console.log('打开地图成功:', res);
+                  },
+                  fail: (err) => {
+                    console.error('打开地图失败:', err);
+                    wx.showToast({
+                      title: '打开地图失败',
+                      icon: 'none'
+                    });
+                  }
+                });
+              },
+              fail: (err) => {
+                console.error('选择位置失败:', err);
+                wx.showToast({
+                  title: '选择位置失败',
+                  icon: 'none'
+                });
+              }
+            });
+          }
         },
         fail: (err) => {
-          console.error('打开地图失败:', err);
+          console.error('复制地址失败:', err);
           wx.showToast({
-            title: '打开地图失败',
+            title: '复制地址失败',
             icon: 'none'
           });
+          
+          // 即使复制失败也尝试打开地图
+          if (scenic.latitude && scenic.longitude) {
+            wx.openLocation({
+              latitude: scenic.latitude,
+              longitude: scenic.longitude,
+              address: address,
+              name: scenic.name
+            });
+          } else {
+            wx.chooseLocation({
+              success: (res) => {
+                wx.openLocation({
+                  latitude: res.latitude,
+                  longitude: res.longitude,
+                  address: address,
+                  name: scenic.name
+                });
+              }
+            });
+          }
         }
       });
+    } else {
+      wx.showToast({
+        title: '暂无地址信息',
+        icon: 'none'
+      });
     }
+  },
+  
+  /**
+   * 切换景区描述展开/收起状态
+   */
+  toggleDescription() {
+    this.setData({
+      showFullDescription: !this.data.showFullDescription
+    });
   },
 
   /**
    * 获取优惠后的价格
    */
-  getDiscountedPrice(ticketId) {
+  getDiscountedPrice(ticketId, originalPrice) {
     const discounts = this.data.discounts.filter(discount => {
       return discount.status === 1 && discount.ticketIds.includes(ticketId);
     });
@@ -180,9 +327,29 @@ Page({
     if (discounts.length > 0) {
       // 取第一个有效的优惠方案
       const discount = discounts[0];
-      return discount.discountValue;
+      // 计算优惠后的价格
+      const discountedPrice = originalPrice - discount.discountValue;
+      return Math.max(0, discountedPrice); // 确保价格不小于0
     }
     return null;
+  },
+  
+  /**
+   * 为门票添加优惠信息
+   */
+  addDiscountInfoToTickets() {
+    const ticketsWithDiscount = this.data.tickets.map(ticket => {
+      const discountedPrice = this.getDiscountedPrice(ticket._id, ticket.price);
+      return {
+        ...ticket,
+        discountedPrice: discountedPrice,
+        hasDiscount: discountedPrice !== null
+      };
+    });
+    
+    this.setData({
+      tickets: ticketsWithDiscount
+    });
   },
 
   /**

@@ -3,7 +3,8 @@ Page({
     posts: [], // 帖子列表
     hasMorePosts: true, // 是否还有更多帖子可以加载
     postPage: 1, // 当前帖子页码
-    postPageSize: 5, // 每页加载的帖子数量
+    postPageSize: 10, // 每页加载的帖子数量
+    isLoading: false, // 是否正在加载
   },
 
   onLoad() {
@@ -11,9 +12,7 @@ Page({
   },
 
   onShow() {
-    // 每次页面显示时都刷新数据
-    this.setData({ posts: [], postPage: 1, hasMorePosts: true }); // 重置数据
-    this.loadPosts(); // 重新加载帖子列表
+  
   },
 
   // 下拉刷新事件
@@ -25,9 +24,9 @@ Page({
 
   // 触底加载更多帖子
   onReachBottom() {
-    if (this.data.hasMorePosts) {
+    if (this.data.hasMorePosts && !this.data.isLoading) {
       this.loadPosts();
-    } else {
+    } else if (!this.data.hasMorePosts) {
       wx.showToast({ title: '没有更多帖子了', icon: 'none' });
     }
   },
@@ -35,9 +34,17 @@ Page({
   // 加载帖子列表
   async loadPosts() {
     try {
+      // 设置加载状态
+      this.setData({ isLoading: true });
+      
+      // 显示加载提示（仅在触底加载时显示，下拉刷新时不显示）
+      if (this.data.posts.length > 0) {
+        wx.showLoading({ title: '加载中...' });
+      }
+      
       const { postPage, postPageSize } = this.data;
       const res = await wx.cloud.database().collection('posts')
-        .orderBy('createdAt', 'desc') // 按时间倒序排列
+        .orderBy('createdAt', 'desc') // 按时间倒序排列，确保先获取最新帖子
         .skip((postPage - 1) * postPageSize) // 跳过已加载的帖子
         .limit(postPageSize) // 每次加载5条
         .get();
@@ -62,8 +69,57 @@ Page({
         !this.data.posts.some(existingPost => existingPost._id === newPost._id)
       );
 
+      // 合并新帖子和现有帖子
+      const allPosts = [...this.data.posts, ...newPosts];
+      
+      // 排序逻辑：最近1天的帖子按时间倒序，超过1天的按点赞数倒序
+      const sortedPosts = allPosts.sort((a, b) => {
+        // 获取当前时间
+        const now = new Date();
+        
+        // 计算帖子a的时间差（小时）
+        let postADate;
+        if (a.createdAt instanceof Date) {
+          postADate = a.createdAt;
+        } else if (a.createdAt.$date) {
+          postADate = new Date(a.createdAt.$date);
+        } else {
+          postADate = new Date(a.createdAt);
+        }
+        const diffHoursA = Math.floor((now - postADate) / (1000 * 60 * 60));
+        
+        // 计算帖子b的时间差（小时）
+        let postBDate;
+        if (b.createdAt instanceof Date) {
+          postBDate = b.createdAt;
+        } else if (b.createdAt.$date) {
+          postBDate = new Date(b.createdAt.$date);
+        } else {
+          postBDate = new Date(b.createdAt);
+        }
+        const diffHoursB = Math.floor((now - postBDate) / (1000 * 60 * 60));
+        
+        // 最近1天的帖子
+        if (diffHoursA < 24 && diffHoursB < 24) {
+          // 按时间倒序
+          return postBDate - postADate;
+        }
+        // 一个在1天内，一个超过1天
+        else if (diffHoursA < 24 && diffHoursB >= 24) {
+          return -1; // a排在前面
+        }
+        else if (diffHoursA >= 24 && diffHoursB < 24) {
+          return 1; // b排在前面
+        }
+        // 都超过1天的帖子
+        else {
+          // 按点赞数倒序
+          return b.likeCount - a.likeCount;
+        }
+      });
+
       this.setData({
-        posts: [...this.data.posts, ...newPosts], // 追加新加载的帖子
+        posts: sortedPosts, // 使用排序后的帖子列表
         postPage: postPage + 1, // 更新页码
       });
 
@@ -72,6 +128,10 @@ Page({
       console.error('加载帖子失败:', error);
       wx.showToast({ title: '加载失败，请稍后重试', icon: 'none' });
       wx.stopPullDownRefresh(); // 停止下拉刷新动画
+    } finally {
+      // 无论成功失败，都结束加载状态
+      this.setData({ isLoading: false });
+      wx.hideLoading(); // 隐藏加载提示
     }
   },
 
@@ -118,6 +178,10 @@ Page({
     if (diffHours < 24) {
       if (diffHours < 1) {
         const diffMinutes = Math.floor(diff / (1000 * 60));
+        if (diffMinutes < 1) {
+          const diffSeconds = Math.floor(diff / 1000);
+          return `${Math.max(diffSeconds, 1)}秒前`;
+        }
         return `${diffMinutes}分钟前`;
       }
       return `${diffHours}小时前`;
@@ -149,5 +213,29 @@ Page({
     wx.navigateTo({
       url: `/packageforum/pages/detail/detail?postId=${postId}`,
     });
+  },
+
+  // 更新帖子点赞数
+  updatePostLikeCount(postId, likeCount) {
+    const posts = this.data.posts;
+    const updatedPosts = posts.map(post => {
+      if (post._id === postId) {
+        return { ...post, likeCount };
+      }
+      return post;
+    });
+    this.setData({ posts: updatedPosts });
+  },
+
+  // 更新帖子评论数
+  updatePostCommentCount(postId, commentCount) {
+    const posts = this.data.posts;
+    const updatedPosts = posts.map(post => {
+      if (post._id === postId) {
+        return { ...post, commentCount };
+      }
+      return post;
+    });
+    this.setData({ posts: updatedPosts });
   },
 });

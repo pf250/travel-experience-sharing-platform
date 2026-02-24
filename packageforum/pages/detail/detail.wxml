@@ -2,42 +2,71 @@
   <!-- 帖子详情 -->
   <view class="post-detail">
     <view class="userinfo">
-      <view class="userinfo-top">
-        <!-- 头像 -->
-        <image class="avatar" src="{{post.avatarUrl}}"></image>
-        <!-- 昵称 -->
-        <text class="username">{{post.nickName}}</text>
+      <view class="userinfo-content">
+        <view class="userinfo-left">
+          <view class="userinfo-top">
+            <!-- 头像 -->
+            <image class="avatar" src="{{post.avatarUrl}}"></image>
+            <div class="user-details">
+              <view class="username-container">
+                <!-- 昵称 -->
+                <text class="username">{{post.nickName}}</text>
+                <!-- 身份标识符 -->
+                <text wx:if="{{post.role === 'merchant'}}" class="role-tag merchant">商家</text>
+                <text wx:elif="{{post.role === 'admin'}}" class="role-tag admin">管理员</text>
+                <text wx:elif="{{post.role === 'user'}}" class="role-tag user">用户</text>
+              </view>
+              <!-- UID -->
+              <text class="post-author">Uid: {{post.userId}}</text>
+            </div>
+          </view>
+        </view>
+        <!-- 时间信息 -->
+        <view class="post-meta">
+          <text class="post-time">发布：{{post.formattedTime}}</text>
+        </view>
       </view>
-      <!-- 用户信息 -->
-      <view class="post-meta">
-        <text class="post-author">Uid: {{post.userId}}</text>
-        <text class="post-time">时间：{{post.formattedTime}}</text>
+    </view>
+    <!-- 图片 -->
+    <view class="post-images-container" wx:if="{{post.images.length > 0}}">
+      <swiper class="post-images-scroll" bindchange="onSwiperChange" indicator-dots="false" autoplay="{{false}}" circular="false" skip-hidden-item-layout="true">
+        <swiper-item wx:for="{{post.images}}" wx:key="index">
+          <image
+            src="{{item}}"
+            mode="aspectFill"
+            class="post-image"
+            bindtap="previewImage"
+            data-index="{{index}}"
+          ></image>
+        </swiper-item>
+      </swiper>
+      <!-- 数字指示器 -->
+      <view class="image-indicator">
+        <text class="indicator-text">{{currentImageIndex + 1}}/{{post.images.length}}</text>
+      </view>
+      <!-- 小灰点指示器 -->
+      <view class="dots-indicator">
+        <view 
+          wx:for="{{post.images}}" 
+          wx:key="index"
+          class="dot {{index === currentImageIndex ? 'active' : ''}}"
+        ></view>
       </view>
     </view>
     <!-- 标题 -->
     <view class="post-title">{{post.title}}</view>
     <!-- 描述 -->
     <view class="post-description">{{post.description}}</view>
-    <!-- 图片 -->
-    <view class="post-images" wx:if="{{post.images.length > 0}}">
-      <image
-        wx:for="{{post.images}}"
-        wx:key="index"
-        src="{{item}}"
-        mode="aspectFill"
-        class="post-image"
-      ></image>
-    </view>
 
     <!-- 点赞和评论 -->
     <view class="post-actions">
       <!-- 点赞按钮 -->
       <button
-        class="like-btn"
+        class="like-btn {{isLiked ? 'liked' : ''}}"
         bindtap="handleLike"
         data-post-id="{{post._id}}"
       >
-        <text>👍</text> {{post.likeCount || 0}}
+        <image class="icon" src="{{isLiked ? '/images/contact/like-active.png' : '/images/contact/like.png'}}"></image> {{post.likeCount || 0}}
       </button>
       <!-- 评论按钮 -->
       <button
@@ -45,7 +74,7 @@
         bindtap="toggleCommentSection"
         data-post-id="{{post._id}}"
       >
-        <text>💬</text> {{post.commentCount || 0}}
+        <image class="icon" src="/images/contact/comment.png"></image> {{post.commentCount || 0}}
       </button>
     </view>
     <!-- 评论区域 -->
@@ -59,6 +88,8 @@
               <view class="comment-header">
                 <!-- 昵称 -->
                 <text class="comment-nickname">{{item.nickName}}</text>
+                <!-- 作者身份标识 -->
+                <text wx:if="{{item.isAuthor}}" class="role-tag author">作者</text>
               </view>
               <!-- 评论内容 -->
                 <text class="comment-content">{{item.parentId ? '回复 @' + item.replyTargetAuthor + '：' : ''}}{{item.content}}</text>
@@ -82,6 +113,8 @@
                   <view class="comment-header">
                     <!-- 昵称 -->
                     <text class="comment-nickname">{{item.nickName}}</text>
+                    <!-- 作者身份标识 -->
+                    <text wx:if="{{item.isAuthor}}" class="role-tag author">作者</text>
                   </view>
                   <!-- 评论内容 -->
                 <text class="comment-content">{{item.isReplyToReply ? '回复 @' + item.replyTargetAuthor + '：' : ''}}{{item.content}}</text>

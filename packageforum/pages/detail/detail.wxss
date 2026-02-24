@@ -11,33 +11,97 @@
   padding: 20px;
   width: 700rpx;
   margin-bottom: 20px;
+  position: relative;
 }
 
 .userinfo {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  margin-bottom: 10px;
+  align-items: center;
+  margin-bottom: 0rpx;
+  position: sticky;
+  top: -10rpx;
+  background-color: #fff;
+  z-index: 10;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 8px 8px 0 0;
+  margin: -20px -20px 10px -20px;
+  padding: 35rpx;
+}
+
+.userinfo-content {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.userinfo-left {
+  margin-right: 20px;
 }
 
 .userinfo-top {
   display: flex;
-  align-items: center;
-  width: 100%;
-  margin-bottom: 5px;
+  align-items: flex-start;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+  margin-left: 10px;
 }
 
 .avatar {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  margin-right: 10px;
+}
+
+.username-container {
+  display: flex;
+  align-items: center;
 }
 
 .username {
   font-size: 18px;
   font-weight: bold;
-  margin-right: auto;
+  margin-right: 8px;
+}
+
+.role-tag {
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+.role-tag.merchant {
+  background-color: #e6f7ff;
+  color: #1890ff;
+  border: 1px solid #91d5ff;
+}
+
+.role-tag.admin {
+  background-color: #fff1f0;
+  color: #ff4d4f;
+  border: 1px solid #ffccc7;
+}
+
+.role-tag.user {
+  background-color: #f6ffed;
+  color: #52c41a;
+  border: 1px solid #b7eb8f;
+}
+
+.role-tag.author {
+  background-color: #fff7e6;
+  color: #fa8c16;
+  border: 1px solid #ffd591;
+}
+
+.post-author {
+  color: #888;
+  font-size: 14px;
+  margin-top: 4px;
 }
 
 .post-meta {
@@ -45,11 +109,12 @@
   align-items: center;
   color: #888;
   font-size: 14px;
-  width: 100%;
+  flex: 1;
+  justify-content: flex-end;
 }
 
 .post-meta text {
-  margin-right: 10px;
+  margin-right: 0;
 }
 
 .post-title {
@@ -63,36 +128,108 @@
   margin-bottom: 20px;
 }
 
-.post-images {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+.post-images-container {
   margin-bottom: 20px;
+  border-radius: 8px;
+  overflow: hidden;
+  width: 100%;
+  height: 900rpx;
+  position: relative;
+}
+
+.post-images-scroll {
+  width: 100%;
+  height: 100%;
 }
 
 .post-image {
-  width: 100px;
-  height: 100px;
+  width: 100%;
+  height: 100%;
   border-radius: 8px;
+}
+
+.image-indicator {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 15px;
+  font-size: 14px;
+  z-index: 1;
+}
+
+.indicator-text {
+  color: white;
+}
+
+/* 小灰点指示器 */
+.dots-indicator {
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  z-index: 1;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.5);
+  transition: all 0.3s ease;
+}
+
+.dot.active {
+  width: 20px;
+  border-radius: 4px;
+  background-color: #1296db;
 }
 
 .post-actions {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   margin-bottom: 20px;
 }
 
-.like-btn, .comment-btn {
-  background-color: #007aff;
-  color: #fff;
+.like-btn {
+  background-color: transparent;
+  color: #333;
   border: none;
   border-radius: 4px;
   padding: 8px 16px;
   font-size: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.comment-btn {
+  background-color: transparent;
+  color: #333;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
 }
 
 .like-btn:active, .comment-btn:active {
-  background-color: #0056b3;
+  background-color: #f0f0f0;
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
+  vertical-align: middle;
 }
 
 .comments-section {
@@ -189,7 +326,7 @@
 }
 
 .comment-input button {
-  background-color: #007aff;
+  background-color: #a8d0fa;
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -198,7 +335,7 @@
 }
 
 .comment-input button:active {
-  background-color: #0056b3;
+  background-color: #a5ccf6;
 }
 
 /* 弹出式评论输入框样式 */

@@ -33,6 +33,7 @@
         data-field="description"
         bindinput="handleInputChange"
         auto-height
+        style="max-height: 300rpx; overflow-y: auto;"
       />
     </view>
     
