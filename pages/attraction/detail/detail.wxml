@@ -10,7 +10,7 @@
     <!-- 图片轮播 -->
     <view class="image-carousel">
       <swiper indicator-dots="{{true}}" indicator-color="rgba(255,255,255,0.5)" indicator-active-color="#fff" autoplay="{{true}}" interval="3000" duration="500" bindchange="changeImage">
-        <swiper-item wx:for="{{scenic.images || []}}" wx:key="{{index}}">
+        <swiper-item wx:for="{{scenic.images || []}}" wx:key="index">
           <image src="{{item}}" mode="aspectFill"></image>
         </swiper-item>
         <swiper-item wx:if="{{(!scenic.images || scenic.images.length === 0)}}">
@@ -30,7 +30,7 @@
       <text class="scenic-status">{{scenic.status}}</text>
       <view class="scenic-description-container">
         <view class="scenic-description {{!showFullDescription ? 'collapsed' : ''}}">
-          <text>{{scenic.description}}</text>
+          <text user-select="true">{{scenic.description}}</text>
         </view>
         <text wx:if="{{scenic.description && scenic.description.length > 60}}" class="expand-btn" bindtap="toggleDescription">
           {{showFullDescription ? '收起' : '展开'}}
@@ -39,12 +39,12 @@
       <view class="scenic-contact">
         <view class="contact-item">
           <text class="contact-label">地址：</text>
-          <text class="contact-value">{{scenic.address}}</text>
+          <text class="contact-value" user-select="true">{{scenic.address}}</text>
           <button class="contact-btn" bindtap="openLocation">导航</button>
         </view>
         <view class="contact-item">
           <text class="contact-label">电话：</text>
-          <text class="contact-value">{{scenic.contactPhone || '暂无电话'}}</text>
+          <text class="contact-value" user-select="true">{{scenic.contactPhone || '暂无电话'}}</text>
           <button wx:if="{{scenic.contactPhone}}" class="contact-btn" bindtap="makePhoneCall">拨打</button>
         </view>
       </view>
@@ -57,7 +57,7 @@
         <text>暂无门票信息</text>
       </view>
       <view wx:else class="ticket-list">
-        <view wx:for="{{tickets}}" wx:key="{{item._id}}" class="ticket-card">
+        <view wx:for="{{tickets}}" wx:key="_id" class="ticket-card">
           <view class="ticket-header">
             <text class="ticket-name">{{item.name}}</text>
           </view>
@@ -86,7 +86,7 @@
         <text>暂无优惠方案</text>
       </view>
       <view wx:else class="discount-list">
-        <view wx:for="{{discounts}}" wx:key="{{item._id}}" class="discount-item">
+        <view wx:for="{{discounts}}" wx:key="_id" class="discount-item">
           <view class="discount-header">
             <text class="discount-title">{{item.title}}</text>
             <text wx:if="{{item.status === 0}}" class="discount-status status-pending">未开始</text>
