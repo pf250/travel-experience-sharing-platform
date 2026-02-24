@@ -28,7 +28,7 @@
         </view>
         <view class="scenic-footer">
           <text class="scenic-status">{{item.status}}</text>
-          <text class="scenic-contact">{{item.contactPhone}}</text>
+          <text class="scenic-contact">{{item.contactPhone || '暂无电话'}}</text>
         </view>
       </view>
     </view>

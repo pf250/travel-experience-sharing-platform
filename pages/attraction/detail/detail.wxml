@@ -44,8 +44,8 @@
         </view>
         <view class="contact-item">
           <text class="contact-label">电话：</text>
-          <text class="contact-value">{{scenic.contactPhone}}</text>
-          <button class="contact-btn" bindtap="makePhoneCall">拨打</button>
+          <text class="contact-value">{{scenic.contactPhone || '暂无电话'}}</text>
+          <button wx:if="{{scenic.contactPhone}}" class="contact-btn" bindtap="makePhoneCall">拨打</button>
         </view>
       </view>
     </view>
