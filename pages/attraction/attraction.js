@@ -125,6 +125,22 @@ Page({
    */
   navigateToDetail(e) {
     const scenicId = e.currentTarget.dataset.id;
+    
+    // 更新景区浏览量
+    const db = wx.cloud.database();
+    db.collection('scenic').doc(scenicId).update({
+      data: {
+        viewCount: db.command.inc(1)
+      },
+      success: () => {
+        console.log('浏览量更新成功');
+      },
+      fail: (err) => {
+        console.error('浏览量更新失败:', err);
+      }
+    });
+    
+    // 导航到详情页
     wx.navigateTo({
       url: `/pages/attraction/detail/detail?id=${scenicId}`
     });
