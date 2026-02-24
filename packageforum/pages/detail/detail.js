@@ -40,8 +40,10 @@ Page({
       // 获取用户角色信息
       let userRole = '';
       try {
+        // 确保userId是数字类型，与数据库存储一致
+        const userId = typeof post.userId === 'string' ? parseInt(post.userId) : post.userId;
         const userRes = await wx.cloud.database().collection('users')
-          .where({ userId: post.userId })
+          .where({ userId: userId })
           .get();
         if (userRes.data.length > 0) {
           userRole = userRes.data[0].role || '';
@@ -91,12 +93,19 @@ Page({
         .orderBy('createdAt', 'desc')
         .get();
       
+      // 获取帖子详情，用于判断评论者是否是帖子作者
+      const postRes = await wx.cloud.database().collection('posts')
+        .doc(postId)
+        .get();
+      const postAuthorId = postRes.data.userId;
+      
       // 格式化所有评论的时间
       const allComments = comments.data.map(comment => {
         return {
           ...comment,
           formattedTime: this.formatTime(comment.createdAt),
-          replies: []
+          replies: [],
+          isAuthor: String(comment.userId) === String(postAuthorId)
         };
       });
       
@@ -187,7 +196,9 @@ Page({
       return;
     }
 
-    const userId = loginState.userId; // 使用从 loginState 中获取的 userId
+    let userId = loginState.userId; // 使用从 loginState 中获取的 userId
+    // 确保userId是数字类型
+    userId = typeof userId === 'string' ? parseInt(userId) : userId;
 
     try {
       const likeRecord = await wx.cloud.database().collection('likes')
@@ -307,7 +318,9 @@ Page({
       return;
     }
 
-    const { userId, avatarUrl, nickName } = loginState;
+    let { userId, avatarUrl, nickName } = loginState;
+    // 确保userId是数字类型
+    userId = typeof userId === 'string' ? parseInt(userId) : userId;
 
     try {
       await wx.cloud.database().collection('comments').add({
@@ -379,7 +392,9 @@ Page({
       return;
     }
 
-    const { userId, avatarUrl, nickName } = loginState;
+    let { userId, avatarUrl, nickName } = loginState;
+    // 确保userId是数字类型
+    userId = typeof userId === 'string' ? parseInt(userId) : userId;
 
     try {
       await wx.cloud.database().collection('comments').add({
