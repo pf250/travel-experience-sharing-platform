@@ -132,6 +132,13 @@
   margin-right: 20rpx;
 }
 
+.icon {
+  width: 32rpx;
+  height: 32rpx;
+  margin-right: 8rpx;
+  vertical-align: middle;
+}
+
 .comments-section {
   margin-top: 20rpx;
 }

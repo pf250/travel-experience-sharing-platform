@@ -156,28 +156,42 @@
 .post-actions {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   margin-bottom: 20px;
 }
 
-.like-btn, .comment-btn {
-  background-color: #007aff;
-  color: #fff;
+.like-btn {
+  background-color: transparent;
+  color: #333;
   border: none;
   border-radius: 4px;
   padding: 8px 16px;
   font-size: 16px;
+  display: flex;
+  align-items: center;
 }
 
-.like-btn.liked {
-  background-color: #ff4757;
+.comment-btn {
+  background-color: transparent;
+  color: #333;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
 }
 
 .like-btn:active, .comment-btn:active {
-  background-color: #0056b3;
+  background-color: #f0f0f0;
 }
 
-.like-btn.liked:active {
-  background-color: #ff3742;
+.icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
+  vertical-align: middle;
 }
 
 .comments-section {

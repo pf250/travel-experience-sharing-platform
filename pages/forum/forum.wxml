@@ -41,7 +41,7 @@
           bindtap="handleLike"
           data-post-id="{{item._id}}"
         >
-          <text>👍</text> {{item.likeCount || 0}}
+          <image class="icon" src="/images/contact/like.png"></image> {{item.likeCount || 0}}
         </button>
         <!-- 评论按钮 -->
         <button
@@ -49,7 +49,7 @@
           bindtap="showComments"
           data-post-id="{{item._id}}"
         >
-          <text>💬</text> {{item.commentCount || 0}}
+          <image class="icon" src="/images/contact/comment.png"></image> {{item.commentCount || 0}}
         </button>
       </view>
     </view>

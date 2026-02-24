@@ -60,7 +60,7 @@
         bindtap="handleLike"
         data-post-id="{{post._id}}"
       >
-        <text>👍</text> {{post.likeCount || 0}}
+        <image class="icon" src="{{isLiked ? '/images/contact/like-active.png' : '/images/contact/like.png'}}"></image> {{post.likeCount || 0}}
       </button>
       <!-- 评论按钮 -->
       <button
@@ -68,7 +68,7 @@
         bindtap="toggleCommentSection"
         data-post-id="{{post._id}}"
       >
-        <text>💬</text> {{post.commentCount || 0}}
+        <image class="icon" src="/images/contact/comment.png"></image> {{post.commentCount || 0}}
       </button>
     </view>
     <!-- 评论区域 -->
