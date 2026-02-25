@@ -29,7 +29,7 @@ Page({
       },
       { 
         id: 4, 
-        name: '资源库', 
+        name: '更多', 
         icon: '/images/home/resource.png', 
         url: '/packageHome/pages/resource/resource' 
       },

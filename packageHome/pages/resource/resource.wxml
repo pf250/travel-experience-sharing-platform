@@ -1,2 +1,72 @@
 <!--packageHome/pages/resource/resource.wxml-->
-<text>packageHome/pages/resource/resource.wxml</text>
+<view class="container">
+  <!-- 页面标题 -->
+  <view class="header">
+    <view class="title">
+      <text class="title-text">功能规划</text>
+      <text class="title-subtext">未来开发 roadmap</text>
+    </view>
+    <view class="description">
+      <text>探索我们即将推出的新功能，打造更优质的旅游体验</text>
+    </view>
+  </view>
+
+  <!-- 功能分类列表 -->
+  <view class="feature-container">
+    <block wx:for="{{featureCategories}}" wx:key="id">
+      <!-- 分类标题 -->
+      <view class="category-section">
+        <view class="category-header">
+          <text class="category-icon">{{item.icon}}</text>
+          <text class="category-name">{{item.name}}</text>
+        </view>
+        
+        <!-- 功能列表 -->
+        <view class="feature-list">
+          <block wx:for="{{item.features}}" wx:key="id">
+            <view class="feature-card" bindtap="onFeatureTap" data-id="{{item.id}}">
+              <!-- 功能头部 -->
+              <view class="feature-header">
+                <text class="feature-name">{{item.name}}</text>
+                <view class="feature-status" wx:if="{{item.status === 'development'}}">
+                  <text class="status-badge development">开发中</text>
+                </view>
+                <view class="feature-status" wx:elif="{{item.status === 'design'}}">
+                  <text class="status-badge design">设计中</text>
+                </view>
+                <view class="feature-status" wx:elif="{{item.status === 'planning'}}">
+                  <text class="status-badge planning">规划中</text>
+                </view>
+                <view class="feature-status" wx:else>
+                  <text class="status-badge research">研究中</text>
+                </view>
+              </view>
+              
+              <!-- 功能描述 -->
+              <text class="feature-description">{{item.description}}</text>
+              
+              <!-- 功能底部信息 -->
+              <view class="feature-footer">
+                <view class="eta-info">
+                  <text class="eta-label">预计完成:</text>
+                  <text class="eta-value">{{item.eta}}</text>
+                </view>
+                <view class="progress-container">
+                  <view class="progress-bar">
+                    <view class="progress-fill" style="width: {{item.progress}}%"></view>
+                  </view>
+                  <text class="progress-text">{{item.progress}}%</text>
+                </view>
+              </view>
+            </view>
+          </block>
+        </view>
+      </view>
+    </block>
+  </view>
+
+  <!-- 底部提示 -->
+  <view class="footer-tip">
+    <text class="tip-text">点击功能卡片了解更多详情</text>
+  </view>
+</view>
