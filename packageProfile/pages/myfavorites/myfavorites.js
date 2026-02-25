@@ -6,6 +6,8 @@ Page({
    */
   data: {
     ticketSales: [],
+    filteredSales: [],
+    currentTab: 0, // 0: 待使用, 1: 已退票
     isLoading: true
   },
 
@@ -75,6 +77,7 @@ Page({
     if (!loginState || !loginState.isLogin) {
       this.setData({
         ticketSales: [],
+        filteredSales: [],
         isLoading: false
       });
       return;
@@ -91,6 +94,9 @@ Page({
           isLoading: false
         });
         console.log('加载购票记录成功:', res.data);
+        
+        // 根据当前标签过滤数据
+        this.filterTicketSales();
       },
       fail: (err) => {
         console.error('加载购票记录失败:', err);
@@ -103,6 +109,42 @@ Page({
         });
       }
     });
+  },
+
+  /**
+   * 根据标签过滤购票记录
+   */
+  filterTicketSales() {
+    const { ticketSales, currentTab } = this.data;
+    let filtered = [];
+    
+    if (currentTab === 0) {
+      // 待使用：状态为1且未退票
+      filtered = ticketSales.filter(item => item.status === 1 && !item.isRefunded);
+    } else if (currentTab === 1) {
+      // 已退票：标记为已退票或状态为3
+      filtered = ticketSales.filter(item => item.isRefunded || item.status === 3);
+    }
+    
+    console.log('过滤后的数据:', filtered);
+    console.log('当前标签:', currentTab);
+    console.log('原始数据:', ticketSales);
+    
+    this.setData({
+      filteredSales: filtered
+    });
+  },
+
+  /**
+   * 切换标签
+   */
+  switchTab(e) {
+    const tabIndex = e.currentTarget.dataset.tabIndex;
+    this.setData({
+      currentTab: tabIndex
+    });
+    // 重新过滤数据
+    this.filterTicketSales();
   },
 
   /**
@@ -161,6 +203,13 @@ Page({
             
             // 3. 重新加载数据
             this.loadTicketSales();
+            
+            // 4. 切换到已退票标签页
+            this.setData({
+              currentTab: 1
+            });
+            // 重新过滤数据
+            this.filterTicketSales();
           },
           fail: (err) => {
             console.error('恢复库存失败:', err);

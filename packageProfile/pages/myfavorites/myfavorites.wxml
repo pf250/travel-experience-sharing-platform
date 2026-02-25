@@ -1,21 +1,41 @@
 <!--packageProfile/pages/myfavorites/myfavorites.wxml-->
-<view class="container">
-  <!-- 页面标题 -->
-  <view class="page-title">我的购票记录</view>
-  
-  <!-- 加载状态 -->
-  <view wx:if="{{isLoading}}" class="loading-container">
-    <text>加载中...</text>
+<view class="user-manage-container">
+  <!-- 标签页 -->
+  <view class="tabs">
+    <view 
+      class="tab-item {{currentTab === 0 ? 'active' : ''}}"
+      bindtap="switchTab"
+      data-tab-index="0"
+    >
+      待使用
+    </view>
+    <view 
+      class="tab-item {{currentTab === 1 ? 'active' : ''}}"
+      bindtap="switchTab"
+      data-tab-index="1"
+    >
+      已退票
+    </view>
   </view>
-  
-  <!-- 无购票记录 -->
-  <view wx:elif="{{ticketSales.length === 0}}" class="empty-container">
-    <text>暂无购票记录</text>
-  </view>
-  
-  <!-- 购票记录列表 -->
-  <view wx:else class="ticket-list">
-    <view wx:for="{{ticketSales}}" wx:key="_id" class="ticket-item">
+
+  <!-- 内容区域 -->
+  <view class="content">
+    <!-- 页面标题 -->
+    <view class="page-title">我的购票记录</view>
+    
+    <!-- 加载状态 -->
+    <view wx:if="{{isLoading}}" class="loading">
+      <text>加载中...</text>
+    </view>
+    
+    <!-- 无购票记录 -->
+    <view wx:elif="{{filteredSales.length === 0}}" class="empty">
+      <text>{{currentTab === 0 ? '暂无待使用的购票记录' : '暂无已退票的记录'}}</text>
+    </view>
+    
+    <!-- 购票记录列表 -->
+    <view wx:else class="ticket-list">
+      <view wx:for="{{filteredSales}}" wx:key="_id" class="ticket-item">
       <!-- 景区信息 -->
       <view class="ticket-header" bindtap="viewScenicDetail" data-scenic-id="{{item.scenicId}}">
         <view class="scenic-name">{{item.scenicName}}</view>
@@ -63,4 +83,5 @@
       </view>
     </view>
   </view>
+</view>
 </view>
