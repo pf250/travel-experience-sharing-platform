@@ -78,9 +78,11 @@
 
 /* 内容区域样式 */
 .content-scroll {
-  margin-top: 15rpx; /* 给搜索栏和分类栏留出空间 */
-  width: 98%;
+  flex: 1; /* 占满剩余空间 */
+  width: 100%;
   box-sizing: border-box;
+  margin-top: 120rpx; /* 给搜索栏和分类栏留出足够空间 */
+  padding: 10rpx;
 }
 
 /* 刷新提示 */
