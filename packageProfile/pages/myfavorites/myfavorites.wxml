@@ -58,7 +58,11 @@
         </view>
         <view class="info-row">
           <text class="label">购买时间：</text>
-          <text class="value">{{item.createdAt ? item.createdAt.toLocaleString() : ''}}</text>
+          <text class="value">{{item.formattedCreatedAt}}</text>
+        </view>
+        <view wx:if="{{item.isRefunded}}" class="info-row">
+          <text class="label">退票时间：</text>
+          <text class="value">{{item.formattedRefundTime}}</text>
         </view>
         <view class="info-row">
           <text class="label">状态：</text>

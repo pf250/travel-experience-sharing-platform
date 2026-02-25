@@ -68,6 +68,15 @@ Page({
   },
 
   /**
+   * 格式化时间
+   */
+  formatTime(time) {
+    if (!time) return '';
+    const date = typeof time === 'string' ? new Date(time) : time;
+    return date.toLocaleString();
+  },
+
+  /**
    * 加载用户的购票记录
    */
   loadTicketSales() {
@@ -89,11 +98,25 @@ Page({
       userId: userId
     }).get({
       success: (res) => {
+        // 为每条记录添加格式化的时间并按创建时间倒序排序
+        const ticketSalesWithFormattedTime = res.data
+          .map(item => ({
+            ...item,
+            formattedCreatedAt: this.formatTime(item.createdAt),
+            formattedRefundTime: this.formatTime(item.refundTime)
+          }))
+          .sort((a, b) => {
+            // 按创建时间倒序排序，最近的在前
+            const timeA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+            const timeB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+            return timeB - timeA;
+          });
+        
         this.setData({
-          ticketSales: res.data,
+          ticketSales: ticketSalesWithFormattedTime,
           isLoading: false
         });
-        console.log('加载购票记录成功:', res.data);
+        console.log('加载购票记录成功:', ticketSalesWithFormattedTime);
         
         // 根据当前标签过滤数据
         this.filterTicketSales();
@@ -118,17 +141,20 @@ Page({
     const { ticketSales, currentTab } = this.data;
     let filtered = [];
     
-    if (currentTab === 0) {
+    // 确保 currentTab 是数字类型
+    const tabIndex = parseInt(currentTab);
+    
+    if (tabIndex === 0) {
       // 待使用：状态为1且未退票
       filtered = ticketSales.filter(item => item.status === 1 && !item.isRefunded);
-    } else if (currentTab === 1) {
+    } else if (tabIndex === 1) {
       // 已退票：标记为已退票或状态为3
       filtered = ticketSales.filter(item => item.isRefunded || item.status === 3);
     }
     
-    console.log('过滤后的数据:', filtered);
-    console.log('当前标签:', currentTab);
-    console.log('原始数据:', ticketSales);
+    // 只打印过滤后的数据长度，避免打印大量数据导致卡死
+    console.log('过滤后的数据长度:', filtered.length);
+    console.log('当前标签:', tabIndex);
     
     this.setData({
       filteredSales: filtered
@@ -139,7 +165,8 @@ Page({
    * 切换标签
    */
   switchTab(e) {
-    const tabIndex = e.currentTarget.dataset.tabIndex;
+    // 将 tabIndex 转换为数字类型
+    const tabIndex = parseInt(e.currentTarget.dataset.tabIndex);
     this.setData({
       currentTab: tabIndex
     });
@@ -182,6 +209,7 @@ Page({
       data: {
         status: 3, // 3: 已取消
         isRefunded: true, // 标记为已退票
+        refundTime: db.serverDate(), // 记录退票时间
         updatedAt: db.serverDate()
       },
       success: () => {
