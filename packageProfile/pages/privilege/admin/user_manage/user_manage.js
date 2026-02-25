@@ -3,8 +3,8 @@ Page({
   data: {
     users: [],
     loading: true,
-    tabIndex: 0, // 0:全部用户, 1:普通用户, 2:商家
-    tabs: ['全部用户', '普通用户', '商家']
+    tabIndex: 0, // 0:全部用户, 1:普通用户, 2:商家, 3:禁言中
+    tabs: ['全部用户', '普通用户', '商家', '禁言中']
   },
 
   onLoad: function () {
@@ -48,7 +48,7 @@ Page({
         
         // 检查并更新过期的禁言状态
         const updatePromises = [];
-        const processedUsers = res.data.map(user => {
+        let processedUsers = res.data.map(user => {
           const isSilenced = user.isSilenced && user.silenceEndTime && new Date(user.silenceEndTime) > new Date();
           let silenceEndTimeFormatted = '';
           
@@ -87,6 +87,11 @@ Page({
           };
         });
         
+        // 如果当前标签是"禁言中"，筛选出禁言中的用户
+        if (that.data.tabIndex === 3) {
+          processedUsers = processedUsers.filter(user => user.isSilenced);
+        }
+        
         // 执行所有过期禁言的更新操作
         if (updatePromises.length > 0) {
           Promise.all(updatePromises)
@@ -97,6 +102,10 @@ Page({
             })
             .catch((err) => {
               console.error('自动解除过期禁言失败:', err);
+              that.setData({
+                users: processedUsers,
+                loading: false
+              });
             });
         } else {
           that.setData({
