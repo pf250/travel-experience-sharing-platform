@@ -7,24 +7,5 @@
     "urlCheck": false
   },
   "libVersion": "3.14.2",
-  "condition": {
-    "miniprogram": {
-      "list": [
-        {
-          "name": "packageProfile/pages/privilege/admin/user_manage/user_manage",
-          "pathName": "packageProfile/pages/privilege/admin/user_manage/user_manage",
-          "query": "",
-          "scene": null,
-          "launchMode": "default"
-        },
-        {
-          "name": "packageProfile/pages/privilege/admin/scenic_mange/scenic_mange",
-          "pathName": "packageProfile/pages/privilege/admin/scenic_mange/scenic_mange",
-          "query": "",
-          "launchMode": "default",
-          "scene": null
-        }
-      ]
-    }
-  }
+  "condition": {}
 }
