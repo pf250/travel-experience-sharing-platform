@@ -25,10 +25,20 @@ Page({
     scenicId: null,
     
     // 加载状态
-    isLoading: true
+    isLoading: true,
+    
+    // 是否是管理员模式
+    isAdmin: false
   },
 
   onLoad: function(options) {
+    // 检查是否是管理员模式
+    if (options.isAdmin) {
+      this.setData({
+        isAdmin: true
+      });
+    }
+    
     if (options.scenicId) {
       // 从景区管理页面进入，根据scenicId查询景区信息
       this.queryScenicById(options.scenicId);

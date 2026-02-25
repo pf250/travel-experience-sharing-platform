@@ -76,7 +76,8 @@ Page({
     
     db.collection('scenic')
       .where({
-        status: '营业'
+        status: '营业',
+        deleted: { $ne: true }
       })
       .skip((page - 1) * pageSize)
       .limit(pageSize)
