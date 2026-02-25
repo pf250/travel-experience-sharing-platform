@@ -278,10 +278,31 @@ Page({
                     
                     const scenic = scenicRes.data;
                     
+                    // 获取适用门票信息
+                    let ticketNames = '全部门票';
+                    if (discount.ticketIds && discount.ticketIds.length > 0) {
+                      try {
+                        const ticketsRes = await db.collection('ticket')
+                          .where({
+                            _id: db.command.in(discount.ticketIds),
+                            status: 1
+                          })
+                          .get();
+                        
+                        if (ticketsRes.data.length > 0) {
+                          ticketNames = ticketsRes.data.map(ticket => ticket.name).join('、');
+                        }
+                      } catch (ticketError) {
+                        console.error('获取门票信息失败:', ticketError);
+                      }
+                    }
+                    
                     return {
                       id: discount._id,
                       title: discount.title || '优惠活动',
-                      description: `${scenic.name || '景区'}门票优惠${discount.discountValue || 0}元`,
+                      description: `${scenic.name || '景区'}门票优惠`,
+                      discountValue: discount.discountValue || 0,
+                      ticketNames: ticketNames,
                       endTime: discount.endTime ? discount.endTime.split(' ')[0] : '2026-12-31',
                       image: scenic.images && scenic.images.length > 0 ? scenic.images[0] : 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=travel%20promotion%20banner%20colorful&image_size=landscape_4_3',
                       scenicId: scenic._id
@@ -291,7 +312,9 @@ Page({
                     return {
                       id: discount._id,
                       title: discount.title || '优惠活动',
-                      description: `门票优惠${discount.discountValue || 0}元`,
+                      description: '门票优惠',
+                      discountValue: discount.discountValue || 0,
+                      ticketNames: '全部门票',
                       endTime: discount.endTime ? discount.endTime.split(' ')[0] : '2026-12-31',
                       image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=travel%20promotion%20banner%20colorful&image_size=landscape_4_3',
                       scenicId: discount.scenicId
@@ -307,7 +330,9 @@ Page({
                 {
                   id: 'default1',
                   title: '春季旅游大促',
-                  description: '全场景区门票8折起',
+                  description: '全场景区门票优惠',
+                  discountValue: 20,
+                  ticketNames: '全部门票',
                   endTime: '2026-04-30',
                   image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=spring%20travel%20promotion%20banner%20colorful%20vibrant&image_size=landscape_4_3',
                   scenicId: ''
@@ -315,7 +340,9 @@ Page({
                 {
                   id: 'default2',
                   title: '新用户专享',
-                  description: '注册即送50元旅游基金',
+                  description: '注册即送旅游基金',
+                  discountValue: 50,
+                  ticketNames: '全部门票',
                   endTime: '2026-06-30',
                   image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=new%20user%20promotion%20travel%20gift%20card%20modern&image_size=landscape_4_3',
                   scenicId: ''

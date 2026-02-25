@@ -136,8 +136,12 @@
         hover-class="none">
         <image src="{{item.image}}" mode="aspectFill" class="promotion-image"/>
         <view class="promotion-info">
-          <text class="promotion-title">{{item.title}}</text>
+          <view class="promotion-header">
+            <text class="promotion-title">{{item.title}}</text>
+            <text class="promotion-discount">¥{{item.discountValue}}</text>
+          </view>
           <text class="promotion-description">{{item.description}}</text>
+          <text class="promotion-tickets">适用门票：{{item.ticketNames}}</text>
           <text class="promotion-time">截止日期：{{item.endTime}}</text>
         </view>
       </navigator>
