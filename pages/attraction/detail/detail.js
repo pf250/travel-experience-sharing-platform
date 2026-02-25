@@ -45,8 +45,18 @@ Page({
     
     db.collection('scenic').doc(scenicId).get({
       success: (res) => {
-        // 为景区数据添加格式化后的浏览量
+        // 检查景区是否被删除
         const scenicData = res.data;
+        if (scenicData.deleted) {
+          wx.showToast({
+            title: '景区不存在或已被删除',
+            icon: 'error'
+          });
+          this.setLoading(false);
+          return;
+        }
+        
+        // 为景区数据添加格式化后的浏览量
         const formattedViewCount = this.formatViewCount(scenicData.viewCount || 0);
         this.setData({
           scenic: {
@@ -379,23 +389,178 @@ Page({
       return;
     }
     
-    // 显示预定模态框
+    // 显示数量选择弹窗
+    this.showQuantitySelector(ticket);
+  },
+  
+  /**
+   * 显示数量选择弹窗
+   */
+  showQuantitySelector(ticket) {
+    const maxQuantity = Math.min(ticket.stock, 99); // 限制最大购买数量为99
+    let quantity = 1;
+    
     wx.showModal({
-      title: '预定门票',
-      content: `您确定要预定 ${ticketName} 吗？\n价格：¥${ticketPrice}`,
+      title: '选择购买数量',
+      content: `门票：${ticket.name}\n价格：¥${ticket.hasDiscount ? ticket.discountedPrice : ticket.price}/张\n库存：${ticket.stock}张`,
+      editable: true,
+      placeholderText: '请输入购买数量',
       success: (res) => {
         if (res.confirm) {
-          // 这里可以实现具体的预定逻辑，比如创建订单
-          // 暂时模拟预定成功
-          wx.showToast({
-            title: '预定成功',
-            icon: 'success'
-          });
+          // 验证输入的数量
+          quantity = parseInt(res.content) || 1;
+          if (quantity < 1) {
+            quantity = 1;
+          } else if (quantity > maxQuantity) {
+            quantity = maxQuantity;
+          }
           
-          // 可以跳转到订单页面或其他相关页面
-          // wx.navigateTo({ url: '/pages/order/order' });
+          // 确认购买
+          this.confirmBooking(ticket, quantity);
         }
       }
+    });
+  },
+  
+  /**
+   * 确认购买
+   */
+  async confirmBooking(ticket, quantity) {
+    const price = ticket.hasDiscount ? ticket.discountedPrice : ticket.price;
+    const totalPrice = price * quantity;
+    
+    wx.showModal({
+      title: '确认购买',
+      content: `门票：${ticket.name}\n单价：¥${price}\n数量：${quantity}张\n总价：¥${totalPrice}`,
+      success: async (res) => {
+        if (res.confirm) {
+          // 检查登录状态
+          const isLoggedIn = this.checkLogin();
+          if (!isLoggedIn) {
+            wx.showToast({
+              title: '请先登录',
+              icon: 'none'
+            });
+            // 未登录时跳转到指定页面
+            setTimeout(() => {
+              wx.switchTab({
+                url: '/pages/profile/profile',
+              });
+            }, 1000);
+            return;
+          }
+          
+          try {
+            wx.showLoading({ title: '处理中...' });
+            
+            // 保存购买记录到 ticket_sales 集合
+            await this.saveTicketSale(ticket, quantity, totalPrice);
+            
+            // 更新门票库存
+            await this.updateTicketStock(ticket._id, quantity);
+            
+            wx.hideLoading();
+            wx.showToast({
+              title: '购买成功',
+              icon: 'success'
+            });
+            
+            // 重新加载门票信息，更新库存显示
+            this.queryTicketsByScenicId(this.data.scenic._id);
+          } catch (error) {
+            wx.hideLoading();
+            wx.showToast({
+              title: '购买失败，请重试',
+              icon: 'error'
+            });
+            console.error('购买失败:', error);
+          }
+        }
+      }
+    });
+  },
+  
+  /**
+   * 检查登录状态
+   */
+  checkLogin() {
+    const loginState = wx.getStorageSync('loginState');
+    return loginState && loginState.isLogin;
+  },
+  
+  /**
+   * 保存购买记录到 ticket_sales 集合
+   */
+  async saveTicketSale(ticket, quantity, totalPrice) {
+    const db = wx.cloud.database();
+    const loginState = wx.getStorageSync('loginState');
+    
+    // 检查景区是否被删除
+    const scenicRes = await new Promise((resolve, reject) => {
+      db.collection('scenic').doc(ticket.scenicId).get({
+        success: resolve,
+        fail: reject
+      });
+    });
+    
+    if (scenicRes.data.deleted) {
+      throw new Error('景区不存在或已被删除');
+    }
+    
+    const saleData = {
+      ticketId: ticket._id,
+      ticketName: ticket.name,
+      scenicId: ticket.scenicId,
+      scenicName: scenicRes.data.name,
+      userId: loginState.userId,
+      userName: loginState.nickName,
+      price: ticket.hasDiscount ? ticket.discountedPrice : ticket.price,
+      quantity: quantity,
+      totalPrice: totalPrice,
+      hasDiscount: ticket.hasDiscount,
+      originalPrice: ticket.price,
+      discountAmount: ticket.hasDiscount ? (ticket.price - ticket.discountedPrice) * quantity : 0,
+      status: 1, // 1: 待使用, 2: 已使用, 3: 已取消
+      createdAt: db.serverDate(),
+      updatedAt: db.serverDate()
+    };
+    
+    return new Promise((resolve, reject) => {
+      db.collection('ticket_sales').add({
+        data: saleData,
+        success: (res) => {
+          console.log('保存购买记录成功:', res);
+          resolve(res);
+        },
+        fail: (err) => {
+          console.error('保存购买记录失败:', err);
+          reject(err);
+        }
+      });
+    });
+  },
+  
+  /**
+   * 更新门票库存
+   */
+  async updateTicketStock(ticketId, quantity) {
+    const db = wx.cloud.database();
+    
+    return new Promise((resolve, reject) => {
+      db.collection('ticket').doc(ticketId).update({
+        data: {
+          stock: db.command.inc(-quantity),
+          updatedAt: db.serverDate()
+        },
+        success: (res) => {
+          console.log('更新库存成功:', res);
+          resolve(res);
+        },
+        fail: (err) => {
+          console.error('更新库存失败:', err);
+          reject(err);
+        }
+      });
     });
   }
 })

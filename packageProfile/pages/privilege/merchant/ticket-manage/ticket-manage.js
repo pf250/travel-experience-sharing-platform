@@ -57,7 +57,8 @@ Page({
     const db = wx.cloud.database();
     
     db.collection('scenic').where({
-      userId: Number(userId)
+      userId: Number(userId),
+      deleted: { $ne: true }
     }).get({
       success: (res) => {
         if (res.data && res.data.length > 0) {
