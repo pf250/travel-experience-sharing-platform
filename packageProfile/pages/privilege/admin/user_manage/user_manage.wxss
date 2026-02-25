@@ -77,7 +77,7 @@
 /* 用户信息 */
 .user-info {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   margin-bottom: 30rpx;
   padding-bottom: 20rpx;
   border-bottom: 1rpx solid #f0f0f0;
