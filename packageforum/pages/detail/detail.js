@@ -474,6 +474,20 @@ Page({
         const user = userRes.data[0];
         const isSilenced = user.isSilenced && user.silenceEndTime && new Date(user.silenceEndTime) > new Date();
         
+        // 如果用户被禁言但已过期，自动解除禁言
+        if (user.isSilenced && user.silenceEndTime && new Date(user.silenceEndTime) <= new Date()) {
+          await wx.cloud.database().collection('users').where({
+            userId: userId
+          }).update({
+            data: {
+              isSilenced: false,
+              silenceEndTime: null,
+              silenceReason: ''
+            }
+          });
+          return { isSilenced: false };
+        }
+        
         if (isSilenced) {
           return {
             isSilenced: true,

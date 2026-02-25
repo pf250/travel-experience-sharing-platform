@@ -46,9 +46,26 @@ Page({
       .then((res) => {
         console.log('用户数据:', res.data);
         
+        // 检查并更新过期的禁言状态
+        const updatePromises = [];
         const processedUsers = res.data.map(user => {
           const isSilenced = user.isSilenced && user.silenceEndTime && new Date(user.silenceEndTime) > new Date();
           const silenceEndTimeFormatted = user.silenceEndTime ? that.formatTime(user.silenceEndTime) : '';
+          
+          // 如果用户被禁言但已过期，自动解除禁言
+          if (user.isSilenced && user.silenceEndTime && new Date(user.silenceEndTime) <= new Date()) {
+            updatePromises.push(
+              db.collection('users').where({
+                userId: user.userId
+              }).update({
+                data: {
+                  isSilenced: false,
+                  silenceEndTime: null,
+                  silenceReason: ''
+                }
+              })
+            );
+          }
           
           return {
             ...user,
@@ -59,10 +76,23 @@ Page({
           };
         });
         
-        that.setData({
-          users: processedUsers,
-          loading: false
-        });
+        // 执行所有过期禁言的更新操作
+        if (updatePromises.length > 0) {
+          Promise.all(updatePromises)
+            .then(() => {
+              console.log('自动解除过期禁言成功');
+              // 重新加载用户数据，以获取更新后的状态
+              that.loadUsers();
+            })
+            .catch((err) => {
+              console.error('自动解除过期禁言失败:', err);
+            });
+        } else {
+          that.setData({
+            users: processedUsers,
+            loading: false
+          });
+        }
       })
       .catch((err) => {
         console.error('加载用户失败:', err);
