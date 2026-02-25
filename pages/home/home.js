@@ -279,7 +279,8 @@ Page({
                       ticketNames: ticketNames,
                       endTime: discount.endTime ? discount.endTime.split(' ')[0] : '2026-12-31',
                       image: scenic.images && scenic.images.length > 0 ? scenic.images[0] : 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=travel%20promotion%20banner%20colorful&image_size=landscape_4_3',
-                      scenicId: scenic._id
+                      scenicId: scenic._id,
+                      originalEndTime: discount.endTime
                     };
                   } catch (error) {
                     console.error('处理优惠活动数据失败:', error);
@@ -291,11 +292,19 @@ Page({
                       ticketNames: '全部门票',
                       endTime: discount.endTime ? discount.endTime.split(' ')[0] : '2026-12-31',
                       image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=travel%20promotion%20banner%20colorful&image_size=landscape_4_3',
-                      scenicId: discount.scenicId
+                      scenicId: discount.scenicId,
+                      originalEndTime: discount.endTime
                     };
                   }
                 })
               );
+              
+              // 过滤掉已结束的活动
+              promotions = promotions.filter(promotion => {
+                if (!promotion.originalEndTime) return true;
+                const endDate = new Date(promotion.originalEndTime);
+                return endDate >= now;
+              });
             }
             
             // 如果没有优惠活动，使用默认数据
