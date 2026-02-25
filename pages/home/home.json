@@ -1,4 +1,5 @@
 {
   "usingComponents": {},
-  "navigationBarTitleText": "首页"
+  "navigationBarTitleText": "人文旅游",
+  "enablePullDownRefresh": true
 }

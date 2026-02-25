@@ -59,13 +59,13 @@ Page({
   },
 
   onLoad() {
-    this.loadBanners(); // 加载轮播图数据
     this.loadHomeData(); // 加载首页数据
   },
 
   // 加载首页所有数据
   loadHomeData() {
-    Promise.all([
+    return Promise.all([
+      this.loadBanners(),
       this.loadHotScenic(),
       this.loadFeaturedPosts(),
       this.loadPromotions()
@@ -302,7 +302,9 @@ Page({
               // 过滤掉已结束的活动
               promotions = promotions.filter(promotion => {
                 if (!promotion.originalEndTime) return true;
-                const endDate = new Date(promotion.originalEndTime);
+                // 处理iOS日期格式兼容性问题
+                const endTimeStr = promotion.originalEndTime.replace(/\s+/g, 'T');
+                const endDate = new Date(endTimeStr);
                 return endDate >= now;
               });
             }
@@ -425,25 +427,29 @@ Page({
   },
 
   loadBanners() {
-    wx.showLoading({
-      title: '加载中...',
-    });
-    const db = wx.cloud.database();
-    db.collection('banners').doc('banners-data').get({
-      success: res => {
-        const fileIDs = res.data.fileIDs;
-        this.loadBannersImages(fileIDs);
-      },
-      fail: err => {
-        console.error('获取 File ID 列表失败', err);
-        wx.showToast({
-          title: '加载轮播图失败，请稍后重试',
-          icon: 'none'
-        });
-      },
-      complete: () => {
-        wx.hideLoading();
-      }
+    return new Promise((resolve, reject) => {
+      wx.showLoading({
+        title: '加载中...',
+      });
+      const db = wx.cloud.database();
+      db.collection('banners').doc('banners-data').get({
+        success: res => {
+          const fileIDs = res.data.fileIDs;
+          this.loadBannersImages(fileIDs);
+          resolve();
+        },
+        fail: err => {
+          console.error('获取 File ID 列表失败', err);
+          wx.showToast({
+            title: '加载轮播图失败，请稍后重试',
+            icon: 'none'
+          });
+          reject(err);
+        },
+        complete: () => {
+          wx.hideLoading();
+        }
+      });
     });
   },
 
@@ -476,5 +482,20 @@ Page({
         url: banner.linkUrl
       });
     }
+  },
+
+  // 下拉刷新
+  onPullDownRefresh() {
+    console.log('下拉刷新开始');
+    // 重新加载首页数据
+    this.loadHomeData().then(() => {
+      // 停止下拉刷新
+      wx.stopPullDownRefresh();
+      console.log('下拉刷新完成');
+    }).catch(err => {
+      console.error('下拉刷新失败:', err);
+      // 停止下拉刷新
+      wx.stopPullDownRefresh();
+    });
   }
 });
