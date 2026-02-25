@@ -296,7 +296,10 @@
 .ai-dialog-confirm {
   flex: 1;
   height: 80rpx;
-  line-height: 80rpx;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 8rpx;
   font-size: 28rpx;
   font-weight: bold;

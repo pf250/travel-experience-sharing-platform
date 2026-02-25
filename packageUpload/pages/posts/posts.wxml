@@ -45,7 +45,7 @@
     </button>
     <!-- 发布按钮 -->
     <button class="publish-btn" bindtap="handlePublish" disabled="{{!title || !description}}">
-      {{title && description ? '发布' : '请填写完整内容'}}
+      {{title && description ? '发布' : '请填写完整'}}
     </button>
   </view>
   
