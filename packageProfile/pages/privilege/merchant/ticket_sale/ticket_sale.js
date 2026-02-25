@@ -78,68 +78,117 @@ Page({
   },
 
   /**
+   * 生命周期函数--监听页面加载
+   */
+  onLoad(options) {
+    this.setData({
+      userId: options.userId || ''
+    });
+    this.loadTicketSales();
+  },
+
+  /**
    * 加载门票销售数据
    */
   loadTicketSales() {
     const db = wx.cloud.database();
+    const userId = this.data.userId;
     
     wx.showLoading({
       title: '加载中...'
     });
     
-    // 查询所有门票销售记录
-    db.collection('ticket_sales').get({
-      success: (res) => {
-        // 为每条记录添加格式化的时间
-        const ticketSalesWithFormattedTime = res.data
-          .map(item => ({
-            ...item,
-            formattedCreatedAt: this.formatTime(item.createdAt),
-            formattedRefundTime: this.formatTime(item.refundTime)
-          }))
-          .sort((a, b) => {
-            // 按创建时间倒序排序，最近的在前
-            const timeA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-            const timeB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-            return timeB - timeA;
+    // 1. 首先根据userId查询其管理的景区
+    db.collection('scenic').where({
+      userId: Number(userId),
+      deleted: db.command.neq(true)
+    }).get({
+      success: (scenicRes) => {
+        const scenicList = scenicRes.data;
+        if (scenicList.length === 0) {
+          // 没有景区，显示空状态
+          this.setData({
+            ticketSales: [],
+            isLoading: false,
+            totalSales: 0,
+            totalRefunds: 0,
+            totalAmount: 0
           });
+          wx.hideLoading();
+          return;
+        }
         
-        // 提取所有唯一的 userId
-        const userIds = [...new Set(ticketSalesWithFormattedTime.map(item => item.userId).filter(id => id))];
+        // 提取景区ID列表
+        const scenicIds = scenicList.map(item => item._id);
         
-        if (userIds.length > 0) {
-          // 查询用户信息
-          db.collection('users').where({
-            userId: db.command.in(userIds)
-          }).get({
-            success: (userRes) => {
-              // 创建用户信息映射
-              const userMap = {};
-              userRes.data.forEach(user => {
-                userMap[user.userId] = user;
-              });
-              
-              // 关联用户信息
-              const ticketSalesWithUserInfo = ticketSalesWithFormattedTime.map(item => ({
+        // 2. 查询属于这些景区的销售记录
+        db.collection('ticket_sales').where({
+          scenicId: db.command.in(scenicIds)
+        }).get({
+          success: (res) => {
+            // 为每条记录添加格式化的时间
+            const ticketSalesWithFormattedTime = res.data
+              .map(item => ({
                 ...item,
-                userInfo: userMap[item.userId] || null
-              }));
-              
-              this.processTicketSalesData(ticketSalesWithUserInfo);
-            },
-            fail: (userErr) => {
-              console.error('查询用户信息失败:', userErr);
-              // 即使查询用户信息失败，也要继续显示销售数据
+                formattedCreatedAt: this.formatTime(item.createdAt),
+                formattedRefundTime: this.formatTime(item.refundTime)
+              }))
+              .sort((a, b) => {
+                // 按创建时间倒序排序，最近的在前
+                const timeA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+                const timeB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+                return timeB - timeA;
+              });
+            
+            // 提取所有唯一的 userId
+            const userIds = [...new Set(ticketSalesWithFormattedTime.map(item => item.userId).filter(id => id))];
+            
+            if (userIds.length > 0) {
+              // 查询用户信息
+              db.collection('users').where({
+                userId: db.command.in(userIds)
+              }).get({
+                success: (userRes) => {
+                  // 创建用户信息映射
+                  const userMap = {};
+                  userRes.data.forEach(user => {
+                    userMap[user.userId] = user;
+                  });
+                  
+                  // 关联用户信息
+                  const ticketSalesWithUserInfo = ticketSalesWithFormattedTime.map(item => ({
+                    ...item,
+                    userInfo: userMap[item.userId] || null
+                  }));
+                  
+                  this.processTicketSalesData(ticketSalesWithUserInfo);
+                },
+                fail: (userErr) => {
+                  console.error('查询用户信息失败:', userErr);
+                  // 即使查询用户信息失败，也要继续显示销售数据
+                  this.processTicketSalesData(ticketSalesWithFormattedTime);
+                }
+              });
+            } else {
+              // 没有用户ID，直接处理数据
               this.processTicketSalesData(ticketSalesWithFormattedTime);
             }
-          });
-        } else {
-          // 没有用户ID，直接处理数据
-          this.processTicketSalesData(ticketSalesWithFormattedTime);
-        }
+          },
+          fail: (err) => {
+            console.error('加载门票销售数据失败:', err);
+            this.setData({
+              isLoading: false
+            });
+            wx.hideLoading();
+            wx.showToast({
+              title: '加载数据失败',
+              icon: 'error'
+            });
+          }
+        });
       },
-      fail: (err) => {
-        console.error('加载门票销售数据失败:', err);
+      fail: (scenicErr) => {
+        console.error('查询景区失败:', scenicErr);
         this.setData({
           isLoading: false
         });
