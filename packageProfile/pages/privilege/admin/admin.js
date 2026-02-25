@@ -13,6 +13,12 @@ Page({
         title: '商家审核',
         icon: 'shop',
         path: '/packageProfile/pages/privilege/admin/merchant_mange/merchant_mange'
+      },
+      {
+        id: 'scenic',
+        title: '景区管理',
+        icon: 'scenic',
+        path: '/packageProfile/pages/privilege/admin/scenic_mange/scenic_mange'
       }
     ]
   },

@@ -1,0 +1,52 @@
+<!--packageProfile/pages/privilege/admin/scenic_mange/scenic_mange.wxml-->
+<view class="scenic-manage-container">
+  <!-- 头部 -->
+  <view class="header">
+    <text class="title">景区管理</text>
+    <text class="subtitle">管理所有景区信息</text>
+  </view>
+  
+  <!-- 加载状态 -->
+  <view wx:if="{{isLoading}}" class="loading-container">
+    <view class="loading">加载中...</view>
+  </view>
+  
+  <!-- 空状态 -->
+  <view wx:elif="{{scenicList.length === 0}}" class="empty-container">
+    <view class="empty-icon">🏞️</view>
+    <text class="empty-text">暂无景区数据</text>
+    <text class="empty-subtext">当商家创建景区后，会在此处显示</text>
+  </view>
+  
+  <!-- 景区列表 -->
+  <view wx:else class="scenic-list">
+    <view wx:for="{{scenicList}}" wx:key="_id" class="scenic-item">
+      <!-- 景区基本信息 -->
+      <view class="scenic-header">
+        <view class="scenic-info">
+          <text class="scenic-name">{{item.name}}</text>
+          <view class="scenic-meta">
+            <text class="scenic-address">{{item.address}}</text>
+            <text class="scenic-status {{item.status === '营业' ? 'open' : 'closed'}}">{{item.status}}</text>
+          </view>
+        </view>
+        <view class="scenic-actions">
+          <button class="action-btn edit" bindtap="editScenic" data-id="{{item._id}}">编辑</button>
+          <button class="action-btn delete" bindtap="deleteScenic" data-id="{{item._id}}">删除</button>
+        </view>
+      </view>
+      
+      <!-- 景区统计信息 -->
+      <view class="scenic-stats">
+        <text class="stat-item">👁️ {{item.viewCount || 0}} 次浏览</text>
+        <text class="stat-item">📞 {{item.contactPhone || '未设置'}}</text>
+        <text class="stat-item">👤 商家ID: {{item.userId}}</text>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 底部提示 -->
+  <view class="footer-tip">
+    <text class="tip-text">提示：点击景区卡片可查看详情，点击编辑可修改景区信息</text>
+  </view>
+</view>

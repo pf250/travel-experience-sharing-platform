@@ -13,7 +13,7 @@
       bindtap="navigateToPage"
     >
       <view class="menu-icon {{item.id}}">
-        <text class="icon">{{item.icon === 'user' ? '👤' : '🏪'}}</text>
+        <text class="icon">{{item.icon === 'user' ? '👤' : (item.icon === 'shop' ? '🏪' : '🏞️')}}</text>
       </view>
       <view class="menu-content">
         <text class="menu-title">{{item.title}}</text>
