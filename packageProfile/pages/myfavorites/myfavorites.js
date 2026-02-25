@@ -94,9 +94,15 @@ Page({
     
     const userId = typeof loginState.userId === 'string' ? parseInt(loginState.userId) : loginState.userId;
     
-    db.collection('ticket_sales').where({
-      userId: userId
-    }).get({
+    db.collection('ticket_sales').where(
+      db.command.and([
+        { userId: userId },
+        db.command.or([
+          { isDeleted: false },
+          { isDeleted: db.command.exists(false) }
+        ])
+      ])
+    ).get({
       success: (res) => {
         // 为每条记录添加格式化的时间并按创建时间倒序排序
         const ticketSalesWithFormattedTime = res.data
@@ -288,7 +294,7 @@ Page({
   },
 
   /**
-   * 处理删除记录
+   * 处理删除记录（逻辑删除）
    */
   processDelete(saleId) {
     const db = wx.cloud.database();
@@ -297,8 +303,12 @@ Page({
       title: '处理中...'
     });
     
-    // 删除 ticket_sales 记录
-    db.collection('ticket_sales').doc(saleId).remove({
+    // 逻辑删除：更新记录状态为已删除
+    db.collection('ticket_sales').doc(saleId).update({
+      data: {
+        isDeleted: true, // 标记为已删除
+        updatedAt: db.serverDate()
+      },
       success: () => {
         console.log('删除记录成功');
         wx.hideLoading();
