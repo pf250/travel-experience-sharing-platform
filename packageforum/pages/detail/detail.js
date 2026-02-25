@@ -311,6 +311,19 @@ Page({
       return;
     }
 
+    // 检查用户是否被禁言
+    const silenceStatus = await this.checkSilenceStatus();
+    if (silenceStatus.isSilenced) {
+      const silenceEndTimeFormatted = this.formatTime(silenceStatus.silenceEndTime);
+      wx.showModal({
+        title: '您已被禁言',
+        content: `禁言原因：${silenceStatus.silenceReason}\n解禁时间：${silenceEndTimeFormatted}`,
+        showCancel: false,
+        confirmText: '知道了'
+      });
+      return;
+    }
+
     // 获取用户信息
     const loginState = wx.getStorageSync('loginState');
     if (!loginState || !loginState.userId || !loginState.avatarUrl || !loginState.nickName) {
@@ -385,6 +398,19 @@ Page({
       return;
     }
 
+    // 检查用户是否被禁言
+    const silenceStatus = await this.checkSilenceStatus();
+    if (silenceStatus.isSilenced) {
+      const silenceEndTimeFormatted = this.formatTime(silenceStatus.silenceEndTime);
+      wx.showModal({
+        title: '您已被禁言',
+        content: `禁言原因：${silenceStatus.silenceReason}\n解禁时间：${silenceEndTimeFormatted}`,
+        showCancel: false,
+        confirmText: '知道了'
+      });
+      return;
+    }
+
     // 获取用户信息
     const loginState = wx.getStorageSync('loginState');
     if (!loginState || !loginState.userId || !loginState.avatarUrl || !loginState.nickName) {
@@ -427,6 +453,40 @@ Page({
   checkLogin() {
     const loginState = wx.getStorageSync('loginState');
     return loginState && loginState.isLogin;
+  },
+
+  // 检查用户是否被禁言
+  async checkSilenceStatus() {
+    const loginState = wx.getStorageSync('loginState');
+    if (!loginState || !loginState.userId) {
+      return { isSilenced: false }; // 用户未登录，不需要检查禁言状态
+    }
+    
+    let userId = loginState.userId;
+    userId = typeof userId === 'string' ? parseInt(userId) : userId;
+    
+    try {
+      const userRes = await wx.cloud.database().collection('users')
+        .where({ userId: userId })
+        .get();
+      
+      if (userRes.data.length > 0) {
+        const user = userRes.data[0];
+        const isSilenced = user.isSilenced && user.silenceEndTime && new Date(user.silenceEndTime) > new Date();
+        
+        if (isSilenced) {
+          return {
+            isSilenced: true,
+            silenceReason: user.silenceReason || '违反社区规范',
+            silenceEndTime: user.silenceEndTime
+          };
+        }
+      }
+      return { isSilenced: false };
+    } catch (error) {
+      console.error('检查禁言状态失败:', error);
+      return { isSilenced: false };
+    }
   },
 
   // 格式化时间
