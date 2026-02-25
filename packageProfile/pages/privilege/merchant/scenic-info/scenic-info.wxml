@@ -117,11 +117,11 @@
         重置表单
       </button>
       
-      <!-- 只有有景区时才显示删除按钮 -->
+      <!-- 只有有景区且非管理员模式时才显示删除按钮 -->
       <button 
         type="warn" 
         bindtap="deleteScenic"
-        wx:if="{{hasScenic}}"
+        wx:if="{{hasScenic && !isAdmin}}"
       >
         删除景区
       </button>

@@ -311,6 +311,27 @@ Page({
       return;
     }
 
+    // 检查用户是否被禁言
+    const silenceStatus = await this.checkSilenceStatus();
+    if (silenceStatus.isSilenced) {
+      // 格式化解禁时间为具体的日期和时间
+      const silenceEndTime = new Date(silenceStatus.silenceEndTime);
+      const year = silenceEndTime.getFullYear();
+      const month = (silenceEndTime.getMonth() + 1).toString().padStart(2, '0');
+      const day = silenceEndTime.getDate().toString().padStart(2, '0');
+      const hour = silenceEndTime.getHours().toString().padStart(2, '0');
+      const minute = silenceEndTime.getMinutes().toString().padStart(2, '0');
+      const silenceEndTimeFormatted = `${year}-${month}-${day} ${hour}:${minute}`;
+      
+      wx.showModal({
+        title: '您已被禁言',
+        content: `禁言原因：${silenceStatus.silenceReason}\n解禁时间：${silenceEndTimeFormatted}`,
+        showCancel: false,
+        confirmText: '知道了'
+      });
+      return;
+    }
+
     // 获取用户信息
     const loginState = wx.getStorageSync('loginState');
     if (!loginState || !loginState.userId || !loginState.avatarUrl || !loginState.nickName) {
@@ -385,6 +406,27 @@ Page({
       return;
     }
 
+    // 检查用户是否被禁言
+    const silenceStatus = await this.checkSilenceStatus();
+    if (silenceStatus.isSilenced) {
+      // 格式化解禁时间为具体的日期和时间
+      const silenceEndTime = new Date(silenceStatus.silenceEndTime);
+      const year = silenceEndTime.getFullYear();
+      const month = (silenceEndTime.getMonth() + 1).toString().padStart(2, '0');
+      const day = silenceEndTime.getDate().toString().padStart(2, '0');
+      const hour = silenceEndTime.getHours().toString().padStart(2, '0');
+      const minute = silenceEndTime.getMinutes().toString().padStart(2, '0');
+      const silenceEndTimeFormatted = `${year}-${month}-${day} ${hour}:${minute}`;
+      
+      wx.showModal({
+        title: '您已被禁言',
+        content: `禁言原因：${silenceStatus.silenceReason}\n解禁时间：${silenceEndTimeFormatted}`,
+        showCancel: false,
+        confirmText: '知道了'
+      });
+      return;
+    }
+
     // 获取用户信息
     const loginState = wx.getStorageSync('loginState');
     if (!loginState || !loginState.userId || !loginState.avatarUrl || !loginState.nickName) {
@@ -427,6 +469,54 @@ Page({
   checkLogin() {
     const loginState = wx.getStorageSync('loginState');
     return loginState && loginState.isLogin;
+  },
+
+  // 检查用户是否被禁言
+  async checkSilenceStatus() {
+    const loginState = wx.getStorageSync('loginState');
+    if (!loginState || !loginState.userId) {
+      return { isSilenced: false }; // 用户未登录，不需要检查禁言状态
+    }
+    
+    let userId = loginState.userId;
+    userId = typeof userId === 'string' ? parseInt(userId) : userId;
+    
+    try {
+      const userRes = await wx.cloud.database().collection('users')
+        .where({ userId: userId })
+        .get();
+      
+      if (userRes.data.length > 0) {
+        const user = userRes.data[0];
+        const isSilenced = user.isSilenced && user.silenceEndTime && new Date(user.silenceEndTime) > new Date();
+        
+        // 如果用户被禁言但已过期，自动解除禁言
+        if (user.isSilenced && user.silenceEndTime && new Date(user.silenceEndTime) <= new Date()) {
+          await wx.cloud.database().collection('users').where({
+            userId: userId
+          }).update({
+            data: {
+              isSilenced: false,
+              silenceEndTime: null,
+              silenceReason: ''
+            }
+          });
+          return { isSilenced: false };
+        }
+        
+        if (isSilenced) {
+          return {
+            isSilenced: true,
+            silenceReason: user.silenceReason || '违反社区规范',
+            silenceEndTime: user.silenceEndTime
+          };
+        }
+      }
+      return { isSilenced: false };
+    } catch (error) {
+      console.error('检查禁言状态失败:', error);
+      return { isSilenced: false };
+    }
   },
 
   // 格式化时间
