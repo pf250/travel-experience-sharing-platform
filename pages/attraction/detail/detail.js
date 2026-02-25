@@ -126,6 +126,9 @@ Page({
           tickets: res.data
         });
         console.log('查询门票成功:', res.data.length, '张');
+        
+        // 为门票添加优惠信息
+        this.addDiscountInfoToTickets();
       },
       fail: (err) => {
         console.error('查询门票失败:', err);
@@ -386,16 +389,53 @@ Page({
       return;
     }
     
-    // 查找对应的门票信息
-    const ticket = this.data.tickets.find(t => t._id === ticketId);
-    if (!ticket) {
-      wx.showToast({
-        title: '门票信息不存在',
-        icon: 'error'
-      });
-      return;
-    }
+    // 检查是否是商家本人，商家不能购买自己景区的门票
+    const loginState = wx.getStorageSync('loginState');
+    const db = wx.cloud.database();
     
+    // 查询景区信息，获取商家ID
+    db.collection('scenic').doc(this.data.scenic._id).get({
+      success: (scenicRes) => {
+        const scenicData = scenicRes.data;
+        const merchantId = scenicData.userId;
+        const currentUserId = typeof loginState.userId === 'string' ? parseInt(loginState.userId) : loginState.userId;
+        
+        if (merchantId === currentUserId) {
+          wx.showToast({
+            title: '商家不能自购',
+            icon: 'error'
+          });
+          return;
+        }
+        
+        // 查找对应的门票信息
+        const ticket = this.data.tickets.find(t => t._id === ticketId);
+        if (!ticket) {
+          wx.showToast({
+            title: '门票信息不存在',
+            icon: 'error'
+          });
+          return;
+        }
+        
+        // 继续购票流程
+        this.continueBooking(ticket);
+      },
+      fail: (err) => {
+        console.error('查询景区信息失败:', err);
+        wx.showToast({
+          title: '加载失败，请重试',
+          icon: 'error'
+        });
+      }
+    });
+    
+  },
+
+  /**
+   * 继续购票流程
+   */
+  continueBooking(ticket) {
     // 检查库存
     if (ticket.stock <= 0) {
       wx.showToast({
