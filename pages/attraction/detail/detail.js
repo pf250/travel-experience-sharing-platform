@@ -363,6 +363,38 @@ Page({
     this.setData({
       tickets: ticketsWithDiscount
     });
+    
+    // 为优惠方案添加门票名称
+    this.addTicketNamesToDiscounts();
+  },
+
+  /**
+   * 为优惠方案添加门票名称
+   */
+  addTicketNamesToDiscounts() {
+    const { discounts, tickets } = this.data;
+    
+    if (discounts.length === 0) return;
+    
+    const updatedDiscounts = discounts.map(discount => {
+      // 获取适用的门票名称
+      const ticketNames = discount.ticketIds
+        .map(ticketId => {
+          const ticket = tickets.find(t => t._id === ticketId);
+          return ticket ? ticket.name : '';
+        })
+        .filter(name => name !== '')
+        .join(', ');
+      
+      return {
+        ...discount,
+        ticketNames: ticketNames
+      };
+    });
+    
+    this.setData({
+      discounts: updatedDiscounts
+    });
   },
 
   /**
