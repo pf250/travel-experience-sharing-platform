@@ -104,22 +104,39 @@ Page({
             return timeB - timeA;
           });
         
-        // 计算统计数据
-        const totalSales = ticketSalesWithFormattedTime.reduce((sum, item) => sum + (item.quantity || 0), 0); // 总销售：所有购买的门票数量（包括已退票的）
-        const totalRefunds = ticketSalesWithFormattedTime.filter(item => item.isRefunded).reduce((sum, item) => sum + (item.quantity || 0), 0); // 总退票：仅退票的数量
-        const totalAmount = ticketSalesWithFormattedTime
-          .filter(item => !item.isRefunded)
-          .reduce((sum, item) => sum + (item.totalPrice || 0), 0); // 预计收益：仅未退票的金额
+        // 提取所有唯一的 userId
+        const userIds = [...new Set(ticketSalesWithFormattedTime.map(item => item.userId).filter(id => id))];
         
-        this.setData({
-          ticketSales: ticketSalesWithFormattedTime,
-          isLoading: false,
-          totalSales,
-          totalRefunds,
-          totalAmount
-        });
-        console.log('加载门票销售数据成功:', ticketSalesWithFormattedTime);
-        wx.hideLoading();
+        if (userIds.length > 0) {
+          // 查询用户信息
+          db.collection('users').where({
+            userId: db.command.in(userIds)
+          }).get({
+            success: (userRes) => {
+              // 创建用户信息映射
+              const userMap = {};
+              userRes.data.forEach(user => {
+                userMap[user.userId] = user;
+              });
+              
+              // 关联用户信息
+              const ticketSalesWithUserInfo = ticketSalesWithFormattedTime.map(item => ({
+                ...item,
+                userInfo: userMap[item.userId] || null
+              }));
+              
+              this.processTicketSalesData(ticketSalesWithUserInfo);
+            },
+            fail: (userErr) => {
+              console.error('查询用户信息失败:', userErr);
+              // 即使查询用户信息失败，也要继续显示销售数据
+              this.processTicketSalesData(ticketSalesWithFormattedTime);
+            }
+          });
+        } else {
+          // 没有用户ID，直接处理数据
+          this.processTicketSalesData(ticketSalesWithFormattedTime);
+        }
       },
       fail: (err) => {
         console.error('加载门票销售数据失败:', err);
@@ -133,5 +150,27 @@ Page({
         });
       }
     });
+  },
+
+  /**
+   * 处理门票销售数据
+   */
+  processTicketSalesData(ticketSalesData) {
+    // 计算统计数据
+    const totalSales = ticketSalesData.reduce((sum, item) => sum + (item.quantity || 0), 0); // 总销售：所有购买的门票数量（包括已退票的）
+    const totalRefunds = ticketSalesData.filter(item => item.isRefunded).reduce((sum, item) => sum + (item.quantity || 0), 0); // 总退票：仅退票的数量
+    const totalAmount = ticketSalesData
+      .filter(item => !item.isRefunded)
+      .reduce((sum, item) => sum + (item.totalPrice || 0), 0); // 预计收益：仅未退票的金额
+    
+    this.setData({
+      ticketSales: ticketSalesData,
+      isLoading: false,
+      totalSales,
+      totalRefunds,
+      totalAmount
+    });
+    console.log('加载门票销售数据成功:', ticketSalesData);
+    wx.hideLoading();
   }
 })

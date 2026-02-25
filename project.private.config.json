@@ -7,5 +7,17 @@
     "urlCheck": false
   },
   "libVersion": "3.14.2",
-  "condition": {}
+  "condition": {
+    "miniprogram": {
+      "list": [
+        {
+          "name": "packageProfile/pages/privilege/merchant/ticket_sale/ticket_sale",
+          "pathName": "packageProfile/pages/privilege/merchant/ticket_sale/ticket_sale",
+          "query": "userId=1016",
+          "scene": null,
+          "launchMode": "default"
+        }
+      ]
+    }
+  }
 }

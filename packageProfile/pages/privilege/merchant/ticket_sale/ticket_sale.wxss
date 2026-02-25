@@ -134,6 +134,36 @@
   gap: 16rpx;
 }
 
+/* 用户信息部分 */
+.user-info-section {
+  display: flex;
+  align-items: flex-start;
+  padding: 16rpx;
+  background-color: #f9f9f9;
+  border-radius: 8rpx;
+  margin-bottom: 16rpx;
+}
+
+/* 用户头像 */
+.user-avatar {
+  margin-right: 16rpx;
+}
+
+.user-avatar image {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  background-color: #e0e0e0;
+}
+
+/* 用户详情 */
+.user-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
 .detail-row {
   display: flex;
   align-items: center;

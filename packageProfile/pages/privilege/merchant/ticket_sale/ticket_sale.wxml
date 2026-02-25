@@ -45,9 +45,21 @@
       
       <!-- 销售详情 -->
       <view class="ticket-details">
-        <view class="detail-row">
-          <text class="detail-label">用户：</text>
-          <text class="detail-value">{{item.userName}}</text>
+        <!-- 用户信息 -->
+        <view class="user-info-section">
+          <view class="user-avatar">
+            <image src="{{item.userInfo ? item.userInfo.avatarUrl || '' : ''}}" mode="aspectFill"></image>
+          </view>
+          <view class="user-details">
+            <view class="detail-row">
+              <text class="detail-label">昵称：</text>
+              <text class="detail-value">{{item.userInfo ? item.userInfo.nickName || '未知用户' : item.userName || '未知用户'}}</text>
+            </view>
+            <view class="detail-row">
+              <text class="detail-label">用户ID：</text>
+              <text class="detail-value">{{item.userInfo ? item.userInfo.userId || item.userId : item.userId || '未知'}}</text>
+            </view>
+          </view>
         </view>
         <view class="detail-row">
           <text class="detail-label">数量：</text>
