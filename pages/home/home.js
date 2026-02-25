@@ -283,7 +283,8 @@ Page({
                       title: discount.title || '优惠活动',
                       description: `${scenic.name || '景区'}门票优惠${discount.discountValue || 0}元`,
                       endTime: discount.endTime ? discount.endTime.split(' ')[0] : '2026-12-31',
-                      image: scenic.images && scenic.images.length > 0 ? scenic.images[0] : 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=travel%20promotion%20banner%20colorful&image_size=landscape_4_3'
+                      image: scenic.images && scenic.images.length > 0 ? scenic.images[0] : 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=travel%20promotion%20banner%20colorful&image_size=landscape_4_3',
+                      scenicId: scenic._id
                     };
                   } catch (error) {
                     console.error('处理优惠活动数据失败:', error);
@@ -292,7 +293,8 @@ Page({
                       title: discount.title || '优惠活动',
                       description: `门票优惠${discount.discountValue || 0}元`,
                       endTime: discount.endTime ? discount.endTime.split(' ')[0] : '2026-12-31',
-                      image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=travel%20promotion%20banner%20colorful&image_size=landscape_4_3'
+                      image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=travel%20promotion%20banner%20colorful&image_size=landscape_4_3',
+                      scenicId: discount.scenicId
                     };
                   }
                 })
@@ -307,14 +309,16 @@ Page({
                   title: '春季旅游大促',
                   description: '全场景区门票8折起',
                   endTime: '2026-04-30',
-                  image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=spring%20travel%20promotion%20banner%20colorful%20vibrant&image_size=landscape_4_3'
+                  image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=spring%20travel%20promotion%20banner%20colorful%20vibrant&image_size=landscape_4_3',
+                  scenicId: ''
                 },
                 {
                   id: 'default2',
                   title: '新用户专享',
                   description: '注册即送50元旅游基金',
                   endTime: '2026-06-30',
-                  image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=new%20user%20promotion%20travel%20gift%20card%20modern&image_size=landscape_4_3'
+                  image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=new%20user%20promotion%20travel%20gift%20card%20modern&image_size=landscape_4_3',
+                  scenicId: ''
                 }
               ];
             }

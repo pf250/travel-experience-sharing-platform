@@ -128,17 +128,19 @@
       <text class="more-link">限时特惠</text>
     </view>
     <view class="promotion-list">
-      <view 
+      <navigator 
         wx:for="{{promotions}}" 
         wx:key="id"
-        class="promotion-card">
+        url="{{item.scenicId ? '/pages/attraction/detail/detail?id=' + item.scenicId : ''}}"
+        class="promotion-card"
+        hover-class="none">
         <image src="{{item.image}}" mode="aspectFill" class="promotion-image"/>
         <view class="promotion-info">
           <text class="promotion-title">{{item.title}}</text>
           <text class="promotion-description">{{item.description}}</text>
           <text class="promotion-time">截止日期：{{item.endTime}}</text>
         </view>
-      </view>
+      </navigator>
     </view>
   </view>
 </view> 
