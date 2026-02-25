@@ -1,5 +1,5 @@
 # travel-experience-sharing-platform
-<font color=red>微信小程序旅游体验分享与社交互动平台毕设项目</font>
+微信小程序旅游体验分享与社交互动平台毕设项目
 
 1.背景研究与需求分析  
 调查和分析在线旅游平台现状与需求。给出解决方案。
