@@ -53,7 +53,7 @@ Page({
    */
   onShow() {
     if (this.data.scenicId) {
-      this.queryDiscounts();
+      // 先查询门票，再查询优惠方案
       this.queryTickets();
     }
   },
@@ -112,6 +112,9 @@ Page({
           tickets: res.data
         });
         console.log('查询门票成功:', res.data.length, '张');
+        
+        // 门票查询成功后，再查询优惠方案
+        this.queryDiscounts();
       },
       fail: (err) => {
         console.error('查询门票失败:', err);
