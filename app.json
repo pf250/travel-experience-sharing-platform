@@ -27,6 +27,8 @@
         "pages/myfavorites/myfavorites",
         "pages/privilege/privilege",
         "pages/privilege/admin/admin",
+        "pages/privilege/admin/user_manage/user_manage",
+        "pages/privilege/admin/merchant_mange/merchant_mange",
         "pages/privilege/merchant/merchant",
         "pages/privilege/applications/applications",
         "pages/privilege/vip/vip",
