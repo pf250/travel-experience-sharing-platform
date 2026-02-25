@@ -314,7 +314,15 @@ Page({
     // 检查用户是否被禁言
     const silenceStatus = await this.checkSilenceStatus();
     if (silenceStatus.isSilenced) {
-      const silenceEndTimeFormatted = this.formatTime(silenceStatus.silenceEndTime);
+      // 格式化解禁时间为具体的日期和时间
+      const silenceEndTime = new Date(silenceStatus.silenceEndTime);
+      const year = silenceEndTime.getFullYear();
+      const month = (silenceEndTime.getMonth() + 1).toString().padStart(2, '0');
+      const day = silenceEndTime.getDate().toString().padStart(2, '0');
+      const hour = silenceEndTime.getHours().toString().padStart(2, '0');
+      const minute = silenceEndTime.getMinutes().toString().padStart(2, '0');
+      const silenceEndTimeFormatted = `${year}-${month}-${day} ${hour}:${minute}`;
+      
       wx.showModal({
         title: '您已被禁言',
         content: `禁言原因：${silenceStatus.silenceReason}\n解禁时间：${silenceEndTimeFormatted}`,
@@ -401,7 +409,15 @@ Page({
     // 检查用户是否被禁言
     const silenceStatus = await this.checkSilenceStatus();
     if (silenceStatus.isSilenced) {
-      const silenceEndTimeFormatted = this.formatTime(silenceStatus.silenceEndTime);
+      // 格式化解禁时间为具体的日期和时间
+      const silenceEndTime = new Date(silenceStatus.silenceEndTime);
+      const year = silenceEndTime.getFullYear();
+      const month = (silenceEndTime.getMonth() + 1).toString().padStart(2, '0');
+      const day = silenceEndTime.getDate().toString().padStart(2, '0');
+      const hour = silenceEndTime.getHours().toString().padStart(2, '0');
+      const minute = silenceEndTime.getMinutes().toString().padStart(2, '0');
+      const silenceEndTimeFormatted = `${year}-${month}-${day} ${hour}:${minute}`;
+      
       wx.showModal({
         title: '您已被禁言',
         content: `禁言原因：${silenceStatus.silenceReason}\n解禁时间：${silenceEndTimeFormatted}`,

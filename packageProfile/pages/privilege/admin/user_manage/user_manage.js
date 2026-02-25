@@ -50,7 +50,18 @@ Page({
         const updatePromises = [];
         const processedUsers = res.data.map(user => {
           const isSilenced = user.isSilenced && user.silenceEndTime && new Date(user.silenceEndTime) > new Date();
-          const silenceEndTimeFormatted = user.silenceEndTime ? that.formatTime(user.silenceEndTime) : '';
+          let silenceEndTimeFormatted = '';
+          
+          // 格式化解禁时间为具体的日期和时间
+          if (user.silenceEndTime) {
+            const silenceEndTime = new Date(user.silenceEndTime);
+            const year = silenceEndTime.getFullYear();
+            const month = (silenceEndTime.getMonth() + 1).toString().padStart(2, '0');
+            const day = silenceEndTime.getDate().toString().padStart(2, '0');
+            const hour = silenceEndTime.getHours().toString().padStart(2, '0');
+            const minute = silenceEndTime.getMinutes().toString().padStart(2, '0');
+            silenceEndTimeFormatted = `${year}-${month}-${day} ${hour}:${minute}`;
+          }
           
           // 如果用户被禁言但已过期，自动解除禁言
           if (user.isSilenced && user.silenceEndTime && new Date(user.silenceEndTime) <= new Date()) {
