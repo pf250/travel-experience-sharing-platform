@@ -171,20 +171,23 @@
 
 /* 操作按钮 */
 .action-buttons {
-  display: flex;
-  gap: 20rpx;
   padding-top: 20rpx;
   border-top: 1rpx solid #f0f0f0;
   margin-top: 20rpx;
+  text-align: right;
 }
 
 .btn {
-  flex: 1;
   border-radius: 8rpx;
-  font-size: 28rpx;
-  padding: 20rpx 0;
+  font-size: 24rpx;
+  padding: 14rpx 24rpx;
   border: none;
   transition: all 0.3s;
+  white-space: nowrap;
+  display: inline-block;
+  width: auto !important;
+  min-width: auto !important;
+  flex: none !important;
 }
 
 .btn::after {
