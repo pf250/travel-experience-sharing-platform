@@ -56,10 +56,6 @@
   <view class="section">
     <view class="section-header">
       <text class="section-title">热门景点</text>
-      <navigator url="/pages/attraction/attraction" class="more-link">
-        <text>查看更多</text>
-        <text>→</text>
-      </navigator>
     </view>
     <view class="scenic-list">
       <navigator 
@@ -91,10 +87,6 @@
   <view class="section">
     <view class="section-header">
       <text class="section-title">精选帖子</text>
-      <navigator url="/pages/forum/forum" class="more-link">
-        <text>查看更多</text>
-        <text>→</text>
-      </navigator>
     </view>
     <view class="post-list">
       <navigator 
