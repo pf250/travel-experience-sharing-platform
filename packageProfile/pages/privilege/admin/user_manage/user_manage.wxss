@@ -158,9 +158,8 @@
 .silence-info {
   display: block;
   font-size: 24rpx;
-  color: #f44336;
+  color: #999;
   margin-top: 8rpx;
-  font-weight: bold;
 }
 
 .silence-reason {

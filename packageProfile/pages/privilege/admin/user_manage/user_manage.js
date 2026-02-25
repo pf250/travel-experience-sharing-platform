@@ -148,13 +148,18 @@ Page({
         
         // 显示输入禁言原因的弹窗
         wx.showModal({
-          title: '禁言用户',
-          content: `确定要禁言该用户${selectedOption.label}吗？`,
+          title: `禁言用户${selectedOption.label}`,
+          content: '违反社区规定',
           editable: true,
-          placeholderText: '请输入禁言原因',
+          placeholderText: '违反社区规定',
           success: function (reasonRes) {
             if (reasonRes.confirm) {
-              const silenceReason = reasonRes.content || '违反社区规范';
+              // 确保获取正确的禁言原因
+              let silenceReason = reasonRes.content || '';
+              // 如果内容为空，使用"违反社区规定"
+              if (!silenceReason) {
+                silenceReason = '违反社区规定';
+              }
               that.updateSilenceStatus(userId, true, silenceEndTime, silenceReason);
             }
           }
