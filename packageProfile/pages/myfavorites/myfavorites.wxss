@@ -173,6 +173,24 @@
   border: none;
 }
 
+.delete-btn {
+  background-color: #f44336;
+  color: #fff;
+  border-radius: 8rpx;
+  padding: 12rpx 32rpx;
+  font-size: 24rpx;
+  border: none;
+  white-space: nowrap;
+  display: inline-block;
+  width: auto !important;
+  min-width: auto !important;
+  flex: none !important;
+}
+
+.delete-btn::after {
+  border: none;
+}
+
 .no-action {
   color: #999;
   font-size: 24rpx;

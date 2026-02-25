@@ -268,5 +268,56 @@ Page({
     wx.navigateTo({
       url: `/pages/attraction/detail/detail?id=${scenicId}`
     });
+  },
+
+  /**
+   * 删除已退票记录
+   */
+  deleteRecord(e) {
+    const saleId = e.currentTarget.dataset.saleId;
+    
+    wx.showModal({
+      title: '删除记录',
+      content: '确定要删除这条退票记录吗？',
+      success: (res) => {
+        if (res.confirm) {
+          this.processDelete(saleId);
+        }
+      }
+    });
+  },
+
+  /**
+   * 处理删除记录
+   */
+  processDelete(saleId) {
+    const db = wx.cloud.database();
+    
+    wx.showLoading({
+      title: '处理中...'
+    });
+    
+    // 删除 ticket_sales 记录
+    db.collection('ticket_sales').doc(saleId).remove({
+      success: () => {
+        console.log('删除记录成功');
+        wx.hideLoading();
+        wx.showToast({
+          title: '删除记录成功',
+          icon: 'success'
+        });
+        
+        // 重新加载数据
+        this.loadTicketSales();
+      },
+      fail: (err) => {
+        console.error('删除记录失败:', err);
+        wx.hideLoading();
+        wx.showToast({
+          title: '删除记录失败',
+          icon: 'error'
+        });
+      }
+    });
   }
 })
