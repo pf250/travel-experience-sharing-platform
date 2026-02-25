@@ -72,8 +72,35 @@ Page({
    */
   formatTime(time) {
     if (!time) return '';
-    const date = typeof time === 'string' ? new Date(time) : time;
-    return date.toLocaleString();
+    
+    let date;
+    if (typeof time === 'string') {
+      // 处理字符串格式的时间
+      if (time.includes('T')) {
+        // ISO 格式: 2026-02-25T10:30:00
+        date = new Date(time);
+      } else if (time.includes(' ')) {
+        // 普通格式: 2026-02-25 10:30:00
+        const parts = time.split(/[- :]/);
+        date = new Date(parts[0], parts[1] - 1, parts[2], parts[3], parts[4], parts[5] || 0);
+      } else {
+        // 其他格式
+        date = new Date(time);
+      }
+    } else {
+      // 已经是 Date 对象
+      date = time;
+    }
+    
+    // 手动格式化时间，确保在所有设备上显示一致
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    const seconds = date.getSeconds().toString().padStart(2, '0');
+    
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
   },
 
   /**
