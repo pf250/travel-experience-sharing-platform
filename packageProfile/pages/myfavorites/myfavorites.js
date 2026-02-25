@@ -5,14 +5,15 @@ Page({
    * 页面的初始数据
    */
   data: {
-
+    ticketSales: [],
+    isLoading: true
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-
+    this.loadTicketSales();
   },
 
   /**
@@ -26,7 +27,7 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow() {
-
+    this.loadTicketSales();
   },
 
   /**
@@ -47,7 +48,7 @@ Page({
    * 页面相关事件处理函数--监听用户下拉动作
    */
   onPullDownRefresh() {
-
+    this.loadTicketSales();
   },
 
   /**
@@ -62,5 +63,133 @@ Page({
    */
   onShareAppMessage() {
 
+  },
+
+  /**
+   * 加载用户的购票记录
+   */
+  loadTicketSales() {
+    const db = wx.cloud.database();
+    const loginState = wx.getStorageSync('loginState');
+    
+    if (!loginState || !loginState.isLogin) {
+      this.setData({
+        ticketSales: [],
+        isLoading: false
+      });
+      return;
+    }
+    
+    const userId = typeof loginState.userId === 'string' ? parseInt(loginState.userId) : loginState.userId;
+    
+    db.collection('ticket_sales').where({
+      userId: userId
+    }).get({
+      success: (res) => {
+        this.setData({
+          ticketSales: res.data,
+          isLoading: false
+        });
+        console.log('加载购票记录成功:', res.data);
+      },
+      fail: (err) => {
+        console.error('加载购票记录失败:', err);
+        this.setData({
+          isLoading: false
+        });
+        wx.showToast({
+          title: '加载购票记录失败',
+          icon: 'error'
+        });
+      }
+    });
+  },
+
+  /**
+   * 申请退票
+   */
+  refundTicket(e) {
+    const saleId = e.currentTarget.dataset.saleId;
+    const sale = this.data.ticketSales.find(item => item._id === saleId);
+    
+    if (!sale) return;
+    
+    wx.showModal({
+      title: '申请退票',
+      content: `确定要退掉 ${sale.ticketName} 吗？`,
+      success: (res) => {
+        if (res.confirm) {
+          this.processRefund(sale);
+        }
+      }
+    });
+  },
+
+  /**
+   * 处理退票流程
+   */
+  processRefund(sale) {
+    const db = wx.cloud.database();
+    
+    wx.showLoading({
+      title: '处理中...'
+    });
+    
+    // 1. 更新 ticket_sales 记录，标记为已退票
+    db.collection('ticket_sales').doc(sale._id).update({
+      data: {
+        status: 3, // 3: 已取消
+        isRefunded: true, // 标记为已退票
+        updatedAt: db.serverDate()
+      },
+      success: () => {
+        console.log('更新退票状态成功');
+        
+        // 2. 恢复门票库存
+        db.collection('ticket').doc(sale.ticketId).update({
+          data: {
+            stock: db.command.inc(sale.quantity),
+            updatedAt: db.serverDate()
+          },
+          success: () => {
+            console.log('恢复库存成功');
+            wx.hideLoading();
+            wx.showToast({
+              title: '退票成功',
+              icon: 'success'
+            });
+            
+            // 3. 重新加载数据
+            this.loadTicketSales();
+          },
+          fail: (err) => {
+            console.error('恢复库存失败:', err);
+            wx.hideLoading();
+            wx.showToast({
+              title: '恢复库存失败',
+              icon: 'error'
+            });
+          }
+        });
+      },
+      fail: (err) => {
+        console.error('更新退票状态失败:', err);
+        wx.hideLoading();
+        wx.showToast({
+          title: '退票失败',
+          icon: 'error'
+        });
+      }
+    });
+  },
+
+  /**
+   * 查看景区详情
+   */
+  viewScenicDetail(e) {
+    const scenicId = e.currentTarget.dataset.scenicId;
+    wx.navigateTo({
+      url: `/pages/attraction/detail/detail?id=${scenicId}`
+    });
   }
 })
