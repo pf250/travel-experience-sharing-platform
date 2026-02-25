@@ -178,28 +178,34 @@ page {
 
 .scenic-actions button {
   font-size: 20rpx;
-  padding: 8rpx 16rpx !important;
+  padding: 10rpx 18rpx !important;
   border-radius: 15rpx !important;
   min-width: 70rpx !important;
   max-width: 80rpx !important;
   width: auto !important;
-  height: 44rpx !important;
-  line-height: 44rpx !important;
   font-weight: normal !important;
   margin: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: auto !important;
+  line-height: normal !important;
 }
 
 .action-btn {
   font-size: 20rpx;
-  padding: 8rpx 16rpx;
+  padding: 10rpx 18rpx;
   border-radius: 15rpx;
   min-width: 70rpx;
   max-width: 80rpx;
   width: auto;
-  height: 44rpx;
-  line-height: 44rpx;
   font-weight: normal;
   margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: auto;
+  line-height: normal;
 }
 
 .action-btn.edit {
