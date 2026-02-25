@@ -29,7 +29,10 @@ Page({
   },
 
   onLoad: function(options) {
-    if (options.userId) {
+    if (options.scenicId) {
+      // 从景区管理页面进入，根据scenicId查询景区信息
+      this.queryScenicById(options.scenicId);
+    } else if (options.userId) {
       this.setData({
         userId: options.userId
       });
@@ -37,6 +40,68 @@ Page({
       // 根据userId查询是否已有景区
       this.queryScenicByUserId(options.userId);
     }
+  },
+
+  // 根据景区ID查询景区信息
+  queryScenicById: function(scenicId) {
+    const db = wx.cloud.database();
+    
+    wx.showLoading({
+      title: '加载中...',
+    });
+    
+    this.setData({ isLoading: true });
+    
+    // 根据景区ID查询景区信息
+    db.collection('scenic').doc(scenicId).get({
+      success: (res) => {
+        wx.hideLoading();
+        this.setData({
+          isLoading: false
+        });
+        
+        if (res.data) {
+          // 有景区数据，检查是否被删除
+          const scenicData = res.data;
+          
+          if (scenicData.deleted) {
+            // 景区被标记为已删除
+            this.setData({
+              hasScenic: false,
+              scenicId: null
+            });
+            wx.showToast({
+              title: '违反社区规定，景区信息被删除',
+              icon: 'error',
+              duration: 2000
+            });
+          } else {
+            // 景区正常，进入编辑模式
+            this.setData({
+              scenic: scenicData,
+              hasScenic: true,
+              scenicId: scenicData._id,
+              userId: scenicData.userId
+            });
+          }
+        } else {
+          // 没有景区数据，首次创建
+          this.setData({
+            hasScenic: false,
+            scenicId: null
+          });
+        }
+      },
+      fail: (err) => {
+        wx.hideLoading();
+        this.setData({ isLoading: false });
+        wx.showToast({
+          title: '加载失败',
+          icon: 'error'
+        });
+        console.error('查询失败:', err);
+      }
+    });
   },
 
   // 根据用户ID查询景区信息
@@ -58,15 +123,31 @@ Page({
         });
         
         if (res.data && res.data.length > 0) {
-          // 有景区数据，显示并进入编辑模式
-          const scenicData = res.data[0];
-          this.setData({
-            scenic: scenicData,
-            hasScenic: true,
-            scenicId: scenicData._id
-          });
+          // 有景区数据，优先选择未被删除的记录
+          // 过滤出未被删除的景区
+          const activeScenic = res.data.find(item => !item.deleted);
+          
+          if (activeScenic) {
+            // 找到未被删除的景区，进入编辑模式
+            this.setData({
+              scenic: activeScenic,
+              hasScenic: true,
+              scenicId: activeScenic._id
+            });
+          } else {
+            // 所有景区都被删除了
+            this.setData({
+              hasScenic: false,
+              scenicId: null
+            });
+            wx.showToast({
+              title: '违反社区规定，景区信息被删除',
+              icon: 'error',
+              duration: 2000
+            });
+          }
         } else {
-          // 没有景区数据，进入创建模式
+          // 没有景区数据，首次创建
           this.setData({
             hasScenic: false,
             scenicId: null
@@ -293,6 +374,8 @@ Page({
                 scenicId: res._id,
                 'scenic.images': fileIDs
               });
+              
+
             },
             fail: (err) => {
               wx.hideLoading();

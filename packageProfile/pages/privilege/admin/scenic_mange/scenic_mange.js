@@ -41,8 +41,10 @@ Page({
     
     this.setData({ isLoading: true });
     
-    // 查询所有景区数据
-    db.collection('scenic').get({
+    // 查询所有未被删除的景区数据
+    db.collection('scenic').where({
+      deleted: { $ne: true }
+    }).get({
       success: (res) => {
         wx.hideLoading();
         this.setData({
@@ -93,7 +95,13 @@ Page({
             title: '删除中...',
           });
           
-          db.collection('scenic').doc(scenicId).remove({
+          // 不是真正删除，而是标记为已删除
+          db.collection('scenic').doc(scenicId).update({
+            data: {
+              deleted: true,
+              deletedAt: db.serverDate(),
+              deletedReason: '违反社区规定'
+            },
             success: () => {
               wx.hideLoading();
               wx.showToast({
