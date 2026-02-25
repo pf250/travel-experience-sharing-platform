@@ -1,2 +1,47 @@
 <!--packageHome/pages/demandwall/demandwall.wxml-->
-<text>packageHome/pages/demandwall/demandwall.wxml</text>
+<view class="rules-container">
+  <!-- 顶部装饰 -->
+  <view class="top-decoration"></view>
+  
+  <view class="header">
+    <view class="header-icon">
+      <view class="icon-circle">
+        <text class="icon-text">规</text>
+      </view>
+    </view>
+    <text class="title">社区规则</text>
+    <text class="subtitle">请遵守以下规则，共同维护良好的社区环境</text>
+  </view>
+
+  <view class="rules-list">
+    <view wx:for="{{rules}}" wx:key="id" class="rule-item">
+      <view class="rule-header">
+        <view class="rule-number">{{item.id}}</view>
+        <text class="rule-title">{{item.title}}</text>
+        <view class="rule-icon">
+          <text wx:if="{{item.id === 1}}" class="icon">🏠</text>
+          <text wx:elif="{{item.id === 2}}" class="icon">📝</text>
+          <text wx:elif="{{item.id === 3}}" class="icon">💬</text>
+          <text wx:elif="{{item.id === 4}}" class="icon">👤</text>
+          <text wx:elif="{{item.id === 5}}" class="icon">⚠️</text>
+          <text wx:elif="{{item.id === 6}}" class="icon">©️</text>
+          <text wx:else class="icon">📄</text>
+        </view>
+      </view>
+      <view class="rule-content">
+        <text class="rule-text">{{item.content}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="footer">
+    <view class="footer-icon">
+      <text class="heart-icon">❤️</text>
+    </view>
+    <text class="footer-text">感谢您的理解与支持！</text>
+    <text class="footer-subtext">让我们一起创造更美好的社区</text>
+  </view>
+  
+  <!-- 底部装饰 -->
+  <view class="bottom-decoration"></view>
+</view>

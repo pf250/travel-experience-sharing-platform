@@ -4,7 +4,7 @@ Page({
     banners: [],
     currentIndex: 0, // 当前展示的图片索引
     notices: [
-       { id: 1, content: '欢迎来到人文校园墙，这里是校园生活服务平台' },     //最大长度
+       { id: 1, content: '欢迎来到人文旅游，这里是旅游社交平台' },     //最大长度
       { id: 2, content: '跳蚤市场上线啦，快来发布二手商品吧' },
       { id: 3, content: '帖子功能上线啦，快来留言吧' }
     ],
@@ -23,7 +23,7 @@ Page({
       },
       { 
         id: 3, 
-        name: '需求墙', 
+        name: '社区规则', 
         icon: '/images/home/demandwall.png', 
         url: '/packageHome/pages/demandwall/demandwall' 
       },
