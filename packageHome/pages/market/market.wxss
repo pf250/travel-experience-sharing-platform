@@ -9,7 +9,7 @@
 .search-bar-fixed {
   width: 720rpx;
   position: fixed;
-  top: 0;
+  top: -5rpx;
   left: 0;
   right: 0;
   z-index: 1000; /* 确保搜索栏在最上层 */
@@ -81,7 +81,7 @@
   flex: 1; /* 占满剩余空间 */
   width: 100%;
   box-sizing: border-box;
-  margin-top: 120rpx; /* 给搜索栏和分类栏留出足够空间 */
+  margin-top: 5rpx; /* 给搜索栏和分类栏留出足够空间 */
   padding: 10rpx;
 }
 
