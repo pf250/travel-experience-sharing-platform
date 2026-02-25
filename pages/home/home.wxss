@@ -186,12 +186,16 @@
  color: #666;
  margin-bottom: 12rpx;
  display: block;
+ white-space: nowrap;
+ overflow: hidden;
+ text-overflow: ellipsis;
 }
 
 .scenic-stats {
  display: flex;
  gap: 20rpx;
  align-items: center;
+ justify-content: space-between;
 }
 
 .stat-item {
@@ -201,7 +205,13 @@
 }
 
 .stat-icon {
- font-size: 22rpx;
+ width: 22rpx;
+ height: 22rpx;
+}
+
+.rank-icon {
+ width: 40rpx;
+ height: 40rpx;
 }
 
 .stat-text {
@@ -260,6 +270,11 @@
  line-height: 1.5;
  margin-bottom: 16rpx;
  display: block;
+ display: -webkit-box;
+ -webkit-line-clamp: 3;
+ -webkit-box-orient: vertical;
+ overflow: hidden;
+ text-overflow: ellipsis;
 }
 
 .post-stats {
@@ -315,6 +330,9 @@
  font-weight: bold;
  color: #333;
  flex: 1;
+ white-space: nowrap;
+ overflow: hidden;
+ text-overflow: ellipsis;
 }
 
 .promotion-discount {

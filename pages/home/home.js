@@ -95,7 +95,7 @@ Page({
               return {
                 id: item._id,
                 name: item.name || '未知景区',
-                location: item.location || '未知位置',
+                location: item.address || '未知位置',
                 image: item.images && item.images.length > 0 ? item.images[0] : 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=travel%20scenic%20view%20placeholder&image_size=landscape_4_3',
                 viewCount: item.viewCount || 0,
                 formattedViewCount: formattedViewCount,
@@ -114,33 +114,7 @@ Page({
             console.error('加载热门景点失败:', err);
             // 如果加载失败，使用默认数据
             const defaultScenic = [
-              {
-                id: 'default1',
-                name: '故宫博物院',
-                location: '北京',
-                image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=forbidden%20city%20beijing%20china%20ancient%20palace%20cultural%20heritage&image_size=landscape_4_3',
-                viewCount: 125800,
-                formattedViewCount: '12.6W',
-                rating: 4.9
-              },
-              {
-                id: 'default2',
-                name: '西湖',
-                location: '杭州',
-                image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=west%20lake%20hangzhou%20china%20scenic%20view%20traditional%20chinese%20garden&image_size=landscape_4_3',
-                viewCount: 98600,
-                formattedViewCount: '9.9W',
-                rating: 4.8
-              },
-              {
-                id: 'default3',
-                name: '长城',
-                location: '北京',
-                image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=great%20wall%20of%20china%20badaling%20mountain%20landscape%20historic&image_size=landscape_4_3',
-                viewCount: 156200,
-                formattedViewCount: '15.6W',
-                rating: 4.9
-              }
+              {                id: 'default1',                name: '故宫博物院',                location: '北京市东城区景山前街4号',                image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=forbidden%20city%20beijing%20china%20ancient%20palace%20cultural%20heritage&image_size=landscape_4_3',                viewCount: 125800,                formattedViewCount: '12.6W',                rating: 4.9              },              {                id: 'default2',                name: '西湖',                location: '浙江省杭州市西湖区龙井路1号',                image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=west%20lake%20hangzhou%20china%20scenic%20view%20traditional%20chinese%20garden&image_size=landscape_4_3',                viewCount: 98600,                formattedViewCount: '9.9W',                rating: 4.8              },              {                id: 'default3',                name: '长城',                location: '北京市怀柔区G110国道',                image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=great%20wall%20of%20china%20badaling%20mountain%20landscape%20historic&image_size=landscape_4_3',                viewCount: 156200,                formattedViewCount: '15.6W',                rating: 4.9              }
             ];
             this.setData({ hotScenic: defaultScenic });
             resolve(defaultScenic);
