@@ -438,11 +438,12 @@ Page({
           this.confirmBooking(ticket, quantity);
         } else {
           // 选择了自定义数量
+          // 使用placeholderText显示提示信息，让用户输入时自动清空
           wx.showModal({
             title: '输入购买数量',
-            content: `请输入1-${maxQuantity}之间的数量`,
+            content: '', // 清空默认内容
             editable: true,
-            placeholderText: '', // 清空提示词，避免用户点击时需要删除
+            placeholderText: `请输入1-${maxQuantity}之间的数量`, // 使用placeholderText显示提示
             success: (modalRes) => {
               if (modalRes.confirm) {
                 // 验证输入的数量
@@ -450,7 +451,14 @@ Page({
                 if (quantity < 1) {
                   quantity = 1;
                 } else if (quantity > maxQuantity) {
-                  quantity = maxQuantity;
+                  // 当输入超过库存时，显示提示信息
+                  wx.showToast({
+                    title: '购买数量不能超过库存',
+                    icon: 'error'
+                  });
+                  // 重新显示数量选择
+                  this.showQuantitySelector(ticket);
+                  return;
                 }
                 
                 // 再次检查库存，确保库存没有变化
