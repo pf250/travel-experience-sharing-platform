@@ -370,6 +370,22 @@ Page({
     const ticketName = e.currentTarget.dataset.ticketName;
     const ticketPrice = e.currentTarget.dataset.ticketPrice;
     
+    // 首先检查登录状态
+    const isLoggedIn = this.checkLogin();
+    if (!isLoggedIn) {
+      wx.showToast({
+        title: '请先登录',
+        icon: 'none'
+      });
+      // 未登录时跳转到指定页面
+      setTimeout(() => {
+        wx.switchTab({
+          url: '/pages/profile/profile',
+        });
+      }, 1000);
+      return;
+    }
+    
     // 查找对应的门票信息
     const ticket = this.data.tickets.find(t => t._id === ticketId);
     if (!ticket) {
@@ -400,23 +416,60 @@ Page({
     const maxQuantity = Math.min(ticket.stock, 99); // 限制最大购买数量为99
     let quantity = 1;
     
-    wx.showModal({
-      title: '选择购买数量',
-      content: `门票：${ticket.name}\n价格：¥${ticket.hasDiscount ? ticket.discountedPrice : ticket.price}/张\n库存：${ticket.stock}张`,
-      editable: true,
-      placeholderText: '请输入购买数量',
+    // 创建数量选择菜单
+    const quantityOptions = [];
+    // 添加常用数量选项
+    for (let i = 1; i <= Math.min(5, maxQuantity); i++) {
+      quantityOptions.push(`购买 ${i} 张`);
+    }
+    // 如果库存大于5，添加自定义数量选项
+    if (maxQuantity > 5) {
+      quantityOptions.push('自定义数量');
+    }
+    
+    wx.showActionSheet({
+      title: `选择购买数量\n门票：${ticket.name}\n价格：¥${ticket.hasDiscount ? ticket.discountedPrice : ticket.price}/张\n库存：${ticket.stock}张`,
+      itemList: quantityOptions,
       success: (res) => {
-        if (res.confirm) {
-          // 验证输入的数量
-          quantity = parseInt(res.content) || 1;
-          if (quantity < 1) {
-            quantity = 1;
-          } else if (quantity > maxQuantity) {
-            quantity = maxQuantity;
-          }
-          
-          // 确认购买
+        const index = res.tapIndex;
+        if (index < Math.min(5, maxQuantity)) {
+          // 选择了预设数量
+          quantity = index + 1;
           this.confirmBooking(ticket, quantity);
+        } else {
+          // 选择了自定义数量
+          wx.showModal({
+            title: '输入购买数量',
+            content: `请输入1-${maxQuantity}之间的数量`,
+            editable: true,
+            placeholderText: '', // 清空提示词，避免用户点击时需要删除
+            success: (modalRes) => {
+              if (modalRes.confirm) {
+                // 验证输入的数量
+                quantity = parseInt(modalRes.content) || 1;
+                if (quantity < 1) {
+                  quantity = 1;
+                } else if (quantity > maxQuantity) {
+                  quantity = maxQuantity;
+                }
+                
+                // 再次检查库存，确保库存没有变化
+                const updatedTicket = this.data.tickets.find(t => t._id === ticket._id);
+                if (updatedTicket && quantity > updatedTicket.stock) {
+                  wx.showToast({
+                    title: '库存不足，请重新选择',
+                    icon: 'error'
+                  });
+                  // 重新显示数量选择
+                  this.showQuantitySelector(updatedTicket);
+                  return;
+                }
+                
+                // 确认购买
+                this.confirmBooking(ticket, quantity);
+              }
+            }
+          });
         }
       }
     });
@@ -429,29 +482,31 @@ Page({
     const price = ticket.hasDiscount ? ticket.discountedPrice : ticket.price;
     const totalPrice = price * quantity;
     
+    // 再次检查库存，确保库存没有变化
+    const updatedTicket = this.data.tickets.find(t => t._id === ticket._id);
+    if (updatedTicket && quantity > updatedTicket.stock) {
+      wx.showToast({
+        title: '库存不足，请重新选择',
+        icon: 'error'
+      });
+      // 重新显示数量选择
+      this.showQuantitySelector(updatedTicket);
+      return;
+    }
+    
     wx.showModal({
       title: '确认购买',
       content: `门票：${ticket.name}\n单价：¥${price}\n数量：${quantity}张\n总价：¥${totalPrice}`,
       success: async (res) => {
         if (res.confirm) {
-          // 检查登录状态
-          const isLoggedIn = this.checkLogin();
-          if (!isLoggedIn) {
-            wx.showToast({
-              title: '请先登录',
-              icon: 'none'
-            });
-            // 未登录时跳转到指定页面
-            setTimeout(() => {
-              wx.switchTab({
-                url: '/pages/profile/profile',
-              });
-            }, 1000);
-            return;
-          }
-          
           try {
             wx.showLoading({ title: '处理中...' });
+            
+            // 再次检查库存，确保库存没有变化
+            const finalTicket = this.data.tickets.find(t => t._id === ticket._id);
+            if (finalTicket && quantity > finalTicket.stock) {
+              throw new Error('库存不足');
+            }
             
             // 保存购买记录到 ticket_sales 集合
             await this.saveTicketSale(ticket, quantity, totalPrice);
@@ -469,11 +524,23 @@ Page({
             this.queryTicketsByScenicId(this.data.scenic._id);
           } catch (error) {
             wx.hideLoading();
-            wx.showToast({
-              title: '购买失败，请重试',
-              icon: 'error'
-            });
-            console.error('购买失败:', error);
+            if (error.message === '库存不足') {
+              wx.showToast({
+                title: '库存不足，请重新选择',
+                icon: 'error'
+              });
+              // 重新显示数量选择
+              const updatedTicket = this.data.tickets.find(t => t._id === ticket._id);
+              if (updatedTicket) {
+                this.showQuantitySelector(updatedTicket);
+              }
+            } else {
+              wx.showToast({
+                title: '购买失败，请重试',
+                icon: 'error'
+              });
+              console.error('购买失败:', error);
+            }
           }
         }
       }
@@ -507,12 +574,15 @@ Page({
       throw new Error('景区不存在或已被删除');
     }
     
+    // 确保userId是数字类型
+    const userId = typeof loginState.userId === 'string' ? parseInt(loginState.userId) : loginState.userId;
+    
     const saleData = {
       ticketId: ticket._id,
       ticketName: ticket.name,
       scenicId: ticket.scenicId,
       scenicName: scenicRes.data.name,
-      userId: loginState.userId,
+      userId: userId,
       userName: loginState.nickName,
       price: ticket.hasDiscount ? ticket.discountedPrice : ticket.price,
       quantity: quantity,
