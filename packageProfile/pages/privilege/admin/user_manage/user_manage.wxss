@@ -137,3 +137,76 @@
   background-color: #e8f5e9;
   color: #4caf50;
 }
+
+/* 禁言相关样式 */
+.tags-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+  align-items: flex-end;
+}
+
+.silence-tag {
+  padding: 6rpx 16rpx;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+  font-weight: bold;
+  background-color: #ffebee;
+  color: #f44336;
+}
+
+.silence-info {
+  display: block;
+  font-size: 24rpx;
+  color: #f44336;
+  margin-top: 8rpx;
+  font-weight: bold;
+}
+
+.silence-reason {
+  display: block;
+  font-size: 22rpx;
+  color: #999;
+  margin-top: 4rpx;
+}
+
+/* 操作按钮 */
+.action-buttons {
+  display: flex;
+  gap: 20rpx;
+  padding-top: 20rpx;
+  border-top: 1rpx solid #f0f0f0;
+  margin-top: 20rpx;
+}
+
+.btn {
+  flex: 1;
+  border-radius: 8rpx;
+  font-size: 28rpx;
+  padding: 20rpx 0;
+  border: none;
+  transition: all 0.3s;
+}
+
+.btn::after {
+  border: none;
+}
+
+.btn.silence {
+  background-color: #f44336;
+  color: white;
+}
+
+.btn.silence:active {
+  background-color: #d32f2f;
+}
+
+.btn.unsilence {
+  background-color: #4caf50;
+  color: white;
+}
+
+.btn.unsilence:active {
+  background-color: #388e3c;
+}
+

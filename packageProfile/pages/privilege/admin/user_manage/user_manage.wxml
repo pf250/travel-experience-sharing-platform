@@ -32,10 +32,41 @@
             <text class="nickname">{{item.nickName}}</text>
             <text class="user-id">用户ID: {{item.userId}}</text>
             <text class="time">{{item.formattedTime}}</text>
+            <text wx:if="{{item.isSilenced}}" class="silence-info">
+              禁言中，结束时间: {{item.silenceEndTimeFormatted}}
+            </text>
+            <text wx:if="{{item.isSilenced && item.silenceReason}}" class="silence-reason">
+              禁言原因: {{item.silenceReason}}
+            </text>
           </view>
-          <view class="role-tag {{item.role === 'admin' ? 'role-admin' : item.role === 'merchant' ? 'role-merchant' : 'role-user'}}">
-            {{item.roleText}}
+          <view class="tags-container">
+            <view class="role-tag {{item.role === 'admin' ? 'role-admin' : item.role === 'merchant' ? 'role-merchant' : 'role-user'}}">
+              {{item.roleText}}
+            </view>
+            <view wx:if="{{item.isSilenced}}" class="silence-tag">
+              已禁言
+            </view>
           </view>
+        </view>
+        
+        <!-- 操作按钮 -->
+        <view wx:if="{{item.role !== 'admin'}}" class="action-buttons">
+          <button 
+            wx:if="{{!item.isSilenced}}"
+            class="btn silence" 
+            data-userid="{{item.userId}}"
+            bindtap="silenceUser"
+          >
+            禁言
+          </button>
+          <button 
+            wx:else
+            class="btn unsilence" 
+            data-userid="{{item.userId}}"
+            bindtap="unsilenceUser"
+          >
+            解除禁言
+          </button>
         </view>
       </view>
     </view>

@@ -46,11 +46,18 @@ Page({
       .then((res) => {
         console.log('用户数据:', res.data);
         
-        const processedUsers = res.data.map(user => ({
-          ...user,
-          formattedTime: that.formatTime(user.createdAt),
-          roleText: user.role === 'admin' ? '管理员' : user.role === 'merchant' ? '商家' : '普通用户'
-        }));
+        const processedUsers = res.data.map(user => {
+          const isSilenced = user.isSilenced && user.silenceEndTime && new Date(user.silenceEndTime) > new Date();
+          const silenceEndTimeFormatted = user.silenceEndTime ? that.formatTime(user.silenceEndTime) : '';
+          
+          return {
+            ...user,
+            formattedTime: that.formatTime(user.createdAt),
+            roleText: user.role === 'admin' ? '管理员' : user.role === 'merchant' ? '商家' : '普通用户',
+            isSilenced: isSilenced,
+            silenceEndTimeFormatted: silenceEndTimeFormatted
+          };
+        });
         
         that.setData({
           users: processedUsers,
@@ -65,6 +72,107 @@ Page({
           icon: 'none'
         });
       });
+  },
+
+  // 禁言用户
+  silenceUser: function (e) {
+    const userId = e.currentTarget.dataset.userid;
+    const that = this;
+    
+    // 禁言时间选项（单位：小时）
+    const silenceOptions = [
+      { label: '1小时', value: 1 },
+      { label: '6小时', value: 6 },
+      { label: '12小时', value: 12 },
+      { label: '24小时', value: 24 },
+      { label: '7天', value: 168 },
+      { label: '30天', value: 720 }
+    ];
+    
+    wx.showActionSheet({
+      itemList: silenceOptions.map(option => option.label),
+      success: function (res) {
+        const selectedOption = silenceOptions[res.tapIndex];
+        const silenceHours = selectedOption.value;
+        const silenceEndTime = new Date(Date.now() + silenceHours * 60 * 60 * 1000);
+        
+        // 显示输入禁言原因的弹窗
+        wx.showModal({
+          title: '禁言用户',
+          content: `确定要禁言该用户${selectedOption.label}吗？`,
+          editable: true,
+          placeholderText: '请输入禁言原因',
+          success: function (reasonRes) {
+            if (reasonRes.confirm) {
+              const silenceReason = reasonRes.content || '违反社区规范';
+              that.updateSilenceStatus(userId, true, silenceEndTime, silenceReason);
+            }
+          }
+        });
+      }
+    });
+  },
+
+  // 解除禁言
+  unsilenceUser: function (e) {
+    const userId = e.currentTarget.dataset.userid;
+    const that = this;
+    
+    wx.showModal({
+      title: '解除禁言',
+      content: '确定要解除该用户的禁言吗？',
+      success: function (res) {
+        if (res.confirm) {
+          that.updateSilenceStatus(userId, false, null, '');
+        }
+      }
+    });
+  },
+
+  // 更新禁言状态
+  updateSilenceStatus: function (userId, isSilenced, silenceEndTime, silenceReason) {
+    const that = this;
+    const db = wx.cloud.database();
+    
+    wx.showLoading({ title: '处理中...' });
+    
+    // 准备更新数据
+    const updateData = {
+      isSilenced: isSilenced
+    };
+    
+    if (isSilenced) {
+      updateData.silenceEndTime = silenceEndTime;
+      updateData.silenceReason = silenceReason;
+    } else {
+      updateData.silenceEndTime = null;
+      updateData.silenceReason = '';
+    }
+    
+    // 更新用户禁言状态
+    db.collection('users').where({
+      userId: userId
+    }).update({
+      data: updateData
+    })
+    .then(() => {
+      wx.hideLoading();
+      wx.showToast({
+        title: isSilenced ? '禁言成功' : '解除禁言成功',
+        icon: 'success'
+      });
+      
+      // 刷新列表
+      that.loadUsers();
+    })
+    .catch((err) => {
+      wx.hideLoading();
+      console.error('更新禁言状态失败:', err);
+      wx.showToast({
+        title: '操作失败',
+        icon: 'none'
+      });
+    });
   },
 
   // 格式化时间
