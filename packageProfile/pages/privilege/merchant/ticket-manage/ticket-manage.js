@@ -289,6 +289,26 @@ Page({
     const ticketId = e.currentTarget.dataset.id;
     const status = Number(e.currentTarget.dataset.status);
     
+    // 如果是下架操作，先提示用户
+    if (status === 0) {
+      wx.showModal({
+        title: '确认下架',
+        content: '下架后，相关的优惠活动将不再包含此门票，是否确认？',
+        success: (res) => {
+          if (res.confirm) {
+            this.doUpdateTicketStatus(ticketId, status);
+          }
+        }
+      });
+    } else {
+      this.doUpdateTicketStatus(ticketId, status);
+    }
+  },
+
+  /**
+   * 执行门票状态更新
+   */
+  doUpdateTicketStatus: function(ticketId, status) {
     const db = wx.cloud.database();
     
     wx.showLoading({
@@ -302,6 +322,12 @@ Page({
       },
       success: () => {
         wx.hideLoading();
+        
+        // 如果是下架操作，检查并更新相关的优惠方案
+        if (status === 0) {
+          this.updateRelatedDiscounts(ticketId, true);
+        }
+        
         wx.showToast({
           title: status === 1 ? '上架成功' : '下架成功',
           icon: 'success'
@@ -327,7 +353,7 @@ Page({
     
     wx.showModal({
       title: '确认删除',
-      content: '确定要删除这张门票吗？此操作不可恢复。',
+      content: '确定要删除这张门票吗？此操作不可恢复。删除后，相关的优惠活动将不再包含此门票。',
       success: (res) => {
         if (res.confirm) {
           const db = wx.cloud.database();
@@ -339,6 +365,10 @@ Page({
           db.collection('ticket').doc(ticketId).remove({
             success: () => {
               wx.hideLoading();
+              
+              // 删除门票后，检查并更新相关的优惠方案
+              this.updateRelatedDiscounts(ticketId, false);
+              
               wx.showToast({
                 title: '删除成功',
                 icon: 'success'
@@ -355,6 +385,47 @@ Page({
             }
           });
         }
+      }
+    });
+  },
+
+  /**
+   * 更新相关的优惠方案
+   * @param {string} ticketId 门票ID
+   * @param {boolean} isOffline 是否是下架操作
+   */
+  updateRelatedDiscounts: function(ticketId, isOffline) {
+    const db = wx.cloud.database();
+    const _ = db.command;
+    
+    // 查询所有包含该门票的优惠方案
+    db.collection('discounts').where({
+      scenicId: this.data.scenicId,
+      ticketIds: ticketId
+    }).get({
+      success: (res) => {
+        if (res.data.length > 0) {
+          // 更新每个优惠方案，移除已下架或删除的门票
+          res.data.forEach(discount => {
+            const updatedTicketIds = discount.ticketIds.filter(id => id !== ticketId);
+            
+            db.collection('discounts').doc(discount._id).update({
+              data: {
+                ticketIds: updatedTicketIds,
+                updatedAt: db.serverDate()
+              },
+              success: () => {
+                console.log('更新优惠方案成功:', discount._id);
+              },
+              fail: (err) => {
+                console.error('更新优惠方案失败:', err);
+              }
+            });
+          });
+        }
+      },
+      fail: (err) => {
+        console.error('查询相关优惠方案失败:', err);
       }
     });
   }
