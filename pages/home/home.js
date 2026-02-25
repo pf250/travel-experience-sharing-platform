@@ -85,26 +85,28 @@ Page({
       
       db.collection('scenic')
         .where({
-          status: '营业',
-          deleted: { $ne: true }
+          status: '营业'
         })
+        .limit(10)
         .get({
           success: (res) => {
-            const hotScenic = res.data.map(item => {
-              const formattedViewCount = this.formatViewCount(item.viewCount || 0);
-              return {
-                id: item._id,
-                name: item.name || '未知景区',
-                location: item.address || '未知位置',
-                image: item.images && item.images.length > 0 ? item.images[0] : 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=travel%20scenic%20view%20placeholder&image_size=landscape_4_3',
-                viewCount: item.viewCount || 0,
-                formattedViewCount: formattedViewCount,
-                rating: item.rating || 4.5
-              };
-            }).sort((a, b) => {
-              // 按浏览量降序排序
-              return b.viewCount - a.viewCount;
-            }).slice(0, 3); // 取前3个
+            const hotScenic = res.data
+              .filter(item => !item.deleted) // 过滤掉已删除的景区
+              .map(item => {
+                const formattedViewCount = this.formatViewCount(item.viewCount || 0);
+                return {
+                  id: item._id,
+                  name: item.name || '未知景区',
+                  location: item.address || '未知位置',
+                  image: item.images && item.images.length > 0 ? item.images[0] : 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=travel%20scenic%20view%20placeholder&image_size=landscape_4_3',
+                  viewCount: item.viewCount || 0,
+                  formattedViewCount: formattedViewCount,
+                  rating: item.rating || 4.5
+                };
+              }).sort((a, b) => {
+                // 按浏览量降序排序
+                return b.viewCount - a.viewCount;
+              }).slice(0, 3); // 取前3个
             
             this.setData({ hotScenic });
             console.log('热门景点加载成功:', hotScenic.length, '个');
@@ -252,6 +254,11 @@ Page({
                     
                     const scenic = scenicRes.data;
                     
+                    // 检查景区是否被删除
+                    if (scenic.deleted) {
+                      return null; // 跳过已删除景区的优惠活动
+                    }
+                    
                     // 获取适用门票信息
                     let ticketNames = '全部门票';
                     if (discount.ticketIds && discount.ticketIds.length > 0) {
@@ -284,23 +291,14 @@ Page({
                     };
                   } catch (error) {
                     console.error('处理优惠活动数据失败:', error);
-                    return {
-                      id: discount._id,
-                      title: discount.title || '优惠活动',
-                      description: '门票优惠',
-                      discountValue: discount.discountValue || 0,
-                      ticketNames: '全部门票',
-                      endTime: discount.endTime ? discount.endTime.split(' ')[0] : '2026-12-31',
-                      image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=travel%20promotion%20banner%20colorful&image_size=landscape_4_3',
-                      scenicId: discount.scenicId,
-                      originalEndTime: discount.endTime
-                    };
+                    return null; // 出错时跳过此优惠活动
                   }
                 })
               );
               
-              // 过滤掉已结束的活动
+              // 过滤掉null值（已删除景区的优惠活动）和已结束的活动
               promotions = promotions.filter(promotion => {
+                if (!promotion) return false; // 过滤掉null值
                 if (!promotion.originalEndTime) return true;
                 // 处理iOS日期格式兼容性问题
                 const endTimeStr = promotion.originalEndTime.replace(/\s+/g, 'T');

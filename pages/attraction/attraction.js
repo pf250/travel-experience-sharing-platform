@@ -71,19 +71,22 @@ Page({
   queryScenicList(callback) {
     const { page, pageSize, scenicList } = this.data;
     const db = wx.cloud.database();
+    const _ = db.command;
     
     this.setData({ isLoading: true });
     
     db.collection('scenic')
       .where({
-        status: '营业',
-        deleted: { $ne: true }
+        status: '营业'
       })
       .skip((page - 1) * pageSize)
       .limit(pageSize)
       .get({
         success: (res) => {
           let newScenicList = res.data;
+          
+          // 过滤掉已删除的景区
+          newScenicList = newScenicList.filter(item => !item.deleted);
           
           // 为每个景区添加格式化后的浏览量
           newScenicList = newScenicList.map(item => {
