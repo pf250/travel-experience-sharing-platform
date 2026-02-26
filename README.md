@@ -126,6 +126,21 @@
 - **ticket**：门票数据
 - **ticket_sales**：门票销售数据
 - **users**：用户数据
+  | 编号 | 字段名 | 数据类型 | 说明 |
+  | --- | --- | --- | --- |
+  | 1 | _id | string | 自动生成 |
+  | 2 | avatarUrl | string | 头像 |
+  | 3 | nickName | string | 昵称 |
+  | 4 | name | string | 姓名 |
+  | 5 | phone | string | 手机 |
+  | 6 | sex | string | 性别 |
+  | 7 | role | string | 身份 |
+  | 8 | registerTime | data | 注册时间 |
+  | 9 | openid | string | 自动生成 |
+  | 10 | userId | number | 账号 |
+  | 11 | isSilenced | boolen | 禁言状态 |
+  | 12 | silenceEndTime | date | 禁言结束时间 |
+  | 13 | silenceReason | String | 禁言原因
 
 ## 10. 项目成果
 - 项目开源发布GitHub: [https://github.com/pf250/travel-experience-sharing-platform.git](https://github.com/pf250/travel-experience-sharing-platform.git)
