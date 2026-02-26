@@ -249,12 +249,9 @@
 
 /* 响应式设计 */
 @media (max-width: 375px) {
-  .ticket-actions {
-    flex-direction: column;
-  }
-  
   .action-btn {
-    width: 100%;
+    font-size: 20rpx;
+    padding: 10rpx 0;
   }
   
   .modal-content {
