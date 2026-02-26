@@ -62,5 +62,11 @@ Page({
     });
   },
 
+  // 导航到门票销售情况
+  navigateToTicketSale: function() {
+    wx.navigateTo({
+      url: `/packageProfile/pages/privilege/merchant/ticket_sale/ticket_sale?userId=${this.data.userId}`
+    });
+  },
 
 });

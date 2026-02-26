@@ -1,2 +1,99 @@
 <!--packageProfile/pages/myfavorites/myfavorites.wxml-->
-<text>packageProfile/pages/myfavorites/myfavorites.wxml</text>
+<view class="user-manage-container">
+  <!-- 标签页 -->
+  <view class="tabs">
+    <view 
+      class="tab-item {{currentTab === 0 ? 'active' : ''}}"
+      bindtap="switchTab"
+      data-tab-index="0"
+    >
+      待使用
+    </view>
+    <view 
+      class="tab-item {{currentTab === 1 ? 'active' : ''}}"
+      bindtap="switchTab"
+      data-tab-index="1"
+    >
+      已退票
+    </view>
+  </view>
+
+  <!-- 内容区域 -->
+  <view class="content">
+    <!-- 页面标题 -->
+    <view class="page-title">我的购票记录</view>
+    
+    <!-- 加载状态 -->
+    <view wx:if="{{isLoading}}" class="loading">
+      <text>加载中...</text>
+    </view>
+    
+    <!-- 无购票记录 -->
+    <view wx:elif="{{filteredSales.length === 0}}" class="empty">
+      <text>{{currentTab === 0 ? '暂无待使用的购票记录' : '暂无已退票的记录'}}</text>
+    </view>
+    
+    <!-- 购票记录列表 -->
+    <view wx:else class="ticket-list">
+      <view wx:for="{{filteredSales}}" wx:key="_id" class="ticket-item">
+      <!-- 景区信息 -->
+      <view class="ticket-header" bindtap="viewScenicDetail" data-scenic-id="{{item.scenicId}}">
+        <view class="scenic-name">{{item.scenicName}}</view>
+        <view class="ticket-name">{{item.ticketName}}</view>
+      </view>
+      
+      <!-- 购票详情 -->
+      <view class="ticket-info">
+        <view class="info-row">
+          <text class="label">单价：</text>
+          <text class="value">¥{{item.price}}</text>
+        </view>
+        <view class="info-row">
+          <text class="label">数量：</text>
+          <text class="value">{{item.quantity}}张</text>
+        </view>
+        <view class="info-row">
+          <text class="label">总价：</text>
+          <text class="value total">¥{{item.totalPrice}}</text>
+        </view>
+        <view class="info-row">
+          <text class="label">购买时间：</text>
+          <text class="value">{{item.formattedCreatedAt}}</text>
+        </view>
+        <view wx:if="{{item.isRefunded}}" class="info-row">
+          <text class="label">退票时间：</text>
+          <text class="value">{{item.formattedRefundTime}}</text>
+        </view>
+        <view class="info-row">
+          <text class="label">状态：</text>
+          <text class="value status-{{item.status}}">
+            {{item.status === 1 ? '待使用' : item.status === 2 ? '已使用' : '已取消'}}
+            {{item.isRefunded ? '(已退票)' : ''}}
+          </text>
+        </view>
+      </view>
+      
+      <!-- 操作按钮 -->
+      <view class="ticket-actions">
+        <button 
+          wx:if="{{item.status === 1 && !item.isRefunded}}" 
+          class="refund-btn" 
+          bindtap="refundTicket" 
+          data-sale-id="{{item._id}}"
+        >
+          申请退票
+        </button>
+        <button 
+          wx:elif="{{item.isRefunded}}" 
+          class="delete-btn" 
+          bindtap="deleteRecord" 
+          data-sale-id="{{item._id}}"
+        >
+          删除记录
+        </button>
+        <text wx:else class="no-action">无操作</text>
+      </view>
+    </view>
+  </view>
+</view>
+</view>

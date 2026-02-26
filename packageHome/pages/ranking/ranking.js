@@ -67,29 +67,30 @@ Page({
     
     db.collection('scenic')
       .where({
-        status: '营业',
-        deleted: { $ne: true }
+        status: '营业'
       })
       .get({
         success: (res) => {
           // 计算热度值并排序
-            const scenicList = res.data.map(item => {
-            // 热度值 = 浏览量 * 100
-            const heat = (item.viewCount || 0) * 100;
-            // 格式化热度值
-            const formattedHeat = this.formatHeatValue(heat);
-            // 格式化浏览量
-            const formattedViewCount = this.formatViewCount(item.viewCount || 0);
-            return {
-              ...item,
-              heat,
-              formattedHeat,
-              formattedViewCount
-            };
-          }).sort((a, b) => {
-            // 按热度值降序排序
-            return b.heat - a.heat;
-          });
+          const scenicList = res.data
+            .filter(item => !item.deleted) // 过滤掉已删除的景区
+            .map(item => {
+              // 热度值 = 浏览量 * 100
+              const heat = (item.viewCount || 0) * 100;
+              // 格式化热度值
+              const formattedHeat = this.formatHeatValue(heat);
+              // 格式化浏览量
+              const formattedViewCount = this.formatViewCount(item.viewCount || 0);
+              return {
+                ...item,
+                heat,
+                formattedHeat,
+                formattedViewCount
+              };
+            }).sort((a, b) => {
+              // 按热度值降序排序
+              return b.heat - a.heat;
+            });
           
           this.setData({
             scenicList,

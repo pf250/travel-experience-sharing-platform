@@ -35,6 +35,7 @@
         "pages/privilege/vip/vip",
         "pages/privilege/merchant/scenic-info/scenic-info",
         "pages/privilege/merchant/ticket-manage/ticket-manage",
+        "pages/privilege/merchant/ticket_sale/ticket_sale",
         "pages/privilege/merchant/discount/discount"
       ]
     },

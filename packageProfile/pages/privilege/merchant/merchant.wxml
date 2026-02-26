@@ -44,6 +44,15 @@
       <view class="card-arrow">›</view>
     </view>
 
+    <!-- 门票销售情况 -->
+    <view class="card" bindtap="navigateToTicketSale">
+      <view class="card-icon">📊</view>
+      <view class="card-content">
+        <text class="card-title">门票销售情况</text>
+        <text class="card-desc">查看销售数据和退票记录</text>
+      </view>
+      <view class="card-arrow">›</view>
+    </view>
 
   </view>
 </view>

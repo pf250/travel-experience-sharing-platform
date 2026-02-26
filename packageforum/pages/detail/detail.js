@@ -99,13 +99,22 @@ Page({
         .get();
       const postAuthorId = postRes.data.userId;
       
+      // 获取当前登录用户ID
+      let currentUserId = null;
+      const loginState = wx.getStorageSync('loginState');
+      if (loginState && loginState.userId) {
+        currentUserId = typeof loginState.userId === 'string' ? parseInt(loginState.userId) : loginState.userId;
+      }
+      
       // 格式化所有评论的时间
       const allComments = comments.data.map(comment => {
+        const commentUserId = typeof comment.userId === 'string' ? parseInt(comment.userId) : comment.userId;
         return {
           ...comment,
           formattedTime: this.formatTime(comment.createdAt),
           replies: [],
-          isAuthor: String(comment.userId) === String(postAuthorId)
+          isAuthor: String(commentUserId) === String(postAuthorId),
+          isSelf: currentUserId !== null && commentUserId === currentUserId
         };
       });
       
@@ -186,7 +195,16 @@ Page({
     const postId = e.currentTarget.dataset.postId;
 
     if (!this.checkLogin()) {
-      wx.showToast({ title: '请先登录', icon: 'none' });
+      wx.showToast({
+        title: '请先登录',
+        icon: 'none',
+      });
+      // 未登录时跳转到指定页面
+      setTimeout(() => {
+        wx.switchTab({
+          url: '/pages/profile/profile',
+        });
+      }, 1000);
       return;
     }
 
@@ -274,7 +292,16 @@ Page({
   // 切换评论输入框显示
   toggleCommentSection() {
     if (!this.checkLogin()) {
-      wx.showToast({ title: '请先登录', icon: 'none' });
+      wx.showToast({
+        title: '请先登录',
+        icon: 'none',
+      });
+      // 未登录时跳转到指定页面
+      setTimeout(() => {
+        wx.switchTab({
+          url: '/pages/profile/profile',
+        });
+      }, 1000);
       return;
     }
 
@@ -302,7 +329,16 @@ Page({
     const content = this.data.newComment.trim();
 
     if (!this.checkLogin()) {
-      wx.showToast({ title: '请先登录', icon: 'none' });
+      wx.showToast({
+        title: '请先登录',
+        icon: 'none',
+      });
+      // 未登录时跳转到指定页面
+      setTimeout(() => {
+        wx.switchTab({
+          url: '/pages/profile/profile',
+        });
+      }, 1000);
       return;
     }
 
@@ -361,7 +397,16 @@ Page({
   // 显示回复输入框
   showReplyInput(e) {
     if (!this.checkLogin()) {
-      wx.showToast({ title: '请先登录', icon: 'none' });
+      wx.showToast({
+        title: '请先登录',
+        icon: 'none',
+      });
+      // 未登录时跳转到指定页面
+      setTimeout(() => {
+        wx.switchTab({
+          url: '/pages/profile/profile',
+        });
+      }, 1000);
       return;
     }
 
@@ -397,7 +442,16 @@ Page({
     const content = this.data.newReply.trim();
 
     if (!this.checkLogin()) {
-      wx.showToast({ title: '请先登录', icon: 'none' });
+      wx.showToast({
+        title: '请先登录',
+        icon: 'none',
+      });
+      // 未登录时跳转到指定页面
+      setTimeout(() => {
+        wx.switchTab({
+          url: '/pages/profile/profile',
+        });
+      }, 1000);
       return;
     }
 

@@ -27,11 +27,11 @@
       <text class="function-name">我的商品</text>
       <image class="arrow-right" src="/images/profile/arrow-right.png"></image>
     </view>
-    <!-- <view class="function-item" bindtap="navigateToMyFavorites">
-      <image class="icon" src="/images/profile/my-favorites.png"></image>
-      <text class="function-name">我的收藏</text>
+    <view class="function-item" bindtap="navigateToMyFavorites">
+      <image class="icon" src="/images/profile/my-ticket.png"></image>
+      <text class="function-name">我的购票</text>
       <image class="arrow-right" src="/images/profile/arrow-right.png"></image>
-    </view> -->
+    </view>
     <view class="function-item" bindtap="navigateToPrivilege">
       <image class="icon" src="/images/profile/my-favorites.png"></image>
       <text class="function-name">特权中心</text>

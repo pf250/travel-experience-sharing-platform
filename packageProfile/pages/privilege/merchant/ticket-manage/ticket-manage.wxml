@@ -52,7 +52,6 @@
     <view class="modal-content" catchtap="stopPropagation">
       <view class="modal-header">
         <text>{{isEditMode ? '编辑门票' : '添加门票'}}</text>
-        <button class="close-btn" bindtap="hideModal">×</button>
       </view>
       <view class="modal-body">
         <form bindsubmit="saveTicket">

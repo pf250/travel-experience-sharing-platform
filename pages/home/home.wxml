@@ -51,4 +51,93 @@
       <text>{{item.name}}</text>
     </view>
   </view>
+
+  <!-- 热门景点推荐 -->
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">热门景点</text>
+    </view>
+    <view class="scenic-list">
+      <navigator 
+        wx:for="{{hotScenic}}" 
+        wx:key="id"
+        url="/pages/attraction/detail/detail?id={{item.id}}"
+        class="scenic-card">
+        <image src="{{item.image}}" mode="aspectFill" class="scenic-image"/>
+        <view class="scenic-info">
+          <text class="scenic-name">{{item.name}}</text>
+          <text class="scenic-location">{{item.location}}</text>
+          <view class="scenic-stats">
+            <view class="stat-item">
+              <image class="stat-icon" src="/images/contact/viewCount.png"></image>
+              <text class="stat-text">{{item.formattedViewCount}}</text>
+            </view>
+            <view class="stat-item">
+              <image wx:if="{{index === 0}}" class="rank-icon" src="/images/rank/NO.1.png"></image>
+              <image wx:elif="{{index === 1}}" class="rank-icon" src="/images/rank/NO.2.png"></image>
+              <image wx:elif="{{index === 2}}" class="rank-icon" src="/images/rank/NO.3.png"></image>
+            </view>
+          </view>
+        </view>
+      </navigator>
+    </view>
+  </view>
+
+  <!-- 精选帖子 -->
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">精选帖子</text>
+    </view>
+    <view class="post-list">
+      <navigator 
+        wx:for="{{featuredPosts}}" 
+        wx:key="id"
+        url="/packageforum/pages/detail/detail?postId={{item.id}}"
+        class="post-card">
+        <view class="post-header">
+          <image src="{{item.avatar}}" mode="aspectFill" class="post-avatar"/>
+          <text class="post-author">{{item.author}}</text>
+        </view>
+        <text class="post-title">{{item.title}}</text>
+        <text class="post-content">{{item.content}}</text>
+        <view class="post-stats">
+          <view class="stat-item">
+            <image class="stat-icon" src="/images/contact/like.png"></image>
+            <text class="stat-text">{{item.likeCount}}</text>
+          </view>
+          <view class="stat-item">
+            <image class="stat-icon" src="/images/contact/comment.png"></image>
+            <text class="stat-text">{{item.commentCount}}</text>
+          </view>
+        </view>
+      </navigator>
+    </view>
+  </view>
+
+  <!-- 优惠活动 -->
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">优惠活动</text>
+      <text class="more-link">限时特惠</text>
+    </view>
+    <view class="promotion-list">
+      <navigator 
+        wx:for="{{promotions}}" 
+        wx:key="id"
+        url="{{item.scenicId ? '/pages/attraction/detail/detail?id=' + item.scenicId : ''}}"
+        class="promotion-card"
+        hover-class="none">
+        <image src="{{item.image}}" mode="aspectFill" class="promotion-image"/>
+        <view class="promotion-info">
+          <view class="promotion-header">
+            <text class="promotion-title">{{item.title}}</text>
+            <text class="promotion-discount">减¥{{item.discountValue}}</text>
+          </view>
+          <text class="promotion-description">{{item.description}}</text>
+          <text class="promotion-tickets">适用门票：{{item.ticketNames}}</text>
+          <text class="promotion-time">截止日期：{{item.endTime}}</text>
+        </view>
+      </navigator>
+    </view>
+  </view>
 </view> 

@@ -99,7 +99,7 @@
           </view>
           <text class="discount-value">直减金额：¥{{item.discountValue}}</text>
           <text class="discount-time">有效期：{{item.startTime}} 至 {{item.endTime}}</text>
-          <text class="discount-tickets">适用门票：{{item.ticketIds.length}} 种</text>
+          <text class="discount-tickets">适用门票：{{item.ticketNames || '无'}}</text>
         </view>
       </view>
     </view>

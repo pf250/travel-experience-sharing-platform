@@ -23,14 +23,10 @@
     </block>
   </view>
 
-  <!-- 自定义下拉刷新和商品列表 -->
+  <!-- 商品列表 -->
   <scroll-view 
     class="content-scroll" 
     scroll-y 
-    refresher-enabled="{{true}}" 
-    refresher-triggered="{{isRefreshing}}" 
-    bindrefresherrefresh="onPullDownRefresh" 
-   
   >
     <!-- 刷新提示 -->
     <view class="refreshing" wx:if="{{isRefreshing}}">
