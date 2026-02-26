@@ -73,7 +73,9 @@ Page({
       return false;
     }
     
-    const userId = loginState.userId;
+    let userId = loginState.userId;
+    // 确保userId是数字类型，与数据库存储一致
+    userId = typeof userId === 'string' ? parseInt(userId) : userId;
     try {
       const likeRecord = await wx.cloud.database().collection('likes')
         .where({ postId, userId })
