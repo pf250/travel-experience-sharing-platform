@@ -99,13 +99,22 @@ Page({
         .get();
       const postAuthorId = postRes.data.userId;
       
+      // 获取当前登录用户ID
+      let currentUserId = null;
+      const loginState = wx.getStorageSync('loginState');
+      if (loginState && loginState.userId) {
+        currentUserId = typeof loginState.userId === 'string' ? parseInt(loginState.userId) : loginState.userId;
+      }
+      
       // 格式化所有评论的时间
       const allComments = comments.data.map(comment => {
+        const commentUserId = typeof comment.userId === 'string' ? parseInt(comment.userId) : comment.userId;
         return {
           ...comment,
           formattedTime: this.formatTime(comment.createdAt),
           replies: [],
-          isAuthor: String(comment.userId) === String(postAuthorId)
+          isAuthor: String(commentUserId) === String(postAuthorId),
+          isSelf: currentUserId !== null && commentUserId === currentUserId
         };
       });
       

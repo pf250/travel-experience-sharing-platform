@@ -98,6 +98,12 @@
   border: 1px solid #ffd591;
 }
 
+.role-tag.self {
+  background-color: #f0f5ff;
+  color: #409eff;
+  border: 1px solid #adc6ff;
+}
+
 .post-author {
   color: #888;
   font-size: 14px;

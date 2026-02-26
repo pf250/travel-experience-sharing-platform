@@ -88,8 +88,9 @@
               <view class="comment-header">
                 <!-- 昵称 -->
                 <text class="comment-nickname">{{item.nickName}}</text>
-                <!-- 作者身份标识 -->
-                <text wx:if="{{item.isAuthor}}" class="role-tag author">作者</text>
+                <!-- 身份标识 -->
+                <text wx:if="{{item.isSelf}}" class="role-tag self">你</text>
+                <text wx:elif="{{item.isAuthor}}" class="role-tag author">作者</text>
               </view>
               <!-- 评论内容 -->
                 <text class="comment-content">{{item.parentId ? '回复 @' + item.replyTargetAuthor + '：' : ''}}{{item.content}}</text>
@@ -113,8 +114,9 @@
                   <view class="comment-header">
                     <!-- 昵称 -->
                     <text class="comment-nickname">{{item.nickName}}</text>
-                    <!-- 作者身份标识 -->
-                    <text wx:if="{{item.isAuthor}}" class="role-tag author">作者</text>
+                    <!-- 身份标识 -->
+                    <text wx:if="{{item.isSelf}}" class="role-tag self">你</text>
+                    <text wx:elif="{{item.isAuthor}}" class="role-tag author">作者</text>
                   </view>
                   <!-- 评论内容 -->
                 <text class="comment-content">{{item.isReplyToReply ? '回复 @' + item.replyTargetAuthor + '：' : ''}}{{item.content}}</text>
