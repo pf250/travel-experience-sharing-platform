@@ -164,11 +164,19 @@ Page({
    * 点击景区进入详情页
    */
   navigateToDetail(e) {
+    console.log('navigateToDetail触发', e);
     const scenicId = e.currentTarget.dataset.id;
+    console.log('scenicId:', scenicId);
     
     // 导航到详情页
     wx.navigateTo({
-      url: `/pages/attraction/detail/detail?id=${scenicId}`
+      url: `/pages/attraction/detail/detail?id=${scenicId}`,
+      success: function(res) {
+        console.log('跳转成功', res);
+      },
+      fail: function(err) {
+        console.log('跳转失败', err);
+      }
     });
   }
 })
