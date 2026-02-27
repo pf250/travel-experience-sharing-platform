@@ -277,19 +277,50 @@
 ## 11. 实际效果图
 
 ### 11.1 首页
+<img width="209" height="452" alt="image" src="https://github.com/user-attachments/assets/b7b6daaf-3841-4f06-8951-8ff7b5edc2a0" />
 
 ### 11.2 景区页面
+<img width="209" height="452" alt="image" src="https://github.com/user-attachments/assets/576e2fc4-6f72-4a7f-91cb-dee607ef9b7e" />
 
 ### 11.3 发布页面
+<img width="209" height="452" alt="image" src="https://github.com/user-attachments/assets/c67765ac-e065-4b4e-96b4-6b8f42cbe4ab" />
+<img width="209" height="452" alt="image" src="https://github.com/user-attachments/assets/94ef53fe-2c09-492d-8d28-0dee6aadee45" />
 
 ### 11.4 论坛页面
+<img width="209" height="452" alt="image" src="https://github.com/user-attachments/assets/d5f3fa20-60a2-48b3-9825-a6967bf4ebeb" />
 
 ### 11.5 个人中心
+<img width="209" height="452" alt="image" src="https://github.com/user-attachments/assets/45407250-31f0-409f-8a72-5d6441cfa88b" />
 
 ### 11.6 不同身份功能展示
 
 #### 11.6.1 普通用户
+<img width="209" height="452" alt="image" src="https://github.com/user-attachments/assets/07ec58ba-03de-4ed8-be23-22da0f683edf" />
+<img width="209" height="452" alt="image" src="https://github.com/user-attachments/assets/3a838a56-160b-4cf9-8f6d-761e58ffad53" />
+<img width="209" height="452" alt="image" src="https://github.com/user-attachments/assets/ff416617-7507-427e-af37-3910ce93a7bb" />
+<img width="209" height="452" alt="image" src="https://github.com/user-attachments/assets/e88016d1-eb57-4c38-8a29-c59ef20bfa44" />
+<img width="209" height="452" alt="image" src="https://github.com/user-attachments/assets/9916073b-61ec-4c07-9d3c-921b7a8fa118" />
+<img width="209" height="452" alt="image" src="https://github.com/user-attachments/assets/b5c893a1-3fae-422e-a62f-51d72b62dee2" />
+<img width="209" height="452" alt="image" src="https://github.com/user-attachments/assets/68fa7b4d-f575-443f-b300-5fcd4f3a2989" />
+
+
 
 #### 11.6.2 商家
+<img width="209" height="452" alt="image" src="https://github.com/user-attachments/assets/f53be576-03ab-4e42-89f4-9aa194463267" />
+<img width="209" height="452" alt="image" src="https://github.com/user-attachments/assets/ec351c2d-ab01-4e8e-bd94-de6921db58ff" />
+<img width="209" height="452" alt="image" src="https://github.com/user-attachments/assets/b8c3c459-673a-4453-b971-3185f998b7c6" />
+<img width="209" height="452" alt="image" src="https://github.com/user-attachments/assets/0073ed46-384b-4326-8652-e0d431c473bd" />
+<img width="209" height="452" alt="image" src="https://github.com/user-attachments/assets/66f02b2e-19e9-4f88-9a24-96d3b0dde57f" />
 
 #### 11.6.3 管理员
+<img width="209" height="452" alt="image" src="https://github.com/user-attachments/assets/2f20d7c4-7845-40f9-a4a3-ec54fdc4c5ec" />
+<img width="209" height="452" alt="image" src="https://github.com/user-attachments/assets/930c25c8-b27c-44cf-af40-1a1fbfdddc6a" />
+<img width="209" height="452" alt="image" src="https://github.com/user-attachments/assets/da3ce19a-97c4-4f49-a96e-30f4f66e3670" />
+<img width="209" height="452" alt="image" src="https://github.com/user-attachments/assets/faa26b7a-f4b7-444d-9e2e-e49759bfc1ab" />
+<img width="209" height="452" alt="image" src="https://github.com/user-attachments/assets/ed86f2b2-0332-4e32-9c9c-2de46a8b5fd1" />
+<img width="209" height="452" alt="image" src="https://github.com/user-attachments/assets/46f67363-9785-48d7-8cc3-ca2ab2cb78be" />
+
+
+
+
+
