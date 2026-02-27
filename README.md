@@ -93,7 +93,7 @@
 - 实现个人信息修改
 - 实现发布帖子和商品
 - 实现浏览景区和论坛
-- 实现景区在线预定门票
+- 实现景区在线预定门票和退票
 - 实现论坛点赞和评论
 - 实现查看我的发帖/商品/购票
 - 实现申请成为商家权限
@@ -114,18 +114,160 @@
 ## 9. 数据库设计
 
 ### 9.1 数据库表结构
-- **banners**：轮播图数据
-- **comments**：评论数据
-- **counters**：计数器数据
-- **discounts**：优惠活动数据
-- **items**：闲置物品数据
-- **likes**：点赞数据
-- **merchant_applications**：商家申请数据
-- **posts**：帖子数据
-- **scenic**：景区数据
-- **ticket**：门票数据
-- **ticket_sales**：门票销售数据
 - **users**：用户数据
+  | 编号 | 字段名 | 数据类型 | 说明 |
+  | --- | --- | --- | --- |
+  | 1 | _id | string | 自动生成 |
+  | 2 | avatarUrl | string | 头像 |
+  | 3 | nickName | string | 昵称 |
+  | 4 | name | string | 姓名 |
+  | 5 | phone | string | 手机 |
+  | 6 | sex | string | 性别 |
+  | 7 | role | string | 身份 |
+  | 8 | registerTime | data | 注册时间 |
+  | 9 | openid | string | 自动生成 |
+  | 10 | userId | number | 账号 |
+  | 11 | isSilenced | boolen | 禁言状态 |
+  | 12 | silenceEndTime | date | 禁言结束时间 |
+  | 13 | silenceReason | String | 禁言原因
+- **banners**：轮播图数据
+  | 编号 | 字段名 | 数据类型 | 说明 |
+  | --- | --- | --- | --- |
+  | 1 | _id | string | 自动生成 |
+  | 2 | updatedAt | date | 更新时间 |
+  | 3 | fileIDs | array | 图片链接
+- **comments**：评论数据
+  | 编号 | 字段名 | 数据类型 | 说明 |
+  | --- | --- | --- | --- |
+  | 1 | _id | string | 自动生成 |
+  | 2 | openid | string | 自动生成 |
+  | 3 | createdAt | data | 自动生成 |
+  | 4 | userId | number | 账号 |
+  | 5 | avatarUrl | string | 头像 |
+  | 6 | nickName | string | 昵称 |
+  | 7 | content | string | 内容 |
+  | 8 | postId | string | 评论id |
+  | 9 | parentId | string | 回复id
+- **counters**：计数器数据
+  | 编号 | 字段名 | 数据类型 | 说明 |
+  | --- | --- | --- | --- |
+  | 1 | _id | string | 自动生成 |
+  | 2 | count | number | 计数器
+- **discounts**：优惠活动数据
+  | 编号 | 字段名 | 数据类型 | 说明 |
+  | --- | --- | --- | --- |
+  | 1 | _id | string | 自动生成 |
+  | 2 | openid | string | 自动生成 |
+  | 3 | createdAt | date | 自动生成 |
+  | 4 | discountType | number | 类型 |
+  | 5 | discountValue | number | 优惠价格 |
+  | 6 | startTime | string | 开始时间 |
+  | 7 | endTime | string | 结束之间 |
+  | 8 | scenicId | string | 景区id |
+  | 9 | ticketIds | array | 门票id |
+  | 10 | title | string | 标题 |
+  | 11 | updatedAt | date | 更新时间
+- **items**：闲置物品数据
+  | 编号 | 字段名 | 数据类型 | 说明 |
+  | --- | --- | --- | --- |
+  | 1 | _id | string | 自动生成 |
+  | 2 | openid | string | 自动生成 |
+  | 3 | createdAt | data | 自动生成 |
+  | 4 | userId | number | 账号 |
+  | 5 | userUrl | string | 头像 |
+  | 6 | nickName | string | 昵称 |
+  | 7 | images | array | 图片 |
+  | 8 | category | string | 种类 |
+  | 9 | description | string | 描述 |
+  | 10 | location | string | 地址 |
+  | 11 | price | number | 价格 |
+  | 12 | shipping | string | 出货方式
+- **likes**：点赞数据
+  | 编号 | 字段名 | 数据类型 | 说明 |
+  | --- | --- | --- | --- |
+  | 1 | _id | string | 自动生成 |
+  | 2 | openid | string | 自动生成 |
+  | 3 | createdAt | date | 自动生成 |
+  | 4 | postId | string | 帖子id |
+  | 5 | userId | number | 用户id
+- **merchant_applications**：商家申请数据
+  | 编号 | 字段名 | 数据类型 | 说明 |
+  | --- | --- | --- | --- |
+  | 1 | _id | string | 自动生成 |
+  | 2 | openid | string | 自动生成 |
+  | 3 | createdAt | date | 自动生成 |
+  | 4 | userId | number | 账号 |
+  | 5 | photo | string | 图片 |
+  | 6 | status | string | 审核状态 |
+  | 7 | reviewedAt | string | 回复时间 |
+  | 8 | reason | string | 申请原因 |
+  | 9 | rejectReason | string | 拒绝原因
+- **posts**：帖子数据
+  | 编号 | 字段名 | 数据类型 | 说明 |
+  | --- | --- | --- | --- |
+  | 1 | _id | string | 自动生成 |
+  | 2 | openid | string | 自动生成 |
+  | 3 | createdAt | data | 自动生成 |
+  | 4 | userId | number | 账号 |
+  | 5 | avatarUrl | string | 头像 |
+  | 6 | nickName | string | 昵称 |
+  | 7 | images | array | 图片 |
+  | 8 | title | string | 标题 |
+  | 9 | description | string | 描述
+- **scenic**：景区数据
+  | 编号 | 字段名 | 数据类型 | 说明 |
+  | --- | --- | --- | --- |
+  | 1 | _id | string | 自动生成 |
+  | 2 | openid | string | 自动生成 |
+  | 3 | createdAt | date | 自动生成 |
+  | 4 | userId | number | 账号 |
+  | 5 | name | string | 景区名 |
+  | 6 | description | string | 描述 |
+  | 7 | address | string | 地址 |
+  | 8 | contactPhone | string | 电话 |
+  | 9 | images | array | 图片 |
+  | 10 | status | string | 状态 |
+  | 11 | updatedAt | date | 注册时间 |
+  | 12 | deleted | boolen | 逻辑删除 |
+  | 13 | deletedAt | date | 删除时间 |
+  | 14 | deletedReason | string | 删除原因 |
+  | 15 | viewCount | number | 浏览量
+- **ticket**：门票数据
+  | 编号 | 字段名 | 数据类型 | 说明 |
+  | --- | --- | --- | --- |
+  | 1 | _id | string | 自动生成 |
+  | 2 | openid | string | 自动生成 |
+  | 3 | createdAt | date | 自动生成 |
+  | 4 | description | string | 描述 |
+  | 5 | name | string | 票名 |
+  | 6 | price | number | 价格 |
+  | 7 | scenicId | string | 景区id |
+  | 8 | status | number | 状态 |
+  | 9 | stock | number | 库存 |
+  | 10 | updatedAt | date | 更新时间
+- **ticket_sales**：门票销售数据
+  | 编号 | 字段名 | 数据类型 | 说明 |
+  | --- | --- | --- | --- |
+  | 1 | _id | string | 自动生成 |
+  | 2 | openid | string | 自动生成 |
+  | 3 | createdAt | date | 自动生成 |
+  | 4 | discountAmount | number | 优惠总额 |
+  | 5 | hasDiscount | boolean | 是否优惠 |
+  | 6 | isDeleted | boolean | 逻辑删除 |
+  | 7 | isRefunded | boolean | 是否退票 |
+  | 8 | originalPrice | number | 原价 |
+  | 9 | price | number | 现价 |
+  | 10 | quantity | number | 数量 |
+  | 11 | refundTime | date | 拒绝时间 |
+  | 12 | scenicId | string | 景区id |
+  | 13 | scenicName | string | 景区名字 |
+  | 14 | status | number | 状态 |
+  | 15 | ticketId | string | 门票id |
+  | 16 | ticketName | string | 门票名称 |
+  | 17 | totalPrice | number | 合计金额 |
+  | 18 | updatedAt | date | 更新时间 |
+  | 19 | userId | number | 用户id |
+  | 20 | userName | string | 用户昵称
 
 ## 10. 项目成果
 - 项目开源发布GitHub: [https://github.com/pf250/travel-experience-sharing-platform.git](https://github.com/pf250/travel-experience-sharing-platform.git)

@@ -14,9 +14,6 @@
     scroll-y 
     enable-back-to-top
     bindscrolltolower="onReachBottom"
-    refresher-enabled
-    bindrefresherrefresh="onPullDownRefresh"
-    refresher-triggered="{{loading && page === 1}}"
     style="padding-top: {{headerHeight}}px"
   >
     <!-- 原来的列表内容保持不变 -->

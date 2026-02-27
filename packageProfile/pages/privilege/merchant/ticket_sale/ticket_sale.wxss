@@ -192,11 +192,19 @@
   }
   
   .stats-container {
-    flex-direction: column;
+    gap: 12rpx;
   }
   
   .stat-card {
-    margin-bottom: 16rpx;
+    padding: 16rpx;
+  }
+  
+  .stat-value {
+    font-size: 30rpx;
+  }
+  
+  .stat-label {
+    font-size: 20rpx;
   }
   
   .ticket-item {
