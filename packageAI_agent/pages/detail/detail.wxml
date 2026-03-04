@@ -45,12 +45,14 @@
 
   <!-- 输入区域 -->
   <view class="input-area">
-    <input 
+    <textarea 
       class="input-box" 
       placeholder="请输入你的问题..."
       bindinput="onInputChange"
       value="{{inputValue}}"
       bindconfirm="onSendMessage"
+      auto-height
+      maxlength="500"
     />
     <view class="send-button" bindtap="onSendMessage" style="background-color: {{inputValue.trim() ? '#4CAF50' : '#ccc'}}; color: {{inputValue.trim() ? 'white' : '#666'}}">
       发送
