@@ -136,7 +136,7 @@
   flex: 1;
   min-height: 70rpx;
   max-height: 200rpx;
-  padding: 15rpx 20rpx;
+  padding: 20rpx;
   border: 1rpx solid #ddd;
   border-radius: 35rpx;
   font-size: 28rpx;
@@ -144,6 +144,8 @@
   line-height: 1.5;
   resize: none;
   overflow: hidden;
+  display: block;
+  box-sizing: border-box;
 }
 
 .send-button {
