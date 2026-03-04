@@ -15,8 +15,8 @@
     <!-- 欢迎消息 -->
     <view class="message-item ai-message" wx:if="{{showWelcome}}">
       <view class="message-avatar">
-        <image src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=AI%20assistant%20icon%20blue%20chatbot%20modern%20simple&image_size=square" mode="aspectFill"/>
-      </view>
+          <image src="/images/AI/Robot.png" mode="aspectFill"/>
+        </view>
       <view class="message-bubble">
         <text class="message-text">你好！我是旅途小助手，有什么可以帮你的吗？😊
 你可以咨询景区信息、旅游攻略、门票预订、平台操作等问题，我会尽力为你解答！</text>
@@ -38,7 +38,7 @@
       <!-- AI消息 -->
       <view wx:else class="ai-message">
         <view class="message-avatar">
-          <image src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=AI%20assistant%20icon%20blue%20chatbot%20modern%20simple&image_size=square" mode="aspectFill"/>
+          <image src="/images/AI/Robot.png" mode="aspectFill"/>
         </view>
         <view class="message-bubble">
           <text class="message-text">{{item.content}}</text>

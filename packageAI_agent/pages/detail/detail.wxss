@@ -57,6 +57,7 @@
   align-items: flex-start;
   gap: 12rpx;
   max-width: 80%;
+  width: 100%;
 }
 
 /* AI消息 */
