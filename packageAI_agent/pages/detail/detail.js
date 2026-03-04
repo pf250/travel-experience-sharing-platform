@@ -32,19 +32,28 @@ Page({
    * 获取用户信息
    */
   getUserInfo() {
-    // 尝试获取用户信息
-    wx.getUserProfile({
-      desc: '用于显示用户头像',
-      success: (res) => {
-        this.setData({
-          userAvatar: res.userInfo.avatarUrl
-        });
-      },
-      fail: () => {
-        // 获取失败时使用默认头像
-        console.log('获取用户信息失败，使用默认头像');
-      }
-    });
+    // 从本地存储中获取用户信息
+    const loginState = wx.getStorageSync('loginState');
+    if (loginState && loginState.isLogin && loginState.avatarUrl) {
+      this.setData({
+        userAvatar: loginState.avatarUrl
+      });
+      console.log('使用本地存储的用户头像');
+    } else {
+      // 尝试获取用户信息
+      wx.getUserProfile({
+        desc: '用于显示用户头像',
+        success: (res) => {
+          this.setData({
+            userAvatar: res.userInfo.avatarUrl
+          });
+        },
+        fail: () => {
+          // 获取失败时使用默认头像
+          console.log('获取用户信息失败，使用默认头像');
+        }
+      });
+    }
   },
 
   /**

@@ -397,13 +397,13 @@
   position: fixed;
   width: 100rpx;
   height: 100rpx;
-  background: linear-gradient(135deg, #1296db, #1e88e5);
+  background: white;
   border-radius: 50%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4rpx 16rpx rgba(18, 150, 219, 0.4);
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.2);
   z-index: 9999;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -422,6 +422,6 @@
 
 .ai-text {
   font-size: 20rpx;
-  color: white;
+  color: #333;
   font-weight: 500;
 }

@@ -48,7 +48,12 @@ Page({
     // 触摸相关
     isDragging: false,
     // 防止下拉刷新
-    preventPullDown: false
+    preventPullDown: false,
+    // 登录状态
+    isLogin: false,
+    avatarUrl: '',
+    nickName: '',
+    userId: null
   },
 
 
@@ -525,6 +530,42 @@ Page({
     }
   },
 
+  // 显示提示信息
+  showToast(message) {
+    wx.showToast({
+      title: message,
+      icon: 'none',
+      duration: 1000
+    });
+  },
+
+  // 加载用户信息
+  loadUserInfo() {
+    const loginState = wx.getStorageSync('loginState');
+    if (loginState && loginState.isLogin && loginState.userId) {
+      this.setData({
+        isLogin: true,
+        avatarUrl: loginState.avatarUrl,
+        nickName: loginState.nickName,
+        userId: Number(loginState.userId), // 将 userId 转换为数字类型
+      });
+      return true;
+    } else {
+      console.warn('用户未登录或 userId 无效');
+      this.showToast('请先登录');
+      setTimeout(() => {
+        wx.switchTab({ url: '/pages/profile/profile' });
+      }, 1000);
+      return false;
+    }
+  },
+
+  // 检查登录状态
+  checkLogin() {
+    const loginState = wx.getStorageSync('loginState');
+    return loginState && loginState.isLogin;
+  },
+
   // 下拉刷新
   onPullDownRefresh() {
     // 如果正在拖动悬浮窗或设置了防止下拉刷新，不执行下拉刷新
@@ -550,6 +591,11 @@ Page({
   onAIClick() {
     // 只有在非拖动状态下才执行跳转
     if (!this.data.isDragging) {
+      // 检查登录状态
+      if (!this.checkLogin()) {
+        this.loadUserInfo();
+        return;
+      }
       wx.navigateTo({
         url: '/packageAI_agent/pages/detail/detail',
         success: () => console.log('导航到AI客服页面'),

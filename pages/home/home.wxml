@@ -149,6 +149,6 @@
   catchtouchmove="onTouchMove"
   bindtouchend="onTouchEnd"
   style="left: {{aiButtonLeft}}rpx; bottom: {{aiButtonBottom}}rpx;">
-  <image src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=AI%20assistant%20icon%20blue%20chatbot%20modern%20simple&image_size=square" class="ai-icon"/>
+  <image src="/images/AI/Robot.png" class="ai-icon"/>
   <text class="ai-text">AI助手</text>
 </view>
