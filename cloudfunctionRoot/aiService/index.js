@@ -18,9 +18,6 @@ exports.main = async (event, context) => {
   const { message } = event;
   
   try {
-    console.log('云函数开始执行，message:', message);
-    console.log('API配置:', API_CONFIG);
-    
     // 调用腾讯元器API
     const https = require('https');
     
@@ -42,8 +39,6 @@ exports.main = async (event, context) => {
         ]
       });
       
-      console.log('请求数据:', postData);
-      
       const options = {
         hostname: 'yuanqi.tencent.com',
         path: '/openapi/v1/agent/chat/completions',
@@ -55,19 +50,12 @@ exports.main = async (event, context) => {
         }
       };
       
-      console.log('请求选项:', options);
-      
       const req = https.request(options, (res) => {
-        console.log('响应状态码:', res.statusCode);
-        console.log('响应头:', res.headers);
-        
         let data = '';
         res.on('data', (chunk) => {
           data += chunk;
-          console.log('接收数据块:', chunk.toString());
         });
         res.on('end', () => {
-          console.log('响应数据:', data);
           try {
             const parsedData = JSON.parse(data);
             resolve({
@@ -75,7 +63,6 @@ exports.main = async (event, context) => {
               data: parsedData
             });
           } catch (parseError) {
-            console.error('解析响应数据失败:', parseError);
             resolve({
               statusCode: res.statusCode,
               data: data
@@ -85,7 +72,6 @@ exports.main = async (event, context) => {
       });
       
       req.on('error', (e) => {
-        console.error('请求错误:', e);
         reject(e);
       });
       
@@ -93,12 +79,9 @@ exports.main = async (event, context) => {
       req.end();
     });
     
-    console.log('API调用结果:', result);
-    
     // 处理API响应
     if (result.statusCode === 200) {
       const response = result.data;
-      console.log('API返回数据:', response);
       if (response.choices && response.choices.length > 0) {
         // 根据API文档，content可能是string类型
         let aiResponse = '';
@@ -109,7 +92,6 @@ exports.main = async (event, context) => {
         } else {
           aiResponse = '抱歉，AI回复格式错误。';
         }
-        console.log('AI回复:', aiResponse);
         return {
           code: 0,
           data: {
@@ -117,23 +99,18 @@ exports.main = async (event, context) => {
           }
         };
       } else {
-        console.log('API返回格式错误:', response);
         return {
           code: 400,
           message: 'API返回格式错误'
         };
       }
     } else {
-      console.log('网络请求失败，状态码:', result.statusCode);
       return {
         code: result.statusCode,
         message: `网络请求失败，状态码: ${result.statusCode}`
       };
     }
   } catch (error) {
-    console.error('云函数调用失败:', error);
-    console.error('错误详情:', error.message);
-    console.error('错误堆栈:', error.stack);
     return {
       code: 500,
       message: `云函数调用失败: ${error.message}`
