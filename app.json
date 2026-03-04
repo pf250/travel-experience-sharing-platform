@@ -45,6 +45,12 @@
         "pages/detail/detail"
       ]
     },
+        {
+      "root": "packageAI_agent",
+      "pages": [
+        "pages/detail/detail"
+      ]
+    },
     {
       "root": "packageUpload",
       "pages": [

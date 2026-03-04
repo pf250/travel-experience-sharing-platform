@@ -140,4 +140,15 @@
       </navigator>
     </view>
   </view>
-</view> 
+</view>
+
+<!-- AI悬浮窗 -->
+<view class="ai-float-button" 
+  bindtap="onAIClick"
+  bindtouchstart="onTouchStart"
+  catchtouchmove="onTouchMove"
+  bindtouchend="onTouchEnd"
+  style="left: {{aiButtonLeft}}rpx; bottom: {{aiButtonBottom}}rpx;">
+  <image src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=AI%20assistant%20icon%20blue%20chatbot%20modern%20simple&image_size=square" class="ai-icon"/>
+  <text class="ai-text">AI助手</text>
+</view>

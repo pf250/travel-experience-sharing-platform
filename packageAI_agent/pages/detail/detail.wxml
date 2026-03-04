@@ -1,0 +1,69 @@
+<view class="container">
+  <!-- 聊天头部 -->
+  <view class="chat-header">
+    <view class="back-button" bindtap="onBack">
+      <text class="back-icon">←</text>
+    </view>
+    <view class="chat-title">
+      <text>AI助手</text>
+    </view>
+    <view class="header-right"></view>
+  </view>
+
+  <!-- 聊天内容区域 -->
+  <view class="chat-content" scroll-y="true" id="chatContent">
+    <!-- 欢迎消息 -->
+    <view class="message-item ai-message" wx:if="{{showWelcome}}">
+      <view class="message-avatar">
+        <image src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=AI%20assistant%20icon%20blue%20chatbot%20modern%20simple&image_size=square" mode="aspectFill"/>
+      </view>
+      <view class="message-bubble">
+        <text class="message-text">你好！我是旅途小助手，有什么可以帮你的吗？😊
+你可以咨询景区信息、旅游攻略、门票预订、平台操作等问题，我会尽力为你解答！</text>
+      </view>
+    </view>
+
+    <!-- 消息列表 -->
+    <view class="message-item" wx:for="{{messages}}" wx:key="index">
+      <!-- 用户消息 -->
+      <view wx:if="{{item.type === 'user'}}" class="user-message">
+        <view class="message-bubble user-bubble">
+          <text class="message-text">{{item.content}}</text>
+        </view>
+        <view class="message-avatar">
+          <image src="{{userAvatar}}" mode="aspectFill"/>
+        </view>
+      </view>
+
+      <!-- AI消息 -->
+      <view wx:else class="ai-message">
+        <view class="message-avatar">
+          <image src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=AI%20assistant%20icon%20blue%20chatbot%20modern%20simple&image_size=square" mode="aspectFill"/>
+        </view>
+        <view class="message-bubble">
+          <text class="message-text">{{item.content}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 加载中 -->
+    <view class="loading-item" wx:if="{{isLoading}}">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">AI正在思考...</text>
+    </view>
+  </view>
+
+  <!-- 输入区域 -->
+  <view class="input-area">
+    <input 
+      class="input-box" 
+      placeholder="请输入你的问题..."
+      bindinput="onInputChange"
+      value="{{inputValue}}"
+      bindconfirm="onSendMessage"
+    />
+    <view class="send-button" bindtap="onSendMessage" style="background-color: {{inputValue.trim() ? '#4CAF50' : '#ccc'}}; color: {{inputValue.trim() ? 'white' : '#666'}}">
+      发送
+    </view>
+  </view>
+</view>

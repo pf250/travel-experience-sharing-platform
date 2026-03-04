@@ -41,7 +41,14 @@ Page({
     // 优惠活动
     promotions: [],
     // 加载状态
-    isLoading: true
+    isLoading: true,
+    // AI悬浮窗位置
+    aiButtonLeft: 600, // 初始位置：右侧
+    aiButtonBottom: 120,
+    // 触摸相关
+    isDragging: false,
+    // 防止下拉刷新
+    preventPullDown: false
   },
 
 
@@ -520,6 +527,12 @@ Page({
 
   // 下拉刷新
   onPullDownRefresh() {
+    // 如果正在拖动悬浮窗或设置了防止下拉刷新，不执行下拉刷新
+    if (this.data.isDragging || this.data.preventPullDown) {
+      wx.stopPullDownRefresh();
+      return;
+    }
+    
     console.log('下拉刷新开始');
     // 重新加载首页数据
     this.loadHomeData().then(() => {
@@ -531,5 +544,90 @@ Page({
       // 停止下拉刷新
       wx.stopPullDownRefresh();
     });
+  },
+
+  // AI悬浮窗点击事件
+  onAIClick() {
+    // 只有在非拖动状态下才执行跳转
+    if (!this.data.isDragging) {
+      wx.navigateTo({
+        url: '/packageAI_agent/pages/detail/detail',
+        success: () => console.log('导航到AI客服页面'),
+        fail: err => console.error('导航失败:', err)
+      });
+    }
+  },
+
+  // 触摸开始事件
+  onTouchStart(event) {
+    // 存储初始位置到实例变量，避免setData的异步延迟
+    this.startX = event.touches[0].clientX;
+    this.startY = event.touches[0].clientY;
+    this.setData({
+      isDragging: false,
+      preventPullDown: true
+    });
+  },
+
+  // 触摸移动事件
+  onTouchMove(event) {
+    const currentX = event.touches[0].clientX;
+    const currentY = event.touches[0].clientY;
+    const deltaX = currentX - this.startX;
+    const deltaY = currentY - this.startY;
+
+    // 计算新位置（转换为rpx，假设1px=2rpx）
+    let newLeft = this.data.aiButtonLeft + deltaX * 2;
+    let newBottom = this.data.aiButtonBottom - deltaY * 2; // 注意：Y轴方向相反
+
+    // 限制边界
+    const windowInfo = wx.getWindowInfo();
+    const windowWidth = windowInfo.windowWidth * 2; // 转换为rpx
+    const windowHeight = windowInfo.windowHeight * 2; // 转换为rpx
+    const buttonWidth = 100; // 按钮宽度
+    const buttonHeight = 100; // 按钮高度
+
+    // 左右边界
+    newLeft = Math.max(0, Math.min(windowWidth - buttonWidth, newLeft));
+    // 上下边界
+    newBottom = Math.max(0, Math.min(windowHeight - buttonHeight, newBottom));
+
+    // 更新位置
+    this.setData({
+      aiButtonLeft: newLeft,
+      aiButtonBottom: newBottom,
+      isDragging: true
+    });
+
+    // 更新起始位置，以便继续拖动
+    this.startX = currentX;
+    this.startY = currentY;
+  },
+
+  // 触摸结束事件
+  onTouchEnd() {
+    if (this.data.isDragging) {
+      // 吸附到屏幕边缘
+      const windowInfo = wx.getWindowInfo();
+      const windowWidth = windowInfo.windowWidth * 2; // 转换为rpx
+      const buttonWidth = 100; // 按钮宽度
+      const centerX = windowWidth / 2;
+      const currentLeft = this.data.aiButtonLeft;
+
+      // 判断应该吸附到左边还是右边
+      let finalLeft = currentLeft < centerX ? 0 : windowWidth - buttonWidth;
+
+      // 动画吸附效果
+      this.setData({
+        aiButtonLeft: finalLeft,
+        isDragging: false,
+        preventPullDown: false
+      });
+    } else {
+      // 如果不是拖动，也需要重置preventPullDown
+      this.setData({
+        preventPullDown: false
+      });
+    }
   }
 });

@@ -1,0 +1,19 @@
+{
+  "name": "travel-experience-sharing-platform",
+  "version": "1.0.0",
+  "description": "旅游体验分享平台",
+  "main": "app.js",
+  "scripts": {
+    "deploy": "wx cloud deploy"
+  },
+  "keywords": [
+    "travel",
+    "wechat",
+    "miniprogram"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "wx-server-sdk": "latest"
+  }
+}

@@ -391,3 +391,37 @@
    height: 160rpx;
  }
 }
+
+/* AI悬浮窗样式 */
+.ai-float-button {
+  position: fixed;
+  width: 100rpx;
+  height: 100rpx;
+  background: linear-gradient(135deg, #1296db, #1e88e5);
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4rpx 16rpx rgba(18, 150, 219, 0.4);
+  z-index: 9999;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.ai-float-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6rpx 20rpx rgba(18, 150, 219, 0.6);
+}
+
+.ai-icon {
+  width: 50rpx;
+  height: 50rpx;
+  margin-bottom: 6rpx;
+}
+
+.ai-text {
+  font-size: 20rpx;
+  color: white;
+  font-weight: 500;
+}
