@@ -13,7 +13,7 @@
 /* 聊天内容区域 */
 .chat-content {
   flex: 1;
-  padding: 0 0 100rpx 0;
+  padding: 20rpx 0 100rpx 0;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
