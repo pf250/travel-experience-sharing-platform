@@ -13,40 +13,36 @@
   <!-- 聊天内容区域 -->
   <view class="chat-content" scroll-y="true" id="chatContent">
     <!-- 欢迎消息 -->
-    <view class="message-item ai-message" wx:if="{{showWelcome}}">
+    <view class="ai-message" wx:if="{{showWelcome}}">
       <view class="message-avatar">
-          <image src="/images/AI/Robot.png" mode="aspectFill"/>
-        </view>
+        <image src="/images/AI/Robot.png" mode="aspectFill"/>
+      </view>
       <view class="message-bubble">
         <text class="message-text">你好！有什么可以帮你的吗？😊</text>
       </view>
     </view>
 
     <!-- 消息列表 -->
-    <view wx:for="{{messages}}" wx:key="index" class="message-item">
+    <view wx:for="{{messages}}" wx:key="index">
       <!-- 用户消息 -->
-      <block wx:if="{{item.type === 'user'}}">
-        <view class="user-message">
-          <view class="message-bubble user-bubble">
-            <text class="message-text">{{item.content}}</text>
-          </view>
-          <view class="message-avatar">
-            <image src="{{userAvatar}}" mode="aspectFill"/>
-          </view>
+      <view wx:if="{{item.type === 'user'}}" class="user-message">
+        <view class="message-bubble user-bubble">
+          <text class="message-text">{{item.content}}</text>
         </view>
-      </block>
+        <view class="message-avatar">
+          <image src="{{userAvatar}}" mode="aspectFill"/>
+        </view>
+      </view>
 
       <!-- AI消息 -->
-      <block wx:else>
-        <view class="ai-message">
-          <view class="message-avatar">
-            <image src="/images/AI/Robot.png" mode="aspectFill"/>
-          </view>
-          <view class="message-bubble">
-            <text class="message-text">{{item.content}}</text>
-          </view>
+      <view wx:else class="ai-message">
+        <view class="message-avatar">
+          <image src="/images/AI/Robot.png" mode="aspectFill"/>
         </view>
-      </block>
+        <view class="message-bubble">
+          <text class="message-text">{{item.content}}</text>
+        </view>
+      </view>
     </view>
 
     <!-- 加载中 -->

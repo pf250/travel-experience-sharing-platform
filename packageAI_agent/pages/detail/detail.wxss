@@ -48,13 +48,6 @@
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 20rpx;
-}
-
-/* 消息项 */
-.message-item {
-  width: 100%;
-  display: flex;
 }
 
 /* AI消息 */
@@ -64,6 +57,8 @@
   gap: 12rpx;
   flex-direction: row;
   max-width: 80%;
+  align-self: flex-start;
+  margin-bottom: 20rpx;
 }
 
 /* 用户消息 */
@@ -73,6 +68,8 @@
   gap: 12rpx;
   flex-direction: row-reverse;
   max-width: 80%;
+  align-self: flex-end;
+  margin-bottom: 20rpx;
   margin-left: auto;
 }
 
