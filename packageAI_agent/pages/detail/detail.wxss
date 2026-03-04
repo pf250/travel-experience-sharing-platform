@@ -53,23 +53,27 @@
 
 /* 消息项 */
 .message-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 12rpx;
-  max-width: 80%;
   width: 100%;
+  display: flex;
 }
 
 /* AI消息 */
 .ai-message {
-  align-self: flex-start;
+  display: flex;
+  align-items: flex-start;
+  gap: 12rpx;
   flex-direction: row;
+  max-width: 80%;
 }
 
 /* 用户消息 */
 .user-message {
-  align-self: flex-end;
+  display: flex;
+  align-items: flex-start;
+  gap: 12rpx;
   flex-direction: row-reverse;
+  max-width: 80%;
+  margin-left: auto;
 }
 
 /* 头像 */

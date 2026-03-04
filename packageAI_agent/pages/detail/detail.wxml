@@ -5,7 +5,7 @@
       <text class="back-icon">←</text>
     </view>
     <view class="chat-title">
-      <text>AI助手</text>
+      <text></text>
     </view>
     <view class="header-right"></view>
   </view>
@@ -18,32 +18,35 @@
           <image src="/images/AI/Robot.png" mode="aspectFill"/>
         </view>
       <view class="message-bubble">
-        <text class="message-text">你好！我是旅途小助手，有什么可以帮你的吗？😊
-你可以咨询景区信息、旅游攻略、门票预订、平台操作等问题，我会尽力为你解答！</text>
+        <text class="message-text">你好！有什么可以帮你的吗？😊</text>
       </view>
     </view>
 
     <!-- 消息列表 -->
-    <view class="message-item" wx:for="{{messages}}" wx:key="index">
+    <view wx:for="{{messages}}" wx:key="index" class="message-item">
       <!-- 用户消息 -->
-      <view wx:if="{{item.type === 'user'}}" class="user-message">
-        <view class="message-bubble user-bubble">
-          <text class="message-text">{{item.content}}</text>
+      <block wx:if="{{item.type === 'user'}}">
+        <view class="user-message">
+          <view class="message-bubble user-bubble">
+            <text class="message-text">{{item.content}}</text>
+          </view>
+          <view class="message-avatar">
+            <image src="{{userAvatar}}" mode="aspectFill"/>
+          </view>
         </view>
-        <view class="message-avatar">
-          <image src="{{userAvatar}}" mode="aspectFill"/>
-        </view>
-      </view>
+      </block>
 
       <!-- AI消息 -->
-      <view wx:else class="ai-message">
-        <view class="message-avatar">
-          <image src="/images/AI/Robot.png" mode="aspectFill"/>
+      <block wx:else>
+        <view class="ai-message">
+          <view class="message-avatar">
+            <image src="/images/AI/Robot.png" mode="aspectFill"/>
+          </view>
+          <view class="message-bubble">
+            <text class="message-text">{{item.content}}</text>
+          </view>
         </view>
-        <view class="message-bubble">
-          <text class="message-text">{{item.content}}</text>
-        </view>
-      </view>
+      </block>
     </view>
 
     <!-- 加载中 -->
