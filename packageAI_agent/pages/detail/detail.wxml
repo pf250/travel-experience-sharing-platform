@@ -17,11 +17,11 @@
     <view wx:for="{{messages}}" wx:key="index">
       <!-- 用户消息 -->
       <view wx:if="{{item.type === 'user'}}" class="user-message">
-        <view class="message-bubble user-bubble">
-          <text class="message-text">{{item.content}}</text>
-        </view>
         <view class="message-avatar">
           <image src="{{userAvatar}}" mode="aspectFill"/>
+        </view>
+        <view class="message-bubble user-bubble">
+          <text class="message-text">{{item.content}}</text>
         </view>
       </view>
 
